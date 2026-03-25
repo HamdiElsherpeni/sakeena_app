@@ -51,7 +51,7 @@ class LoginViewBody extends StatelessWidget {
             backgroundcolor: AppColors.primary,
             height: 60,
             onPressed: () {
-              // هنا ممكن تتحقق من الفورم أو تعمل login
+             
             },
           ),
           const SizedBox(height: 30),
@@ -59,12 +59,19 @@ class LoginViewBody extends StatelessWidget {
           // Divider + Google
           Row(
             children: [
-              Expanded(child: Divider(color: Colors.grey.shade400, thickness: 1)),
+              Expanded(
+                child: Divider(color: Colors.grey.shade400, thickness: 1),
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('او سجل من خلال', style: TextStyle(color: Colors.grey)),
+                child: Text(
+                  'او سجل من خلال',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
-              Expanded(child: Divider(color: Colors.grey.shade400, thickness: 1)),
+              Expanded(
+                child: Divider(color: Colors.grey.shade400, thickness: 1),
+              ),
             ],
           ),
           const SizedBox(height: 30),
@@ -76,9 +83,14 @@ class LoginViewBody extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('ليس لديك حساب؟ ', style: TextStyle(color: Colors.grey)),
+              const Text(
+                'ليس لديك حساب؟ ',
+                style: TextStyle(color: Colors.grey),
+              ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                   GoRouter.of(context).push(AppRouter.ksinupView);
+                },
                 child: Text(
                   'انشئ حسابك',
                   style: TextStyle(

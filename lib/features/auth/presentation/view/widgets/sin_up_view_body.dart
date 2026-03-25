@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_googel_button.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_wellcome_text_sin_up.dart';
@@ -20,7 +22,9 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
+      
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +71,9 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
             children: [
               Text('لدي حساب بالفعل؟', style: TextStyle(color: Colors.grey)),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  GoRouter.of(context).push(AppRouter.kLogin);
+                },
                 child: Text(
                   'سجلي من هنا',
                   style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
