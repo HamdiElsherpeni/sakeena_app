@@ -12,7 +12,7 @@ class CoustemTextFormFailed extends StatelessWidget {
     this.validator,
     this.leble,
     this.controller,
-    this.height, // ارتفاع اختياري
+    this.height, this.prefixIcon, // ارتفاع اختياري
   });
 
   final String hent;
@@ -23,6 +23,8 @@ class CoustemTextFormFailed extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextEditingController? controller;
   final IconButton? sufixIcon;
+  final Icon? prefixIcon;
+
   final double? height; // ارتفاع الحقل
 
   @override
@@ -54,6 +56,7 @@ class CoustemTextFormFailed extends StatelessWidget {
           labelText: leble,
           labelStyle: const TextStyle(color: Colors.grey),
           suffixIcon: sufixIcon,
+          prefix:prefixIcon ,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.primary, width: 1),
             borderRadius: BorderRadius.circular(5),

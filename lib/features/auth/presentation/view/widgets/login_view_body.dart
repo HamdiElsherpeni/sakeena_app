@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
@@ -29,7 +31,9 @@ class LoginViewBody extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                GoRouter.of(context).push(AppRouter.kforgetView);
+              },
               child: Text(
                 'هل نسيت كلمة السر؟',
                 style: TextStyle(
