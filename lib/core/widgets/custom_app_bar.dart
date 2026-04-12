@@ -24,14 +24,14 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
     return Column(
       children: [
         _buildSpacing(50),
-        const ForgetPassAppBar(),
+        const CustomAppBar(titel:  'نسيت الباسوورد',),
         _buildSpacing(30),
 
         _buildSpacing(20),
         _buildPages(),
         _buildSpacing(20),
         _buildButton(),
-        SizedBox(height: 200,)
+        SizedBox(height: 200),
       ],
     );
   }
@@ -66,14 +66,13 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
 
   void _handleNext() {
     if (currentIndex == 2) {
-    GoRouter.of(context).pushReplacement(AppRouter.kLogin);
+      GoRouter.of(context).pushReplacement(AppRouter.kLogin);
     } else {
       controller.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
-    
   }
 
   String _getButtonText() {
@@ -83,5 +82,4 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
   }
 
   Widget _buildSpacing(double h) => SizedBox(height: h);
-  
 }

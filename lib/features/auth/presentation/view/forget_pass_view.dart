@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sakeena_app/constsnt.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
-import 'package:sakeena_app/features/auth/presentation/view/widgets/forget_pass_view_body.dart';
+import 'package:sakeena_app/core/widgets/custom_app_bar.dart';
 
 class ForgetPassView extends StatelessWidget {
   const ForgetPassView({super.key});

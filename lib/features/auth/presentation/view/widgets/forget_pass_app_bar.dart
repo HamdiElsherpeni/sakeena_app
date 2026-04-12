@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
 
-class ForgetPassAppBar extends StatelessWidget {
-  const ForgetPassAppBar({super.key});
-
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({super.key, required this.titel});
+final String titel;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -11,10 +11,9 @@ class ForgetPassAppBar extends StatelessWidget {
         CustomCircleAvatar(),
         SizedBox(width: 60),
         Text(
-          'نسيت الباسوورد',
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+         titel,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
-      
       ],
     );
   }

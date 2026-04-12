@@ -51,7 +51,7 @@ class LoginViewBody extends StatelessWidget {
             backgroundcolor: AppColors.primary,
             height: 60,
             onPressed: () {
-             
+             context.push(AppRouter.khomeView);
             },
           ),
           const SizedBox(height: 30),
