@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/database/my_cache_helper.dart';
+import 'package:sakeena_app/core/database/prefs_constants.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view_model/on_bording_model.dart';
 
 class OnBoardingBody extends StatelessWidget {
@@ -16,8 +20,19 @@ class OnBoardingBody extends StatelessWidget {
     required this.data,
   });
 
+  /// حفظ إن المستخدم شاف الـ OnBoarding والانتقال
+  Future<void> _finishOnBoarding(BuildContext context) async {
+    await SharedPrefHelper.setData(PrefsConstants.onBoarding, true);
+    if (context.mounted) {
+      // غير المسار لصفحة اللوجين أو الهوم عندك
+      context.pushReplacement(AppRouter.kLogin);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isLastPage = currentIndex == data.length - 1;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -44,36 +59,37 @@ class OnBoardingBody extends StatelessWidget {
               ),
             ),
 
-            /// 🔸 Skip Button
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.skipBg,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  controller.jumpToPage(data.length - 1);
-                },
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 6,
+            /// 🔸 Skip Button — يختفي في آخر صفحة
+            if (!isLastPage)
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.skipBg,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: TextButton(
+                  onPressed: () async {
+                    await _finishOnBoarding(context);
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 6,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  child: Text(
+                    'تخطي',
+                    style: TextStyle(
+                      fontFamily: 'Rubik',
+                      fontSize: 20,
+                      color: AppColors.skipText,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
-                child: Text(
-                  'تخطي',
-                  style: TextStyle(
-                    fontFamily: 'Rubik',
-                    fontSize: 20,
-                    color: AppColors.skipText,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
               ),
-            ),
           ],
         ),
 
@@ -107,7 +123,7 @@ class OnBoardingBody extends StatelessWidget {
                     ),
                   ),
 
-                
+                  const SizedBox(height: 10),
 
                   /// 🔸 Subtitle
                   Text(
@@ -118,12 +134,43 @@ class OnBoardingBody extends StatelessWidget {
                       fontFamily: 'Rubik',
                     ),
                   ),
-                    const SizedBox(height: 10),
+
+                  const SizedBox(height: 10),
                 ],
               );
             },
           ),
         ),
+
+        /// 🔹 زرار "ابدأ" في آخر صفحة بس
+        if (isLastPage)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await _finishOnBoarding(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text(
+                  'ابدأ',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'Rubik',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

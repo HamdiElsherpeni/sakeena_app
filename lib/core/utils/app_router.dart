@@ -21,9 +21,9 @@ abstract class AppRouter {
   static String kprofileview = '/profileview';
   static String kprofileditview = '/profileditview';
 
-  static final router = GoRouter(
+  static GoRouter router(bool seenOnBoarding) => GoRouter(
+    initialLocation: seenOnBoarding ? kwellComView : konBording,
     routes: [
-      // الصفحات العادية
       GoRoute(path: '/', builder: (context, state) => const SplashView()),
       GoRoute(
         path: konBording,
