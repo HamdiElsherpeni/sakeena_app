@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
+import 'package:sakeena_app/features/auth/data/repositories/auth_repository.dart';
+import 'package:sakeena_app/features/auth/manger/auth_cubit.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/login_view_body.dart';
 
 class LoginView extends StatelessWidget {
@@ -7,10 +10,14 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(child: LoginViewBody()),
-      backgroundColor: AppColors.KprimaryColor,
+    return BlocProvider(
+      create: (_) => AuthCubit(AuthRepository()),
+      child: const Scaffold(
+        backgroundColor: AppColors.KprimaryColor,
+        body: SafeArea(
+          child: LoginViewBody(),
+        ),
+      ),
     );
   }
 }

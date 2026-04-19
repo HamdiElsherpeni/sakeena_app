@@ -20,11 +20,13 @@ abstract class AppRouter {
   static String khomeView = '/homeview';
   static String kprofileview = '/profileview';
   static String kprofileditview = '/profileditview';
+  static String kSplash = '/';
+
 
   static GoRouter router(bool seenOnBoarding) => GoRouter(
     initialLocation: seenOnBoarding ? kwellComView : konBording,
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const SplashView()),
+      GoRoute(path: kSplash, builder: (context, state) => const SplashView()),
       GoRoute(
         path: konBording,
         builder: (context, state) => const OnBoardingView(),

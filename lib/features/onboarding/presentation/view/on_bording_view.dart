@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/services/token_service.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/widgets/on_bording_view_body.dart';
@@ -44,34 +45,16 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   ),
                 ),
 
-                // /// 🔹 Button
-                // SizedBox(
-                //   width: double.infinity,
-                //   height: 50,
-                //   child: ElevatedButton(
-                //     onPressed: () {
-                //       if (currentIndex == onBoardingList.length - 1) {
-                //         // finish
-                //       } else {
-                //         controller.nextPage(
-                //           duration: const Duration(milliseconds: 300),
-                //           curve: Curves.easeInOut,
-                //         );
-                //       }
-                //     },
-                //     child: Text(
-                //       currentIndex == onBoardingList.length - 1
-                //           ? 'ابدأ'
-                //           : 'التالي',
-                //     ),
-                //   ),
-                // ),
                 CoustemElevetedBoutten(
                   text: currentIndex == onBoardingList.length - 1
                       ? 'ابدأ'
                       : 'التالي',
-                  onPressed: () {
+                  onPressed: () async {
                     if (currentIndex == onBoardingList.length - 1) {
+                      // ✅ سجل إنه خلص onboarding
+                      await TokenService.setOnboardingSeen();
+
+                      // 👇 روح للصفحة اللي بعدها (login أو welcome)
                       context.go(AppRouter.kwellComView);
                     } else {
                       controller.nextPage(

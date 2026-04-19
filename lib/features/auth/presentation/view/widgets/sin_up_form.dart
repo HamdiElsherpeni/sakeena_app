@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
-import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
 import 'package:sakeena_app/core/widgets/coustem_text_form_filed.dart';
+import 'package:sakeena_app/features/auth/presentation/view/widgets/form_header.dart';
+import 'package:sakeena_app/features/auth/presentation/view/widgets/password_rules.dart';
 
-class SinUpForm extends StatelessWidget {
+
+class SinUpForm extends StatefulWidget {
   const SinUpForm({
     super.key,
     required this.firstNameController,
@@ -12,6 +14,8 @@ class SinUpForm extends StatelessWidget {
     required this.passwordController,
     required this.isObscure,
     required this.toggleObscure,
+    required this.onRegister,
+    required this.isLoading,
   });
 
   final TextEditingController firstNameController;
@@ -22,34 +26,89 @@ class SinUpForm extends StatelessWidget {
   final bool isObscure;
   final VoidCallback toggleObscure;
 
+  final VoidCallback onRegister;
+  final bool isLoading;
+
+  @override
+  State<SinUpForm> createState() => _SinUpFormState();
+}
+
+class _SinUpFormState extends State<SinUpForm> {
+  bool _isFormValid = false;
+
+  bool hasLower = false;
+  bool hasUpper = false;
+  bool hasNumber = false;
+  bool hasSpecial = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.firstNameController.addListener(_validate);
+    widget.lastNameController.addListener(_validate);
+    widget.emailController.addListener(_validate);
+    widget.passwordController.addListener(_validate);
+  }
+
+  void _validate() {
+    final firstName = widget.firstNameController.text;
+    final lastName = widget.lastNameController.text;
+    final email = widget.emailController.text;
+    final password = widget.passwordController.text;
+
+    setState(() {
+      hasLower = RegExp(r'[a-z]').hasMatch(password);
+      hasUpper = RegExp(r'[A-Z]').hasMatch(password);
+      hasNumber = RegExp(r'\d').hasMatch(password);
+      hasSpecial = RegExp(r'[@$!%*?&]').hasMatch(password);
+    });
+
+    final isPasswordValid =
+        hasLower && hasUpper && hasNumber && hasSpecial;
+
+    final isValid =
+        firstName.isNotEmpty &&
+        lastName.isNotEmpty &&
+        email.isNotEmpty &&
+        password.isNotEmpty &&
+        isPasswordValid;
+
+    if (isValid != _isFormValid) {
+      setState(() => _isFormValid = isValid);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.firstNameController.removeListener(_validate);
+    widget.lastNameController.removeListener(_validate);
+    widget.emailController.removeListener(_validate);
+    widget.passwordController.removeListener(_validate);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // First + Last Name
-        const Text(
-          'الاسم',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
+        const FormHeader(title: "الاسم"),
         const SizedBox(height: 5),
 
         Row(
           children: [
-            // First Name
             Expanded(
               child: CoustemTextFormFailed(
                 hent: 'الاسم الاول',
-                controller: firstNameController,
+                controller: widget.firstNameController,
               ),
             ),
             const SizedBox(width: 10),
-
-            // Last Name
             Expanded(
               child: CoustemTextFormFailed(
                 hent: 'الاسم الثاني',
-                controller: lastNameController,
+                controller: widget.lastNameController,
               ),
             ),
           ],
@@ -57,45 +116,68 @@ class SinUpForm extends StatelessWidget {
 
         const SizedBox(height: 20),
 
-        // Email
-        const Text(
-          'الايميل',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
+        const FormHeader(title: "الايميل"),
         const SizedBox(height: 5),
+
         CoustemTextFormFailed(
           hent: 'SakeenaTeam@gmail.com',
-          controller: emailController,
+          controller: widget.emailController,
         ),
 
         const SizedBox(height: 20),
 
-        // Password
-        const Text(
-          'الباسوورد',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
+        const FormHeader(title: "كلمة المرور "),
         const SizedBox(height: 5),
+
         CoustemTextFormFailed(
           hent: 'ادخل كلمة المرور',
-          obscure: isObscure,
-          controller: passwordController,
+          obscure: widget.isObscure,
+          controller: widget.passwordController,
           sufixIcon: IconButton(
             icon: Icon(
-              isObscure ? Icons.visibility_off : Icons.visibility,
+              widget.isObscure ? Icons.visibility_off : Icons.visibility,
               color: Colors.grey,
             ),
-            onPressed: toggleObscure,
+            onPressed: widget.toggleObscure,
           ),
         ),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
 
-        // Button
-        CoustemElevetedBoutten(
-          text: 'انشاء حساب',
-          backgroundcolor: AppColors.primary,
-          height: 60,
+        PasswordRules(
+          hasLower: hasLower,
+          hasUpper: hasUpper,
+          hasNumber: hasNumber,
+          hasSpecial: hasSpecial,
+        ),
+
+        const SizedBox(height: 25),
+
+        SizedBox(
+          width: double.infinity,
+          height: 55,
+          child: ElevatedButton(
+            onPressed: widget.isLoading || !_isFormValid
+                ? null
+                : widget.onRegister,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              disabledBackgroundColor: Colors.grey.shade400,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: widget.isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : const Text(
+                    'إنشاء حساب',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+          ),
         ),
       ],
     );

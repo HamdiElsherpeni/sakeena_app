@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:sakeena_app/core/resources/app_colors.dart';
-import 'package:sakeena_app/core/utils/app_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sakeena_app/features/auth/manger/auth_cubit.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_googel_button.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_wellcome_text_sin_up.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/sin_up_form.dart';
 
 class SinUpViewBody extends StatefulWidget {
-  const SinUpViewBody({super.key});
+  final bool isLoading;
+
+  const SinUpViewBody({
+    super.key,
+    required this.isLoading,
+  });
 
   @override
   State<SinUpViewBody> createState() => _SinUpViewBodyState();
@@ -31,6 +35,15 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
     super.dispose();
   }
 
+  void _register() {
+    context.read<AuthCubit>().register(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -38,10 +51,10 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomCircleAvatar(),
+          const CustomCircleAvatar(),
           const SizedBox(height: 10),
 
-          CustomWellcomeTextSinUp(),
+          const CustomWellcomeTextSinUp(),
           const SizedBox(height: 30),
 
           SinUpForm(
@@ -55,55 +68,13 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
                 isObscure = !isObscure;
               });
             },
+            onRegister: _register,
+            isLoading: widget.isLoading,
           ),
 
           const SizedBox(height: 30),
 
-          Row(
-            children: [
-              Expanded(
-                child: Divider(color: Colors.grey.shade400, thickness: 1),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  'او سجل من خلال',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-              Expanded(
-                child: Divider(color: Colors.grey.shade400, thickness: 1),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-
-          CustomGoogelButton(),
-
-          const SizedBox(height: 30),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'لدي حساب بالفعل؟',
-                style: TextStyle(color: Colors.grey),
-              ),
-              GestureDetector(
-                onTap: () {
-                  GoRouter.of(context).push(AppRouter.kLogin);
-                },
-                child: Text(
-                  'سجلي من هنا',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          const CustomGoogelButton(),
         ],
       ),
     );

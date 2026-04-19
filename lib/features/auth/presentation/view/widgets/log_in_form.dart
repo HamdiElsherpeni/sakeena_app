@@ -2,17 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:sakeena_app/core/widgets/coustem_text_form_filed.dart';
 
 class LogInForm extends StatefulWidget {
-  const LogInForm({super.key});
+  final void Function(String email, String password, bool isValid)
+      onChanged;
+
+  const LogInForm({super.key, required this.onChanged});
 
   @override
   State<LogInForm> createState() => _LogInFormState();
 }
 
 class _LogInFormState extends State<LogInForm> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   bool isObscure = true;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
+  void _validate() {
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    final isEmailValid =
+        RegExp(r'^[\w-.]+@([\w-]+\.)+[\w]{2,4}').hasMatch(email);
+
+    final isPasswordValid = password.length >= 6;
+
+    widget.onChanged(email, password, isEmailValid && isPasswordValid);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.addListener(_validate);
+    passwordController.addListener(_validate);
+  }
 
   @override
   void dispose() {
@@ -23,47 +45,61 @@ class _LogInFormState extends State<LogInForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('الايميل', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const SizedBox(height: 5),
-          CoustemTextFormFailed(
-            hent: 'SakeenaTeam@gmail.com',
-            controller: emailController,
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'من فضلك ادخل الايميل';
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}').hasMatch(value)) {
-                return 'الايميل غير صحيح';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          Text('الباسوورد', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const SizedBox(height: 5),
-          CoustemTextFormFailed(
-            hent: 'ادخل كلمة المرور',
-            obscure: isObscure,
-            controller: passwordController,
-            sufixIcon: IconButton(
-              icon: Icon(isObscure ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
-              onPressed: () {
-                setState(() {
-                  isObscure = !isObscure;
-                });
-              },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'الايميل',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 5),
+
+        CoustemTextFormFailed(
+          hent: 'SakeenaTeam@gmail.com',
+          controller: emailController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'ادخل الايميل';
+            }
+            if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w]{2,4}')
+                .hasMatch(value)) {
+              return 'الايميل غير صحيح';
+            }
+            return null;
+          },
+        ),
+
+        const SizedBox(height: 20),
+
+        const Text(
+          'الباسوورد',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        const SizedBox(height: 5),
+
+        CoustemTextFormFailed(
+          hent: 'ادخل كلمة المرور',
+          obscure: isObscure,
+          controller: passwordController,
+          sufixIcon: IconButton(
+            icon: Icon(
+              isObscure ? Icons.visibility_off : Icons.visibility,
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'من فضلك ادخل كلمة المرور';
-              if (value.length < 6) return 'كلمة المرور قصيرة جداً';
-              return null;
+            onPressed: () {
+              setState(() => isObscure = !isObscure);
             },
           ),
-        ],
-      ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'ادخل كلمة المرور';
+            }
+            if (value.length < 6) {
+              return 'كلمة المرور قصيرة جداً';
+            }
+            return null;
+          },
+        ),
+      ],
     );
   }
 }

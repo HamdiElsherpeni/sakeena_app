@@ -20,13 +20,12 @@ class OnBoardingBody extends StatelessWidget {
     required this.data,
   });
 
-  /// حفظ إن المستخدم شاف الـ OnBoarding والانتقال
-  Future<void> _finishOnBoarding(BuildContext context) async {
-    await SharedPrefHelper.setData(PrefsConstants.onBoarding, true);
-    if (context.mounted) {
-      // غير المسار لصفحة اللوجين أو الهوم عندك
-      context.pushReplacement(AppRouter.kLogin);
-    }
+  /// ✅ فقط حفظ حالة الـ onboarding (بدون navigation هنا)
+  Future<void> _finishOnBoarding() async {
+    await SharedPrefHelper.setData(
+      PrefsConstants.onBoarding,
+      true,
+    );
   }
 
   @override
@@ -59,7 +58,7 @@ class OnBoardingBody extends StatelessWidget {
               ),
             ),
 
-            /// 🔸 Skip Button — يختفي في آخر صفحة
+            /// 🔸 Skip Button
             if (!isLastPage)
               Container(
                 decoration: BoxDecoration(
@@ -68,7 +67,11 @@ class OnBoardingBody extends StatelessWidget {
                 ),
                 child: TextButton(
                   onPressed: () async {
-                    await _finishOnBoarding(context);
+                    await _finishOnBoarding();
+
+                    if (context.mounted) {
+                      context.go(AppRouter.kSplash); // 👈 نرجع للسplash
+                    }
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -108,7 +111,10 @@ class OnBoardingBody extends StatelessWidget {
                   /// 🔸 Image
                   SizedBox(
                     height: 310,
-                    child: Image.asset(data[index].image, fit: BoxFit.contain),
+                    child: Image.asset(
+                      data[index].image,
+                      fit: BoxFit.contain,
+                    ),
                   ),
 
                   const SizedBox(height: 10),
@@ -142,15 +148,22 @@ class OnBoardingBody extends StatelessWidget {
           ),
         ),
 
-        /// 🔹 زرار "ابدأ" في آخر صفحة بس
+        /// 🔹 زرار "ابدأ"
         if (isLastPage)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 20,
+            ),
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  await _finishOnBoarding(context);
+                  await _finishOnBoarding();
+
+                  if (context.mounted) {
+                    context.go(AppRouter.kSplash); // 👈 أهم نقطة
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
