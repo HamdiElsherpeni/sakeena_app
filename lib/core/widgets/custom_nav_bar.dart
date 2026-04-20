@@ -47,7 +47,11 @@ class CustomNavBar extends StatelessWidget {
                   icon: Icons.crop_free,
                   label: "فحص",
                   isSelected: currentIndex == 2,
-                  onTap: () {},
+                  onTap: () {
+                    if (currentIndex != 2) {
+                      context.go(AppRouter.kSmartAcanView);
+                    }
+                  },
                 ),
                 NavItem(
                   icon: Icons.home,
@@ -86,6 +90,7 @@ class CustomNavBar extends StatelessWidget {
     );
   }
 }
+
 class NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -107,10 +112,7 @@ class NavItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            color: isSelected ? Colors.pink : Colors.black38,
-          ),
+          Icon(icon, color: isSelected ? Colors.pink : Colors.black38),
           const SizedBox(height: 5),
           Text(
             label,

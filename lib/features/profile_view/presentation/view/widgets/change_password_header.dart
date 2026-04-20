@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
+import 'package:sakeena_app/core/widgets/custom_circle_avatar.dart';
 
 class ChangePasswordHeader extends StatelessWidget {
   const ChangePasswordHeader({super.key});

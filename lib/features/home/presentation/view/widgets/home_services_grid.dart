@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/home/presentation/view/widgets/home_services_item.dart';
 
 class HomeServicesGrid extends StatelessWidget {
@@ -32,7 +34,9 @@ class HomeServicesGrid extends StatelessWidget {
               icon: Icons.crop_free,
               backgroundColor: Color(0xFFEDE7F6),
               iconColor: Color(0xFF7E57C2),
-              onTap: () {},
+              onTap: () {
+                context.push(AppRouter.kSmartAcanView);
+              },
             ),
             HomeServiceItem(
               title: 'اختبار الاطمئنان',

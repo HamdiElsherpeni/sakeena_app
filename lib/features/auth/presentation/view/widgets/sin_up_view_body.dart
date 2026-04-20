@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
-import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
+import 'package:sakeena_app/core/widgets/custom_circle_avatar.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_googel_button.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_wellcome_text_sin_up.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/sin_up_form.dart';

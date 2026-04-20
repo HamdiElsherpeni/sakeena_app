@@ -7,7 +7,7 @@ import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
 import 'package:sakeena_app/features/auth/logic/auth_state.dart';
 import 'log_in_form.dart';
-import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
+import 'package:sakeena_app/core/widgets/custom_circle_avatar.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_googel_button.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_login_wellcom_text.dart';
 

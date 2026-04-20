@@ -4,12 +4,13 @@ import 'package:sakeena_app/features/auth/presentation/view/forget_pass_view.dar
 import 'package:sakeena_app/features/auth/presentation/view/login_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
 import 'package:sakeena_app/features/home/presentation/view/home_view.dart';
-import 'package:sakeena_app/features/home/presentation/view/widgets/custom_nav_bar.dart';
+import 'package:sakeena_app/core/widgets/custom_nav_bar.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/on_bording_view.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/wellcome_view.dart';
 import 'package:sakeena_app/features/profile_view/presentation/view/change_password.dart';
 import 'package:sakeena_app/features/profile_view/presentation/view/profile_view.dart';
 import 'package:sakeena_app/features/profile_view/presentation/view/widgets/etide_profile_view.dart';
+import 'package:sakeena_app/features/smart_acan/ui/view/smart_scan_screen.dart';
 import 'package:sakeena_app/features/splash/presentation/view/splash_view.dart';
 
 abstract class AppRouter {
@@ -23,6 +24,7 @@ abstract class AppRouter {
   static String kprofileditview = '/profileditview';
   static String kSplash = '/';
   static String kchangePasswordview = '/changePasswordview';
+  static String kSmartAcanView = '/SmartAcanView';
 
   static GoRouter router(bool seenOnBoarding) => GoRouter(
     initialLocation: seenOnBoarding ? kwellComView : konBording,
@@ -31,6 +33,10 @@ abstract class AppRouter {
       GoRoute(
         path: konBording,
         builder: (context, state) => const OnBoardingView(),
+      ),
+      GoRoute(
+        path: kSmartAcanView,
+        builder: (context, state) => const SmartScanScreen(),
       ),
       GoRoute(
         path: kchangePasswordview,
