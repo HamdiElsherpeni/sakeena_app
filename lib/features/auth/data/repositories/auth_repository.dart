@@ -8,7 +8,9 @@ import '../models/auth_response.dart';
 import '../models/register_request.dart';
 
 class AuthRepository {
-  final AuthRemoteDatasource _datasource = AuthRemoteDatasource();
+  final AuthRemoteDatasource _datasource;
+
+  AuthRepository({required AuthRemoteDatasource datasource}) : _datasource = datasource;
 
   // ✅ Login + Save Token + Error Handling
   Future<AuthResponse> login({

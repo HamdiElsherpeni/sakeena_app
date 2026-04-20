@@ -1,29 +1,31 @@
 import 'package:dio/dio.dart';
-import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_services.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../models/login_request.dart';
 import '../models/auth_response.dart';
 import '../models/register_request.dart';
 
 class AuthRemoteDatasource {
-  final Dio _dio = ApiClient.dio;
+  final ApiService _apiService;
+
+  AuthRemoteDatasource({required ApiService apiService}) : _apiService = apiService;
 
   // Login
   Future<AuthResponse> login(LoginRequest request) async {
-    final response = await _dio.post(
-      ApiEndpoints.login,
+    final response = await _apiService.post(
+      endpoint: ApiEndpoints.login,
       data: request.toJson(),
     );
-    return AuthResponse.fromJson(response.data);
+    return AuthResponse.fromJson(response);
   }
 
   // Register
   Future<AuthResponse> register(RegisterRequest request) async {
-    final response = await _dio.post(
-      ApiEndpoints.register,
+    final response = await _apiService.post(
+      endpoint: ApiEndpoints.register,
       data: request.toJson(),
     );
-    return AuthResponse.fromJson(response.data);
+    return AuthResponse.fromJson(response);
   }
 
   // Refresh Token
@@ -31,11 +33,11 @@ class AuthRemoteDatasource {
     required String token,
     required String refreshToken,
   }) async {
-    final response = await _dio.post(
-      ApiEndpoints.refresh,
+    final response = await _apiService.post(
+      endpoint: ApiEndpoints.refresh,
       data: {'token': token, 'refreshToken': refreshToken},
     );
-    return AuthResponse.fromJson(response.data);
+    return AuthResponse.fromJson(response);
   }
 
   // Revoke Token
@@ -43,8 +45,8 @@ class AuthRemoteDatasource {
     required String token,
     required String refreshToken,
   }) async {
-    await _dio.post(
-      ApiEndpoints.revoke,
+    await _apiService.post(
+      endpoint: ApiEndpoints.revoke,
       data: {'token': token, 'refreshToken': refreshToken},
     );
   }

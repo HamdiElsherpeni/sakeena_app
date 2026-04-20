@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sakeena_app/features/auth/manger/auth_cubit.dart';
+import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_circle_avatar.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_googel_button.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_wellcome_text_sin_up.dart';
@@ -9,10 +9,7 @@ import 'package:sakeena_app/features/auth/presentation/view/widgets/sin_up_form.
 class SinUpViewBody extends StatefulWidget {
   final bool isLoading;
 
-  const SinUpViewBody({
-    super.key,
-    required this.isLoading,
-  });
+  const SinUpViewBody({super.key, required this.isLoading});
 
   @override
   State<SinUpViewBody> createState() => _SinUpViewBodyState();
@@ -37,11 +34,11 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
 
   void _register() {
     context.read<AuthCubit>().register(
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
-          email: emailController.text,
-          password: passwordController.text,
-        );
+      firstName: firstNameController.text,
+      lastName: lastNameController.text,
+      email: emailController.text,
+      password: passwordController.text,
+    );
   }
 
   @override

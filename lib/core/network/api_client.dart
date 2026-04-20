@@ -1,28 +1,17 @@
 import 'package:dio/dio.dart';
-import 'package:sakeena_app/core/network/interceptors/network_interceptor.dart';
-import 'api_endpoints.dart';
+import 'package:sakeena_app/core/network/api_endpoints.dart';
+import 'dio_factory.dart';
 
 class ApiClient {
+  ApiClient._(); // ✅ مينفعش حد يعمل instance منه
+
   static Dio? _dio;
 
+  // ✅ instance واحدة بس للكل (Singleton)
   static Dio get dio {
-    _dio ??= _createDio();
+    _dio ??= DioFactory.createDio(
+      baseUrl: ApiEndpoints.baseUrl,
+    ); // بياخد من DioFactory
     return _dio!;
-  }
-
-  static Dio _createDio() {
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: ApiEndpoints.baseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        headers: {'Content-Type': 'application/json'},
-      ),
-    );
-
-    // ✅ مهم جدًا: نمرر نفس dio
-    dio.interceptors.add(NetworkInterceptor(dio));
-
-    return dio;
   }
 }

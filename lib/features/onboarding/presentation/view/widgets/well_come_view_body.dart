@@ -34,7 +34,7 @@ class WellComeViewBody extends StatelessWidget {
         CoustemElevetedBoutten(
           height: 60,
           onPressed: () {
-            GoRouter.of(context).push(AppRouter.kLogin);
+            GoRouter.of(context).push(AppRouter.khomeView);
           },
           text: 'سجلي  الدخول',
           backgroundcolor: AppColors.primary,
@@ -44,7 +44,7 @@ class WellComeViewBody extends StatelessWidget {
         CoustemElevetedBoutten(
           height: 60,
           onPressed: () {
-           GoRouter.of(context).push(AppRouter.ksinupView);
+            GoRouter.of(context).push(AppRouter.ksinupView);
           },
           text: 'انشئي حساب جديد',
           backgroundcolor: Colors.transparent,

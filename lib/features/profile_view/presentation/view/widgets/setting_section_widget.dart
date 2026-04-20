@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
+
+class _SettingsItem {
+  final IconData icon;
+  final String label;
+  // ✅ بناخد context
+
+  const _SettingsItem({required this.icon, required this.label});
+}
 
 class SettingsSectionWidget extends StatelessWidget {
   const SettingsSectionWidget({super.key});
 
   static const List<_SettingsItem> _items = [
-    _SettingsItem(icon: Icons.person_outline, label: 'تعديل الملف الشخصي'),
-    _SettingsItem(icon: Icons.lock_outline, label: 'تغيير الباسورد'),
+    _SettingsItem(
+      icon: Icons.person_outline,
+      label: 'تعديل الملف الشخصي',
+      // ✅ static function
+    ),
+    _SettingsItem(icon: Icons.lock_outline, label: 'تغيير كلمة المرور'),
     _SettingsItem(icon: Icons.headset_mic_outlined, label: 'التواصل والدعم'),
     _SettingsItem(icon: Icons.language, label: 'المصادر والمراجع'),
     _SettingsItem(icon: Icons.groups_outlined, label: 'من نحن'),
   ];
+
+  // ✅ static عشان نقدر نستخدمها في const list
+  static void _pushFunction(BuildContext context, String router) {
+    context.push(router);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +46,6 @@ class SettingsSectionWidget extends StatelessWidget {
             ),
           ),
         ),
-
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -44,15 +62,23 @@ class SettingsSectionWidget extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _items.length,
-            separatorBuilder: (context, index) => const Divider(
+            separatorBuilder: (_, __) => const Divider(
               height: 1,
               indent: 20,
               endIndent: 20,
               color: Color(0xFFF0EAE6),
             ),
             itemBuilder: (context, index) {
-              return SettingsItemTileWidget(
-                item: _items[index],
+              return InkWell(
+                onTap: () {
+                  if (index == 0) {
+                    _pushFunction(context, AppRouter.kprofileditview);
+                  } else if (index == 1) {
+                    _pushFunction(context, AppRouter.kchangePasswordview);
+                  }
+                },
+
+                child: SettingsItemTileWidget(item: _items[index]),
               );
             },
           ),
@@ -62,63 +88,46 @@ class SettingsSectionWidget extends StatelessWidget {
   }
 }
 
-class _SettingsItem {
-  final IconData icon;
-  final String label;
-  const _SettingsItem({required this.icon, required this.label});
-}
-
 class SettingsItemTileWidget extends StatelessWidget {
   final _SettingsItem item;
 
-  const SettingsItemTileWidget({
-    super.key,
-    required this.item,
-  });
+  const SettingsItemTileWidget({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9F0F3),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(
-                    item.icon,
-                    color: const Color(0xFFB5456A),
-                    size: 22,
-                  ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9F0F3),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  item.label,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: Color.fromARGB(255, 4, 4, 4),
-                  ),
+                child: Icon(
+                  item.icon,
+                  color: const Color(0xFFB5456A),
+                  size: 22,
                 ),
-              ],
-            ),
-            const Icon(
-              Icons.chevron_right,
-              color: Colors.black,
-              size: 20,
-            ),
-          ],
-        ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                item.label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: Color.fromARGB(255, 4, 4, 4),
+                ),
+              ),
+            ],
+          ),
+          const Icon(Icons.chevron_right, color: Colors.black, size: 20),
+        ],
       ),
     );
   }
