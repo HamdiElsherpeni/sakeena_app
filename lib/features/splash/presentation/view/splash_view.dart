@@ -23,21 +23,17 @@ class _SplashViewState extends State<SplashView> {
     await Future.delayed(kTranstionDuration);
 
     final seenOnboarding = await TokenService.hasSeenOnboarding();
-
-    if (!mounted) return;
-
-    // 👇 لو لسه ما شافش onboarding
-    if (!seenOnboarding) {
-      context.go(AppRouter.konBording);
-      return;
-    }
-
     final isLoggedIn = await TokenService.hasToken();
+    print('ssssssss${isLoggedIn}');
+    if (!mounted) return;
 
     if (isLoggedIn) {
       context.go(AppRouter.khomeView);
+    } else if (!seenOnboarding) {
+      context.go(AppRouter.konBording);
+      return;
     } else {
-      context.go(AppRouter.kLogin); // 👈 مهم جدًا
+      context.go(AppRouter.kwellComView); // 👈 مهم جدًا
     }
   }
 
@@ -46,10 +42,7 @@ class _SplashViewState extends State<SplashView> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: SizedBox(
-            height: 200,
-            child: Image.asset(AppAssets.logo),
-          ),
+          child: SizedBox(height: 200, child: Image.asset(AppAssets.logo)),
         ),
       ),
     );

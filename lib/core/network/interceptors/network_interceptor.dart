@@ -15,13 +15,26 @@ class NetworkInterceptor extends Interceptor {
   ) async {
     final token = await TokenService.getToken();
 
-    if (token != null && token.isNotEmpty) {
+    // 🔥 endpoints اللي مش محتاجة Authorization
+    final isAuthRequest = [
+      ApiEndpoints.login,
+      ApiEndpoints.register,
+      ApiEndpoints.forgetPassword,
+      ApiEndpoints.verifyCode,
+      ApiEndpoints.resetPassword,
+    ].any((endpoint) => options.path.contains(endpoint));
+
+    // ✅ ضيف التوكن بس لو مش request خاص بالـ auth
+    if (!isAuthRequest && token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
+    } else {
+      options.headers.remove('Authorization'); // 🔥 مهم
     }
 
     if (kDebugMode) {
       print('┌── REQUEST ──────────────────────────────');
       print('│ [${options.method}] ${options.uri}');
+      print('│ Headers: ${options.headers}');
       if (options.data != null) print('│ Body: ${options.data}');
       print('└─────────────────────────────────────────');
     }
@@ -49,14 +62,13 @@ class NetworkInterceptor extends Interceptor {
       print('└─────────────────────────────────────────');
     }
 
-    // ✅ التصحيح: مقارنة الـ path بـ ApiEndpoints.refresh
+    // 🔥 لو 401 اعمل refresh token
     if (err.response?.statusCode == 401 &&
         !err.requestOptions.path.contains(ApiEndpoints.refresh)) {
       try {
         final token = await TokenService.getToken();
         final refreshToken = await TokenService.getRefreshToken();
 
-        // ✅ التصحيح: الـ endpoint الصح
         final response = await dio.post(
           ApiEndpoints.refresh,
           data: {'token': token, 'refreshToken': refreshToken},
@@ -70,14 +82,14 @@ class NetworkInterceptor extends Interceptor {
           refreshToken: newRefreshToken,
         );
 
-        // ✅ نعيد نفس الـ request بالتوكن الجديد
+        // ✅ إعادة نفس الطلب بالتوكن الجديد
         final requestOptions = err.requestOptions;
         requestOptions.headers['Authorization'] = 'Bearer $newToken';
 
         final retryResponse = await dio.fetch(requestOptions);
         return handler.resolve(retryResponse);
       } catch (e) {
-        // ❌ الريفرش فشل → نعمل logout
+        // ❌ فشل refresh → logout
         await TokenService.clearTokens();
         return handler.next(err);
       }

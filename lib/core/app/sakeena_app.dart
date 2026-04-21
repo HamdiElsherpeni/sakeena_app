@@ -3,8 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 
 class SakeenaApp extends StatelessWidget {
-  final bool seenOnBoarding;
-  const SakeenaApp({super.key, required this.seenOnBoarding});
+  const SakeenaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,10 @@ class SakeenaApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerConfig: AppRouter.router(seenOnBoarding), // ← مرره هنا
+
+      // 🔥 أهم تعديل هنا
+      routerConfig: AppRouter.router(),
+
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Rubik'),
     );

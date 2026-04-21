@@ -27,6 +27,7 @@ class AuthCubit extends Cubit<AuthState> {
         token: response.token,
         refreshToken: response.refreshToken,
       );
+
       emit(
         LoginSuccess(
           token: response.token,

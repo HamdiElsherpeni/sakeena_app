@@ -35,7 +35,8 @@ class _LoginViewBodyState extends State<LoginViewBody> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          context.go(AppRouter.khomeView); // ✅ روح للهوم بعد اللوجين
+          print("LOGIN TOKEN: ${state.token}");
+          context.go(AppRouter.kSplash); // ✅ روح للهوم بعد اللوجين
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(

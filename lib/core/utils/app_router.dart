@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:sakeena_app/features/auth/presentation/view/forget_pass_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/login_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
@@ -26,8 +27,10 @@ abstract class AppRouter {
   static String kchangePasswordview = '/changePasswordview';
   static String kSmartAcanView = '/SmartAcanView';
 
-  static GoRouter router(bool seenOnBoarding) => GoRouter(
-    initialLocation: seenOnBoarding ? kwellComView : konBording,
+  static GoRouter router() => GoRouter(
+    initialLocation: kSplash,
+
+    // 🔥 NO LOGIC HERE AT ALL
     routes: [
       GoRoute(path: kSplash, builder: (context, state) => const SplashView()),
       GoRoute(
@@ -57,7 +60,6 @@ abstract class AppRouter {
         builder: (context, state) => const EditProfileView(),
       ),
 
-      /// 👇 هنا السحر
       ShellRoute(
         builder: (context, state, child) {
           return MainLayout(child: child);

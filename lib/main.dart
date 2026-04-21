@@ -2,24 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:sakeena_app/core/app/sakeena_app.dart';
-import 'package:sakeena_app/core/database/my_cache_helper.dart';
-import 'package:sakeena_app/core/database/prefs_constants.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupServiceLocator();
-  final seenOnBoarding =
-      await SharedPrefHelper.getBool(PrefsConstants.onBoarding) ?? false;
 
-  runApp(MyApp(seenOnBoarding: seenOnBoarding));
+  setupServiceLocator();
+
+  runApp(const MyApp());
 }
 
 /// Wrapper مهم لـ ScreenUtil
 class MyApp extends StatelessWidget {
-  final bool seenOnBoarding;
-
-  const MyApp({super.key, required this.seenOnBoarding});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +23,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return SakeenaApp(seenOnBoarding: seenOnBoarding);
+        return const SakeenaApp();
       },
     );
   }

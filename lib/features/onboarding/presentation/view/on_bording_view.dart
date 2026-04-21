@@ -18,6 +18,31 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   int currentIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _checkIfSeen();
+  }
+
+  // 🔥 لو المستخدم خلص onboarding قبل كده
+  Future<void> _checkIfSeen() async {
+    final seen = await TokenService.hasSeenOnboarding();
+
+    if (!mounted) return;
+
+    if (seen) {
+      final isLoggedIn = await TokenService.hasToken();
+
+      // 👉 لو عامل login يروح home
+      if (isLoggedIn) {
+        context.go(AppRouter.khomeView);
+      } else {
+        // 👉 لو مش عامل login يروح login
+        context.go(AppRouter.kLogin);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffEEDFCC),
@@ -49,13 +74,15 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   text: currentIndex == onBoardingList.length - 1
                       ? 'ابدأ'
                       : 'التالي',
+                  height: 50,
+                  backgroundcolor: const Color(0xffA53860),
                   onPressed: () async {
                     if (currentIndex == onBoardingList.length - 1) {
                       // ✅ سجل إنه خلص onboarding
                       await TokenService.setOnboardingSeen();
 
-                      // 👇 روح للصفحة اللي بعدها (login أو welcome)
-                      context.go(AppRouter.kwellComView);
+                      // 🔥 بعد ما يخلص يروح login
+                      context.go(AppRouter.kLogin);
                     } else {
                       controller.nextPage(
                         duration: const Duration(milliseconds: 300),
@@ -63,8 +90,6 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                       );
                     }
                   },
-                  height: 50,
-                  backgroundcolor: Color(0xffA53860),
                 ),
               ],
             ),
