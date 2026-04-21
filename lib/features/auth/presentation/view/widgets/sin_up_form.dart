@@ -4,7 +4,6 @@ import 'package:sakeena_app/core/widgets/coustem_text_form_filed.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/form_header.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/password_rules.dart';
 
-
 class SinUpForm extends StatefulWidget {
   const SinUpForm({
     super.key,
@@ -44,7 +43,6 @@ class _SinUpFormState extends State<SinUpForm> {
   @override
   void initState() {
     super.initState();
-
     widget.firstNameController.addListener(_validate);
     widget.lastNameController.addListener(_validate);
     widget.emailController.addListener(_validate);
@@ -52,10 +50,15 @@ class _SinUpFormState extends State<SinUpForm> {
   }
 
   void _validate() {
-    final firstName = widget.firstNameController.text;
-    final lastName = widget.lastNameController.text;
-    final email = widget.emailController.text;
+    final firstName = widget.firstNameController.text.trim();
+    final lastName = widget.lastNameController.text.trim();
+    final email = widget.emailController.text.trim();
     final password = widget.passwordController.text;
+
+    // ✅ email validation
+    final isEmailValid = RegExp(
+      r'^[\w-.]+@([\w-]+\.)+[\w]{2,4}$',
+    ).hasMatch(email);
 
     setState(() {
       hasLower = RegExp(r'[a-z]').hasMatch(password);
@@ -64,13 +67,12 @@ class _SinUpFormState extends State<SinUpForm> {
       hasSpecial = RegExp(r'[@$!%*?&]').hasMatch(password);
     });
 
-    final isPasswordValid =
-        hasLower && hasUpper && hasNumber && hasSpecial;
+    final isPasswordValid = hasLower && hasUpper && hasNumber && hasSpecial;
 
     final isValid =
         firstName.isNotEmpty &&
         lastName.isNotEmpty &&
-        email.isNotEmpty &&
+        isEmailValid && // ✅ بدل email.isNotEmpty
         password.isNotEmpty &&
         isPasswordValid;
 
@@ -93,9 +95,9 @@ class _SinUpFormState extends State<SinUpForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // ── الاسم ────────────────────────────────────────────────────────────
         const FormHeader(title: "الاسم"),
         const SizedBox(height: 5),
-
         Row(
           children: [
             Expanded(
@@ -116,19 +118,20 @@ class _SinUpFormState extends State<SinUpForm> {
 
         const SizedBox(height: 20),
 
+        // ── الايميل ──────────────────────────────────────────────────────────
         const FormHeader(title: "الايميل"),
         const SizedBox(height: 5),
-
         CoustemTextFormFailed(
           hent: 'SakeenaTeam@gmail.com',
           controller: widget.emailController,
+          keyboardType: TextInputType.emailAddress, // ✅
         ),
 
         const SizedBox(height: 20),
 
-        const FormHeader(title: "كلمة المرور "),
+        // ── كلمة المرور ──────────────────────────────────────────────────────
+        const FormHeader(title: "كلمة المرور"),
         const SizedBox(height: 5),
-
         CoustemTextFormFailed(
           hent: 'ادخل كلمة المرور',
           obscure: widget.isObscure,
@@ -144,6 +147,7 @@ class _SinUpFormState extends State<SinUpForm> {
 
         const SizedBox(height: 10),
 
+        // ── Password Rules ───────────────────────────────────────────────────
         PasswordRules(
           hasLower: hasLower,
           hasUpper: hasUpper,
@@ -153,6 +157,7 @@ class _SinUpFormState extends State<SinUpForm> {
 
         const SizedBox(height: 25),
 
+        // ── زرار التسجيل ─────────────────────────────────────────────────────
         SizedBox(
           width: double.infinity,
           height: 55,

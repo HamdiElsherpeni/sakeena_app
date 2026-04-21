@@ -1,24 +1,30 @@
+part of 'auth_cubit.dart';
+
 abstract class AuthState {}
 
-// البداية
 class AuthInitial extends AuthState {}
 
-// تحميل
 class AuthLoading extends AuthState {}
 
-// نجاح (فيه token)
-class AuthSuccess extends AuthState {
+// ✅ Login و Refresh بيرجعوا token
+class LoginSuccess extends AuthState {
   final String token;
-
-  AuthSuccess(this.token);
+  final String refreshToken;
+  LoginSuccess({required this.token, required this.refreshToken});
 }
 
-// تسجيل الخروج
-class AuthLoggedOut extends AuthState {}
+// ✅ Register/ForgetPassword/VerifyCode/ResetPassword مفيهاش data
+class RegisterSuccess extends AuthState {}
 
-// خطأ
+class ForgetPasswordSuccess extends AuthState {}
+
+class VerifyCodeSuccess extends AuthState {}
+
+class ResetPasswordSuccess extends AuthState {}
+
+class LoggedOut extends AuthState {}
+
 class AuthError extends AuthState {
   final String message;
-
   AuthError(this.message);
 }

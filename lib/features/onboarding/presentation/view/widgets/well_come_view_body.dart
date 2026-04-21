@@ -34,7 +34,7 @@ class WellComeViewBody extends StatelessWidget {
         CoustemElevetedBoutten(
           height: 60,
           onPressed: () {
-            GoRouter.of(context).push(AppRouter.khomeView);
+            GoRouter.of(context).push(AppRouter.kLogin);
           },
           text: 'سجلي  الدخول',
           backgroundcolor: AppColors.primary,

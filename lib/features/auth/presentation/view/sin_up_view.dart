@@ -5,7 +5,6 @@ import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
-import 'package:sakeena_app/features/auth/logic/auth_state.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/sin_up_view_body.dart';
 
 class SinUpView extends StatelessWidget {
@@ -14,12 +13,10 @@ class SinUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<AuthCubit>(), // ✅ من getIt مباشرة
+      create: (_) => getIt<AuthCubit>(),
       child: const Scaffold(
         backgroundColor: AppColors.KprimaryColor,
-        body: SafeArea(
-          child: _SinUpViewContent(), // ✅ الـ logic منقولة للـ widget
-        ),
+        body: SafeArea(child: _SinUpViewContent()),
       ),
     );
   }
@@ -38,7 +35,7 @@ class _SinUpViewContent extends StatelessWidget {
           );
         }
 
-        if (state is AuthSuccess) {
+        if (state is RegisterSuccess) {
           _showSuccessDialog(context);
         }
       },
@@ -49,11 +46,14 @@ class _SinUpViewContent extends StatelessWidget {
           children: [
             SinUpViewBody(isLoading: isLoading),
 
+            // ✅ SizedBox.expand عشان يغطي الشاشة كلها
             if (isLoading)
-              Container(
-                color: Colors.black.withOpacity(0.4),
-                child: const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
+              SizedBox.expand(
+                child: ColoredBox(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  child: const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
                 ),
               ),
           ],

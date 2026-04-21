@@ -12,7 +12,9 @@ class CoustemTextFormFailed extends StatelessWidget {
     this.validator,
     this.leble,
     this.controller,
-    this.height, this.prefixIcon, // ارتفاع اختياري
+    this.height,
+    this.prefixIcon,
+    this.keyboardType, // ارتفاع اختياري
   });
 
   final String hent;
@@ -24,7 +26,7 @@ class CoustemTextFormFailed extends StatelessWidget {
   final TextEditingController? controller;
   final IconButton? sufixIcon;
   final Icon? prefixIcon;
-
+  final TextInputType? keyboardType;
   final double? height; // ارتفاع الحقل
 
   @override
@@ -33,7 +35,8 @@ class CoustemTextFormFailed extends StatelessWidget {
       height: height ?? 60, // ارتفاع افتراضي 60
       child: TextFormField(
         controller: controller,
-        validator: validator ??
+        validator:
+            validator ??
             (vall) {
               if (vall == null || vall.isEmpty) {
                 return "This field is required";
@@ -56,7 +59,7 @@ class CoustemTextFormFailed extends StatelessWidget {
           labelText: leble,
           labelStyle: const TextStyle(color: Colors.grey),
           suffixIcon: sufixIcon,
-          prefix:prefixIcon ,
+          prefix: prefixIcon,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.primary, width: 1),
             borderRadius: BorderRadius.circular(5),

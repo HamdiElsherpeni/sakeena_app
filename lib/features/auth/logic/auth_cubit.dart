@@ -1,27 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sakeena_app/core/errors/failer.dart';
+import 'package:sakeena_app/core/services/token_service.dart';
+import 'package:sakeena_app/features/auth/data/models/login_request.dart';
+import 'package:sakeena_app/features/auth/data/models/register_request.dart';
+import 'package:sakeena_app/features/auth/data/models/forgrt_pass_request.dart';
+import 'package:sakeena_app/features/auth/data/models/verify_code_request_model.dart';
+import 'package:sakeena_app/features/auth/data/models/reset_pass_request_model.dart';
+import 'package:sakeena_app/features/auth/data/models/refresh_token_request_model.dart';
 import 'package:sakeena_app/features/auth/data/repositories/auth_repository.dart';
-import '../../../../core/errors/failer.dart';
-import 'auth_state.dart';
+
+part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  final AuthRepository _repo;
+  final AuthRepo _repo;
 
   AuthCubit(this._repo) : super(AuthInitial());
 
-  // ✅ Login
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  // ─── Login ────────────────────────────────────────────────────────────────
+  Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
-
     try {
       final response = await _repo.login(
-        email: email,
-        password: password,
+        LoginRequestModel(email: email, password: password),
       );
-
-      emit(AuthSuccess(response.token));
+      await TokenService.saveTokens(
+        token: response.token,
+        refreshToken: response.refreshToken,
+      );
+      emit(
+        LoginSuccess(
+          token: response.token,
+          refreshToken: response.refreshToken,
+        ),
+      );
     } on Failer catch (e) {
       emit(AuthError(e.errorMessage));
     } catch (e) {
@@ -29,7 +40,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // ✅ Register
+  // ─── Register ─────────────────────────────────────────────────────────────
   Future<void> register({
     required String firstName,
     required String lastName,
@@ -37,16 +48,16 @@ class AuthCubit extends Cubit<AuthState> {
     required String password,
   }) async {
     emit(AuthLoading());
-
     try {
-      final response = await _repo.register(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
+      await _repo.register(
+        RegisterRequestModel(
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+        ),
       );
-
-      emit(AuthSuccess(response.token));
+      emit(RegisterSuccess());
     } on Failer catch (e) {
       emit(AuthError(e.errorMessage));
     } catch (e) {
@@ -54,17 +65,76 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // ✅ Logout
-  Future<void> logout() async {
+  // ─── Forget Password ──────────────────────────────────────────────────────
+  Future<void> forgetPassword({required String email}) async {
     emit(AuthLoading());
-
     try {
-      await _repo.logout();
-      emit(AuthLoggedOut());
+      await _repo.forgetPassword(ForgetPasswordRequestModel(email: email));
+      emit(ForgetPasswordSuccess());
     } on Failer catch (e) {
       emit(AuthError(e.errorMessage));
     } catch (e) {
-      emit(AuthError('Logout failed'));
+      emit(AuthError('Something went wrong'));
+    }
+  }
+
+  // ─── Verify Code ──────────────────────────────────────────────────────────
+  Future<void> verifyCode({required String email, required String code}) async {
+    emit(AuthLoading());
+    try {
+      await _repo.verifyCode(VerifyCodeRequestModel(email: email, code: code));
+      emit(VerifyCodeSuccess());
+    } on Failer catch (e) {
+      emit(AuthError(e.errorMessage));
+    } catch (e) {
+      emit(AuthError('Something went wrong'));
+    }
+  }
+
+  // ─── Reset Password ───────────────────────────────────────────────────────
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    emit(AuthLoading());
+    try {
+      await _repo.resetPassword(
+        ResetPasswordRequestModel(
+          email: email,
+          code: code,
+          newPassword: newPassword,
+          confirmPassword: confirmPassword,
+        ),
+      );
+      emit(ResetPasswordSuccess());
+    } on Failer catch (e) {
+      emit(AuthError(e.errorMessage));
+    } catch (e) {
+      emit(AuthError('Something went wrong'));
+    }
+  }
+
+  // ─── Logout ───────────────────────────────────────────────────────────────
+  Future<void> logout() async {
+    emit(AuthLoading());
+    try {
+      final token = await TokenService.getToken();
+      final refreshToken = await TokenService.getRefreshToken();
+
+      await _repo.revokeRefreshToken(
+        RefreshTokenRequestModel(
+          token: token ?? '',
+          refreshToken: refreshToken ?? '',
+        ),
+      );
+      await TokenService.clearTokens();
+      emit(LoggedOut());
+    } catch (e) {
+      // ✅ حتى لو الـ revoke فشل، نعمل logout محلي
+      await TokenService.clearTokens();
+      emit(LoggedOut());
     }
   }
 }

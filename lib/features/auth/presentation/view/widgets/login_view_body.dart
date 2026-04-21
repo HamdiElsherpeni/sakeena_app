@@ -5,7 +5,6 @@ import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
-import 'package:sakeena_app/features/auth/logic/auth_state.dart';
 import 'log_in_form.dart';
 import 'package:sakeena_app/core/widgets/custom_circle_avatar.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/custom_googel_button.dart';
@@ -35,7 +34,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is LoginSuccess) {
           context.go(AppRouter.khomeView); // ✅ روح للهوم بعد اللوجين
         }
         if (state is AuthError) {

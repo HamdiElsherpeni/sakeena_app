@@ -16,28 +16,28 @@ class SinUpViewBody extends StatefulWidget {
 }
 
 class _SinUpViewBodyState extends State<SinUpViewBody> {
-  bool isObscure = true;
+  bool _isObscure = true;
 
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   void _register() {
     context.read<AuthCubit>().register(
-      firstName: firstNameController.text,
-      lastName: lastNameController.text,
-      email: emailController.text,
-      password: passwordController.text,
+      firstName: _firstNameController.text.trim(), // ✅ trim
+      lastName: _lastNameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text, // ✅ الباسورد من غير trim
     );
   }
 
@@ -50,27 +50,21 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
         children: [
           const CustomCircleAvatar(),
           const SizedBox(height: 10),
-
           const CustomWellcomeTextSinUp(),
           const SizedBox(height: 30),
 
           SinUpForm(
-            firstNameController: firstNameController,
-            lastNameController: lastNameController,
-            emailController: emailController,
-            passwordController: passwordController,
-            isObscure: isObscure,
-            toggleObscure: () {
-              setState(() {
-                isObscure = !isObscure;
-              });
-            },
+            firstNameController: _firstNameController,
+            lastNameController: _lastNameController,
+            emailController: _emailController,
+            passwordController: _passwordController,
+            isObscure: _isObscure,
+            toggleObscure: () => setState(() => _isObscure = !_isObscure),
             onRegister: _register,
             isLoading: widget.isLoading,
           ),
 
           const SizedBox(height: 30),
-
           const CustomGoogelButton(),
         ],
       ),

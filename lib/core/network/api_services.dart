@@ -1,47 +1,36 @@
-import 'package:dio/dio.dart';
 import 'api_client.dart';
 
 class ApiService {
-  // ✅ بياخد من ApiClient مش بيعمل Dio جديد
-  final Dio _dio = ApiClient.dio;
+  ApiService._();
 
-  Future<dynamic> get({
-    required String endpoint,
+  // ─── GET ──────────────────────────────────────────────────────────────────
+  static Future<Map<String, dynamic>> get(
+    String endpoint, {
     Map<String, dynamic>? queryParameters,
   }) async {
-    final response = await _dio.get(endpoint, queryParameters: queryParameters);
-    return response.data;
+    return await ApiClient.get(endpoint, queryParameters: queryParameters);
   }
 
-  Future<dynamic> post({
-    required String endpoint,
-    required dynamic data,
-  }) async {
-    final response = await _dio.post(endpoint, data: data);
-    return response.data;
-  }
-
-  Future<dynamic> put({
-    required String endpoint,
-    dynamic queryParameters,
+  // ─── POST ─────────────────────────────────────────────────────────────────
+  static Future<Map<String, dynamic>> post(
+    String endpoint, {
     dynamic data,
   }) async {
-    final response = await _dio.put(
-      endpoint,
-      queryParameters: queryParameters,
-      data: data,
-    );
-    return response.data;
+    return await ApiClient.post(endpoint, data: data);
   }
 
-  Future<dynamic> delete({
-    required String endpoint,
-    Map<String, dynamic>? queryParameters,
+  // ─── PUT ──────────────────────────────────────────────────────────────────
+  static Future<Map<String, dynamic>> put(
+    String endpoint, {
+    dynamic data,
   }) async {
-    final response = await _dio.delete(
-      endpoint,
-      queryParameters: queryParameters,
-    );
-    return response.data;
+    return await ApiClient.put(endpoint, data: data);
+  }
+
+  static Future<Map<String, dynamic>> delete(
+    String endpoint, {
+    dynamic data,
+  }) async {
+    return await ApiClient.delete(endpoint, data: data);
   }
 }
