@@ -8,6 +8,8 @@ class NetworkInterceptor extends Interceptor {
 
   NetworkInterceptor(this.dio);
 
+  bool _isRefreshing = false;
+
   @override
   void onRequest(
     RequestOptions options,
@@ -15,57 +17,35 @@ class NetworkInterceptor extends Interceptor {
   ) async {
     final token = await TokenService.getToken();
 
-    // 🔥 endpoints اللي مش محتاجة Authorization
     final isAuthRequest = [
       ApiEndpoints.login,
       ApiEndpoints.register,
       ApiEndpoints.forgetPassword,
       ApiEndpoints.verifyCode,
       ApiEndpoints.resetPassword,
-    ].any((endpoint) => options.path.contains(endpoint));
+    ].any((e) => options.path.contains(e));
 
-    // ✅ ضيف التوكن بس لو مش request خاص بالـ auth
-    if (!isAuthRequest && token != null && token.isNotEmpty) {
+    if (!isAuthRequest && token != null) {
       options.headers['Authorization'] = 'Bearer $token';
-    } else {
-      options.headers.remove('Authorization'); // 🔥 مهم
-    }
-
-    if (kDebugMode) {
-      print('┌── REQUEST ──────────────────────────────');
-      print('│ [${options.method}] ${options.uri}');
-      print('│ Headers: ${options.headers}');
-      if (options.data != null) print('│ Body: ${options.data}');
-      print('└─────────────────────────────────────────');
     }
 
     handler.next(options);
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (kDebugMode) {
-      print('┌── RESPONSE ─────────────────────────────');
-      print('│ [${response.statusCode}] ${response.requestOptions.uri}');
-      print('│ Data: ${response.data}');
-      print('└─────────────────────────────────────────');
-    }
-    handler.next(response);
-  }
-
-  @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (kDebugMode) {
-      print('┌── ERROR ────────────────────────────────');
-      print('│ [${err.response?.statusCode}] ${err.requestOptions.uri}');
-      print('│ Message: ${err.message}');
-      print('└─────────────────────────────────────────');
-    }
+    final statusCode = err.response?.statusCode;
 
-    // 🔥 لو 401 اعمل refresh token
-    if (err.response?.statusCode == 401 &&
+    if (statusCode == 401 &&
         !err.requestOptions.path.contains(ApiEndpoints.refresh)) {
       try {
+        if (_isRefreshing) {
+          // ⛔ لو refresh شغال بالفعل، استنى شوية
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+
+        _isRefreshing = true;
+
         final token = await TokenService.getToken();
         final refreshToken = await TokenService.getRefreshToken();
 
@@ -77,19 +57,24 @@ class NetworkInterceptor extends Interceptor {
         final newToken = response.data['token'];
         final newRefreshToken = response.data['refreshToken'];
 
+        if (newToken == null) throw Exception('No token returned');
+
         await TokenService.saveTokens(
           token: newToken,
           refreshToken: newRefreshToken,
         );
 
-        // ✅ إعادة نفس الطلب بالتوكن الجديد
+        _isRefreshing = false;
+
+        // 🔁 retry request
         final requestOptions = err.requestOptions;
         requestOptions.headers['Authorization'] = 'Bearer $newToken';
 
         final retryResponse = await dio.fetch(requestOptions);
         return handler.resolve(retryResponse);
       } catch (e) {
-        // ❌ فشل refresh → logout
+        _isRefreshing = false;
+
         await TokenService.clearTokens();
         return handler.next(err);
       }

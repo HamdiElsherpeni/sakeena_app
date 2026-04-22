@@ -8,9 +8,9 @@ import 'package:sakeena_app/features/home/presentation/view/home_view.dart';
 import 'package:sakeena_app/core/widgets/custom_nav_bar.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/on_bording_view.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/wellcome_view.dart';
-import 'package:sakeena_app/features/profile_view/presentation/view/change_password.dart';
-import 'package:sakeena_app/features/profile_view/presentation/view/profile_view.dart';
-import 'package:sakeena_app/features/profile_view/presentation/view/widgets/etide_profile_view.dart';
+import 'package:sakeena_app/features/account/presentation/view/change_password.dart';
+import 'package:sakeena_app/features/account/presentation/view/profile_view.dart';
+import 'package:sakeena_app/features/account/presentation/view/widgets/etide_profile_view.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/smart_scan_screen.dart';
 import 'package:sakeena_app/features/splash/presentation/view/splash_view.dart';
 

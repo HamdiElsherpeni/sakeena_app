@@ -1,2 +1,2 @@
-const kTranstionDuration = Duration(seconds: 2);
+const kTranstionDuration = Duration(seconds: 1);
 const double kPaading = 16;

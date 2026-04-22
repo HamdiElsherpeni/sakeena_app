@@ -5,28 +5,31 @@ import 'package:sakeena_app/core/utils/app_router.dart';
 class _SettingsItem {
   final IconData icon;
   final String label;
-  // ✅ بناخد context
+  final String? route;
 
-  const _SettingsItem({required this.icon, required this.label});
+  const _SettingsItem({required this.icon, required this.label, this.route});
 }
 
 class SettingsSectionWidget extends StatelessWidget {
   const SettingsSectionWidget({super.key});
 
-  static const List<_SettingsItem> _items = [
+  static final List<_SettingsItem> _items = [
     _SettingsItem(
       icon: Icons.person_outline,
       label: 'تعديل الملف الشخصي',
-      // ✅ static function
+      route: AppRouter.kprofileditview,
     ),
-    _SettingsItem(icon: Icons.lock_outline, label: 'تغيير كلمة المرور'),
+    _SettingsItem(
+      icon: Icons.lock_outline,
+      label: 'تغيير كلمة المرور',
+      route: AppRouter.kchangePasswordview,
+    ),
     _SettingsItem(icon: Icons.headset_mic_outlined, label: 'التواصل والدعم'),
     _SettingsItem(icon: Icons.language, label: 'المصادر والمراجع'),
     _SettingsItem(icon: Icons.groups_outlined, label: 'من نحن'),
   ];
 
-  // ✅ static عشان نقدر نستخدمها في const list
-  static void _pushFunction(BuildContext context, String router) {
+  void _pushFunction(BuildContext context, String router) {
     context.push(router);
   }
 
@@ -69,16 +72,18 @@ class SettingsSectionWidget extends StatelessWidget {
               color: Color(0xFFF0EAE6),
             ),
             itemBuilder: (context, index) {
+              final item = _items[index];
+
               return InkWell(
                 onTap: () {
-                  if (index == 0) {
-                    _pushFunction(context, AppRouter.kprofileditview);
-                  } else if (index == 1) {
-                    _pushFunction(context, AppRouter.kchangePasswordview);
+                  if (item.route != null) {
+                    _pushFunction(context, item.route!);
+                  } else {
+                    // ممكن لاحقًا تضيف actions هنا
+                    debugPrint('No route for ${item.label}');
                   }
                 },
-
-                child: SettingsItemTileWidget(item: _items[index]),
+                child: SettingsItemTileWidget(item: item),
               );
             },
           ),
