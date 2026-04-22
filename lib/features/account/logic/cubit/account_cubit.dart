@@ -15,12 +15,9 @@ class AccountCubit extends Cubit<AccountState> {
 
   Future<void> getProfile() async {
     emit(AccountLoading());
-
     try {
       final profile = await _repo.getProfile();
-
       if (isClosed) return;
-
       user = profile;
       emit(ProfileLoaded(profile));
     } on Failer catch (e) {
@@ -38,7 +35,6 @@ class AccountCubit extends Cubit<AccountState> {
     required String email,
   }) async {
     emit(AccountLoading());
-
     try {
       final profile = await _repo.updateProfile(
         UpdateProfileRequest(
@@ -47,14 +43,9 @@ class AccountCubit extends Cubit<AccountState> {
           email: email,
         ),
       );
-
       if (isClosed) return;
-
       user = profile;
-
-      // 🔥 مهم: بنبعت الاتنين بدون حذف أي State عندك
-      emit(ProfileUpdated(profile)); // للـ listeners
-      emit(ProfileLoaded(profile)); // للـ rebuild
+      emit(ProfileUpdated(profile)); // ✅ state واحدة بس
     } on Failer catch (e) {
       if (isClosed) return;
       emit(AccountError(e.errorMessage));
@@ -69,7 +60,6 @@ class AccountCubit extends Cubit<AccountState> {
     required String newPassword,
   }) async {
     emit(AccountLoading());
-
     try {
       await _repo.changePassword(
         ChangePasswordRequest(
@@ -77,7 +67,6 @@ class AccountCubit extends Cubit<AccountState> {
           newPassword: newPassword,
         ),
       );
-
       if (isClosed) return;
       emit(PasswordChanged());
     } on Failer catch (e) {

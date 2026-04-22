@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 
 class CoustemTextFormFailed extends StatelessWidget {
-  const CoustemTextFormFailed({
+  CoustemTextFormFailed({
     super.key,
     required this.hent,
     this.sufixIcon,
@@ -46,35 +47,35 @@ class CoustemTextFormFailed extends StatelessWidget {
         onChanged: onChanged,
         onFieldSubmitted: onFieldSubmitted,
         obscureText: obscure ?? false,
-        style: const TextStyle(color: Colors.black, fontSize: 14),
+        style: TextStyle(color: Colors.black, fontSize: 14.sp),
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white, // خلفية بيضاء
-          contentPadding: const EdgeInsets.symmetric(
+          contentPadding: EdgeInsets.symmetric(
             vertical: 18, // يزيد ارتفاع الحقل
             horizontal: 12,
           ),
           hintText: hent,
-          hintStyle: const TextStyle(color: Colors.grey),
+          hintStyle: TextStyle(color: Colors.grey),
           labelText: leble,
-          labelStyle: const TextStyle(color: Colors.grey),
+          labelStyle: TextStyle(color: Colors.grey),
           suffixIcon: sufixIcon,
           prefix: prefixIcon,
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary, width: 1),
-            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.w),
+            borderRadius: BorderRadius.circular(5.r),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.blueAccent, width: 1.5),
-            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: Colors.blueAccent, width: 1.5.w),
+            borderRadius: BorderRadius.circular(5.r),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red, width: 1),
-            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: Colors.red, width: 1.w),
+            borderRadius: BorderRadius.circular(5.r),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.red, width: 1.5),
-            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(color: Colors.red, width: 1.5.w),
+            borderRadius: BorderRadius.circular(5.r),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/services/token_service.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
@@ -28,16 +29,18 @@ class _OnBoardingViewState extends State<OnBoardingView> {
     final seen = await TokenService.hasSeenOnboarding();
 
     if (!mounted) return;
+    final router = GoRouter.of(context);
 
     if (seen) {
       final isLoggedIn = await TokenService.hasToken();
 
+      if (!mounted) return;
       // 👉 لو عامل login يروح home
       if (isLoggedIn) {
-        context.go(AppRouter.khomeView);
+        router.go(AppRouter.khomeView);
       } else {
         // 👉 لو مش عامل login يروح login
-        context.go(AppRouter.kLogin);
+        router.go(AppRouter.kLogin);
       }
     }
   }
@@ -48,12 +51,12 @@ class _OnBoardingViewState extends State<OnBoardingView> {
       backgroundColor: const Color(0xffEEDFCC),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
               color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(25),
+              borderRadius: BorderRadius.circular(25.r),
             ),
             child: Column(
               children: [
@@ -74,15 +77,16 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   text: currentIndex == onBoardingList.length - 1
                       ? 'ابدأ'
                       : 'التالي',
-                  height: 50,
+                  height: 50.h,
                   backgroundcolor: const Color(0xffA53860),
                   onPressed: () async {
                     if (currentIndex == onBoardingList.length - 1) {
                       // ✅ سجل إنه خلص onboarding
                       await TokenService.setOnboardingSeen();
 
+                      if (!mounted) return;
                       // 🔥 بعد ما يخلص يروح login
-                      context.go(AppRouter.kLogin);
+                      GoRouter.of(context).go(AppRouter.kLogin);
                     } else {
                       controller.nextPage(
                         duration: const Duration(milliseconds: 300),

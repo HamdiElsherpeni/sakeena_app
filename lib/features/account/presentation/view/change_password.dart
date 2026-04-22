@@ -6,14 +6,14 @@ import 'package:sakeena_app/features/account/logic/cubit/account_cubit.dart';
 import 'package:sakeena_app/features/account/presentation/view/widgets/change_poassword_view_body.dart';
 
 class ChangePasswordView extends StatelessWidget {
-  const ChangePasswordView({super.key});
+  ChangePasswordView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<AccountCubit>(),
-      child: const Scaffold(
-        backgroundColor: AppColors.KprimaryColor,
+      child: Scaffold(
+        backgroundColor: AppColors.kprimaryColor,
         body: SafeArea(child: ChangePasswordViewBody()),
       ),
     );

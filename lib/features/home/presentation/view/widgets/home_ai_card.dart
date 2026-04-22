@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 
 class HomeAiCard extends StatelessWidget {
@@ -8,43 +9,46 @@ class HomeAiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: AppColors.primary,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end, // ✅ عشان عربي
         children: [
-          // النص العلوي
-          const Text(
+          Text(
             'انا سكينة،\nمساعدتك الشخصية بالAI',
             textAlign: TextAlign.right,
-            style: TextStyle(color: Colors.white, fontSize: 20, height: 1.6),
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.sp,
+              height: 1.6, // ✅ اتصلحت
+            ),
           ),
+          SizedBox(height: 12.h),
 
-          const SizedBox(height: 12),
-
-          // زرار المحادثة
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(30.r),
             ),
             child: InkWell(
               onTap: () {},
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   Icon(Icons.arrow_back, color: AppColors.primary, size: 18),
-                  SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Text(
                     '✨ ابدأي محادثتك...',
+                    textDirection: TextDirection.rtl,
                     style: TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ],

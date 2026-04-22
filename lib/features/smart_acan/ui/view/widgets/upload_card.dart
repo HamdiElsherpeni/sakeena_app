@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 
 class UploadCard extends StatelessWidget {
@@ -10,15 +11,15 @@ class UploadCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 36),
+        padding: EdgeInsets.symmetric(vertical: 36.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06), // ✅
               blurRadius: 12,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -26,34 +27,34 @@ class UploadCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 72,
-              height: 200,
+              width: 72.w,
+              height: 72.h, // ✅ كان 200 غلط
               decoration: BoxDecoration(
                 color: AppColors.skipBg,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.upload_rounded,
-                size: 34,
+                size: 34.sp,
                 color: AppColors.skipText,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               'رفع صورة طبية',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
                 fontFamily: 'Cairo',
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               'اختاري صورة من معرض الصور أو التقطي صورة جديدة',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.grey[500],
                 fontFamily: 'Cairo',
               ),

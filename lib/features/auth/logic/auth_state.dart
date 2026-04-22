@@ -6,14 +6,11 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-// ✅ Login و Refresh بيرجعوا token
 class LoginSuccess extends AuthState {
-  final String token;
-  final String refreshToken;
-  LoginSuccess({required this.token, required this.refreshToken});
+  final AuthResponse user; // ✅ بدل token و refreshToken
+  LoginSuccess({required this.user});
 }
 
-// ✅ Register/ForgetPassword/VerifyCode/ResetPassword مفيهاش data
 class RegisterSuccess extends AuthState {}
 
 class ForgetPasswordSuccess extends AuthState {}

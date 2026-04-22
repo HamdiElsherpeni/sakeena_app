@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomGoogelButton extends StatelessWidget {
   const CustomGoogelButton({super.key});
@@ -7,13 +8,13 @@ class CustomGoogelButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 50.h,
       child: OutlinedButton.icon(
         onPressed: () {},
         icon: Image.asset(
           'assets/images/googel_icon.png',
-          width: 20,
-          height: 20,
+          width: 20.w,
+          height: 20.h,
         ),
         label: Text(
           'حساب Google',
@@ -22,7 +23,7 @@ class CustomGoogelButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           backgroundColor: Colors.white,
           side: BorderSide(color: Colors.grey.shade300),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
         ),
       ),
     );

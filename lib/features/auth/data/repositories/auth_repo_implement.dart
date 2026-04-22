@@ -1,6 +1,6 @@
 import 'package:sakeena_app/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:sakeena_app/features/auth/data/models/auth_response.dart';
 import 'package:sakeena_app/features/auth/data/models/login_request.dart';
-import 'package:sakeena_app/features/auth/data/models/login_response_model.dart';
 import 'package:sakeena_app/features/auth/data/models/refresh_token_request_model.dart';
 import 'package:sakeena_app/features/auth/data/models/register_request.dart';
 import 'package:sakeena_app/features/auth/data/models/forgrt_pass_request.dart';
@@ -14,7 +14,7 @@ class AuthRepoImpl implements AuthRepo {
   AuthRepoImpl(this._remoteDataSource);
 
   @override
-  Future<LoginResponseModel> login(LoginRequestModel request) async =>
+  Future<AuthResponse> login(LoginRequestModel request) async =>
       await _remoteDataSource.login(request);
 
   @override
@@ -34,9 +34,8 @@ class AuthRepoImpl implements AuthRepo {
       await _remoteDataSource.resetPassword(request);
 
   @override
-  Future<LoginResponseModel> refreshToken(
-    RefreshTokenRequestModel request,
-  ) async => await _remoteDataSource.refreshToken(request);
+  Future<AuthResponse> refreshToken(RefreshTokenRequestModel request) async =>
+      await _remoteDataSource.refreshToken(request);
 
   @override
   Future<void> revokeRefreshToken(RefreshTokenRequestModel request) async =>

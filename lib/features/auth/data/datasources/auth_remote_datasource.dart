@@ -1,7 +1,7 @@
 import 'package:sakeena_app/core/network/api_client.dart';
 import 'package:sakeena_app/core/network/api_endpoints.dart';
+import '../models/auth_response.dart';
 import '../models/login_request.dart';
-import '../models/login_response_model.dart';
 import '../models/register_request.dart';
 import '../models/forgrt_pass_request.dart';
 import '../models/verify_code_request_model.dart';
@@ -10,12 +10,12 @@ import '../models/refresh_token_request_model.dart';
 
 class AuthRemoteDatasource {
   // ─── Login ────────────────────────────────────────────────────────────────
-  Future<LoginResponseModel> login(LoginRequestModel request) async {
+  Future<AuthResponse> login(LoginRequestModel request) async {
     final response = await ApiClient.post(
       ApiEndpoints.login,
       data: request.toJson(),
     );
-    return LoginResponseModel.fromJson(response);
+    return AuthResponse.fromJson(response);
   }
 
   // ─── Register ─────────────────────────────────────────────────────────────
@@ -39,14 +39,12 @@ class AuthRemoteDatasource {
   }
 
   // ─── Refresh Token ────────────────────────────────────────────────────────
-  Future<LoginResponseModel> refreshToken(
-    RefreshTokenRequestModel request,
-  ) async {
+  Future<AuthResponse> refreshToken(RefreshTokenRequestModel request) async {
     final response = await ApiClient.post(
       ApiEndpoints.refresh,
       data: request.toJson(),
     );
-    return LoginResponseModel.fromJson(response);
+    return AuthResponse.fromJson(response);
   }
 
   // ─── Revoke Token ─────────────────────────────────────────────────────────

@@ -14,11 +14,11 @@ class ForgetPassView extends StatelessWidget {
     return BlocProvider(
       create: (_) => getIt<AuthCubit>(),
       child: Scaffold(
-        backgroundColor: AppColors.KprimaryColor,
+        backgroundColor: AppColors.kprimaryColor,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: kPaading),
-            child: const ForgetPassViewBody(),
+            padding: EdgeInsets.symmetric(horizontal: kPaading),
+            child: ForgetPassViewBody(),
           ),
         ),
       ),

@@ -26,8 +26,8 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: cubit,
-      child: const Scaffold(
-        backgroundColor: AppColors.KprimaryColor,
+      child: Scaffold(
+        backgroundColor: AppColors.kprimaryColor,
         body: SafeArea(child: HomeViewBody()),
       ),
     );

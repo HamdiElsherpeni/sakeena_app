@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RuleItem extends StatelessWidget {
   final bool condition;
@@ -19,12 +20,12 @@ class RuleItem extends StatelessWidget {
           color: condition ? Colors.green : Colors.grey,
           size: 18,
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8.w),
         Text(
           text,
           style: TextStyle(
             color: condition ? Colors.green : Colors.grey,
-            fontSize: 13,
+            fontSize: 13.sp,
           ),
         ),
       ],

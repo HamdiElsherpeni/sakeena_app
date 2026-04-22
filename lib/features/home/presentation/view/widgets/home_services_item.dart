@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeServiceItem extends StatelessWidget {
   final String title;
@@ -23,39 +24,39 @@ class HomeServiceItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.w),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: 40,
-              width: 40,
+              height: 40.h,
+              width: 40.w,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(icon, color: iconColor, size: 28),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Text(
               title,
               textAlign: TextAlign.right,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 15.sp,
                 color: Color(0xFF2D2D2D),
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               subtitle,
               textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 15, color: Colors.grey),
+              style: TextStyle(fontSize: 10.sp, color: Colors.grey),
             ),
           ],
         ),

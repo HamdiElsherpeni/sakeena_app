@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 
@@ -38,12 +39,12 @@ class SettingsSectionWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 12, right: 4),
+        Padding(
+          padding: EdgeInsets.only(bottom: 12.h, right: 4.w),
           child: Text(
             'الإعدادات',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D2D2D),
             ),
@@ -52,21 +53,21 @@ class SettingsSectionWidget extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
-                offset: const Offset(0, 2),
+                offset: Offset(0, 2),
               ),
             ],
           ),
           child: ListView.separated(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             itemCount: _items.length,
-            separatorBuilder: (_, __) => const Divider(
-              height: 1,
+            separatorBuilder: (_, __) => Divider(
+              height: 1.h,
               indent: 20,
               endIndent: 20,
               color: Color(0xFFF0EAE6),
@@ -101,37 +102,37 @@ class SettingsItemTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
               Container(
-                width: 36,
-                height: 36,
+                width: 36.w,
+                height: 36.h,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF9F0F3),
-                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFFF9F0F3),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
                   item.icon,
-                  color: const Color(0xFFB5456A),
+                  color: Color(0xFFB5456A),
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Text(
                 item.label,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w800,
                   color: Color.fromARGB(255, 4, 4, 4),
                 ),
               ),
             ],
           ),
-          const Icon(Icons.chevron_right, color: Colors.black, size: 20),
+          Icon(Icons.chevron_right, color: Colors.black, size: 20),
         ],
       ),
     );

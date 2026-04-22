@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OtpStep extends StatefulWidget {
   final List<TextEditingController> controllers;
 
-  const OtpStep({super.key, required this.controllers});
+  OtpStep({super.key, required this.controllers});
 
   @override
   State<OtpStep> createState() => _OtpStepState();
@@ -32,25 +33,25 @@ class _OtpStepState extends State<OtpStep> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset('assets/images/forgetpass1.png', height: 200),
-        const SizedBox(height: 20),
-        const Text(
+        Image.asset('assets/images/forgetpass1.png', height: 200.h),
+        SizedBox(height: 20.h),
+        Text(
           'ادخلي رمز التحقق',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(length, (index) {
             return SizedBox(
-              width: 50,
-              height: 60,
+              width: 50.w,
+              height: 60.h,
               child: TextField(
                 controller: widget.controllers[index],
                 focusNode: focusNodes[index],
                 textAlign: TextAlign.center,
                 maxLength: 1,
-                style: const TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20.sp),
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   counterText: '',
@@ -58,14 +59,14 @@ class _OtpStepState extends State<OtpStep> {
                   fillColor: Colors.transparent,
                   contentPadding: EdgeInsets.zero,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.pink),
+                    borderRadius: BorderRadius.circular(12.r),
+                    borderSide: BorderSide(color: Colors.pink),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
+                    borderRadius: BorderRadius.circular(12.r),
+                    borderSide: BorderSide(
                       color: Colors.pinkAccent,
-                      width: 2,
+                      width: 2.w,
                     ),
                   ),
                 ),

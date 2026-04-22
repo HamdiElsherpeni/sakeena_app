@@ -32,32 +32,32 @@ abstract class AppRouter {
 
     // 🔥 NO LOGIC HERE AT ALL
     routes: [
-      GoRoute(path: kSplash, builder: (context, state) => const SplashView()),
+      GoRoute(path: kSplash, builder: (context, state) => SplashView()),
       GoRoute(
         path: konBording,
-        builder: (context, state) => const OnBoardingView(),
+        builder: (context, state) => OnBoardingView(),
       ),
       GoRoute(
         path: kSmartAcanView,
-        builder: (context, state) => const SmartScanScreen(),
+        builder: (context, state) => SmartScanScreen(),
       ),
       GoRoute(
         path: kchangePasswordview,
-        builder: (context, state) => const ChangePasswordView(),
+        builder: (context, state) => ChangePasswordView(),
       ),
       GoRoute(
         path: kwellComView,
-        builder: (context, state) => const WellComeView(),
+        builder: (context, state) => WellComeView(),
       ),
-      GoRoute(path: kLogin, builder: (context, state) => const LoginView()),
-      GoRoute(path: ksinupView, builder: (context, state) => const SinUpView()),
+      GoRoute(path: kLogin, builder: (context, state) => LoginView()),
+      GoRoute(path: ksinupView, builder: (context, state) => SinUpView()),
       GoRoute(
         path: kforgetView,
-        builder: (context, state) => const ForgetPassView(),
+        builder: (context, state) => ForgetPassView(),
       ),
       GoRoute(
         path: kprofileditview,
-        builder: (context, state) => const EditProfileView(),
+        builder: (context, state) => EditProfileView(),
       ),
 
       ShellRoute(
@@ -67,11 +67,11 @@ abstract class AppRouter {
         routes: [
           GoRoute(
             path: khomeView,
-            builder: (context, state) => const HomeView(),
+            builder: (context, state) => HomeView(),
           ),
           GoRoute(
             path: kprofileview,
-            builder: (context, state) => const ProfileView(),
+            builder: (context, state) => ProfileView(),
           ),
         ],
       ),
@@ -82,7 +82,7 @@ abstract class AppRouter {
 class MainLayout extends StatelessWidget {
   final Widget child;
 
-  const MainLayout({super.key, required this.child});
+  MainLayout({super.key, required this.child});
 
   int _getIndex(String location) {
     if (location == AppRouter.kprofileview) return 0;

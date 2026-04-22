@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 
 class CustomNavBar extends StatelessWidget {
   final int currentIndex;
 
-  const CustomNavBar({super.key, required this.currentIndex});
+  CustomNavBar({super.key, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80,
+      height: 80.h,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Container(
-            height: 70,
+            height: 70.h,
             decoration: BoxDecoration(
               color: Colors.grey.shade200,
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
                 topRight: Radius.circular(25),
               ),
@@ -42,7 +43,7 @@ class CustomNavBar extends StatelessWidget {
                   isSelected: currentIndex == 1,
                   onTap: () {},
                 ),
-                const SizedBox(width: 50),
+                SizedBox(width: 50.w),
                 NavItem(
                   icon: Icons.crop_free,
                   label: "فحص",
@@ -69,19 +70,19 @@ class CustomNavBar extends StatelessWidget {
 
           Positioned(
             top: -25,
-            left: 0,
-            right: 0,
+            left: 0.w,
+            right: 0.w,
             child: Center(
               child: Container(
-                height: 60,
-                width: 60,
+                height: 60.h,
+                width: 60.w,
                 decoration: BoxDecoration(
                   color: currentIndex == 4
                       ? Colors.pink
                       : Colors.pink.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.edit, color: Colors.white),
+                child: Icon(Icons.edit, color: Colors.white),
               ),
             ),
           ),
@@ -97,7 +98,7 @@ class NavItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const NavItem({
+  NavItem({
     super.key,
     required this.icon,
     required this.label,
@@ -113,11 +114,11 @@ class NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: isSelected ? Colors.pink : Colors.black38),
-          const SizedBox(height: 5),
+          SizedBox(height: 5.h),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: isSelected ? Colors.pink : Colors.black38,
             ),
           ),

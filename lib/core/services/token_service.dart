@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenService {
-  static const String _tokenKey = 'token';
-  static const String _refreshTokenKey = 'refreshToken';
-  static const String _onboardingKey = 'onboarding_seen';
+  static String _tokenKey = 'token';
+  static String _refreshTokenKey = 'refreshToken';
+  static String _onboardingKey = 'onboarding_seen';
 
   // ================= TOKENS =================
 

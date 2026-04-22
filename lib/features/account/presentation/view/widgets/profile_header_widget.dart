@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/features/account/data/models/user_profile_model.dart';
 import 'package:sakeena_app/features/account/presentation/view/widgets/custom_user_image.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
-  const ProfileHeaderWidget({super.key, this.onTap, required this.user});
+  ProfileHeaderWidget({super.key, this.onTap, required this.user});
 
   final void Function()? onTap;
   final UserProfileModel user;
@@ -14,20 +15,20 @@ class ProfileHeaderWidget extends StatelessWidget {
       children: [
         CustomUserImage(onTap: onTap),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         Text(
           '${user.firstName} ${user.lastName}',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
         ),
 
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
 
         Text(
           user.email,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 13, color: Colors.grey),
+          style: TextStyle(fontSize: 13.sp, color: Colors.grey),
         ),
       ],
     );

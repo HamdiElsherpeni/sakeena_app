@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/core/errors/failer.dart';
 import 'package:sakeena_app/core/services/token_service.dart';
+import 'package:sakeena_app/features/auth/data/models/auth_response.dart';
 import 'package:sakeena_app/features/auth/data/models/login_request.dart';
 import 'package:sakeena_app/features/auth/data/models/register_request.dart';
 import 'package:sakeena_app/features/auth/data/models/forgrt_pass_request.dart';
@@ -16,6 +18,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit(this._repo) : super(AuthInitial());
 
+  AuthResponse? user;
+
   // ─── Login ────────────────────────────────────────────────────────────────
   Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
@@ -27,13 +31,8 @@ class AuthCubit extends Cubit<AuthState> {
         token: response.token,
         refreshToken: response.refreshToken,
       );
-
-      emit(
-        LoginSuccess(
-          token: response.token,
-          refreshToken: response.refreshToken,
-        ),
-      );
+      user = response;
+      emit(LoginSuccess(user: response));
     } on Failer catch (e) {
       emit(AuthError(e.errorMessage));
     } catch (e) {
@@ -118,6 +117,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // ─── Logout ───────────────────────────────────────────────────────────────
+  // ─── Logout ───────────────────────────────────────────────────────────────
   Future<void> logout() async {
     emit(AuthLoading());
     try {
@@ -131,11 +131,14 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
       await TokenService.clearTokens();
+      user = null;
       emit(LoggedOut());
     } catch (e) {
-      // ✅ حتى لو الـ revoke فشل، نعمل logout محلي
       await TokenService.clearTokens();
+      user = null;
       emit(LoggedOut());
+    } finally {
+      Future.microtask(() => getIt.resetLazySingleton<AuthCubit>());
     }
   }
 }

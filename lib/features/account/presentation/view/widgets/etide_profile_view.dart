@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
@@ -14,7 +15,7 @@ import 'package:sakeena_app/features/account/presentation/view/widgets/custom_us
 import 'package:sakeena_app/features/auth/presentation/view/widgets/forget_pass_app_bar.dart';
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({super.key});
+  EditProfileView({super.key});
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
@@ -75,19 +76,19 @@ class _EditProfileViewState extends State<EditProfileView> {
           }
         },
         child: Scaffold(
-          backgroundColor: const Color(0xFFFFFAF7),
+          backgroundColor: Color(0xFFFFFAF7),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
                 children: [
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   CustomAppBar(titel: 'تعديل الملف الشخصي'),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
 
-                  const CustomUserImage(),
+                  CustomUserImage(),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: 30.h),
 
                   // الاسم
                   Row(
@@ -98,7 +99,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                           controller: lastNameController,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: CoustemTextFormFailed(
                           hent: "الاسم الاول",
@@ -108,7 +109,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20.h),
 
                   // الايميل
                   CoustemTextFormFailed(
@@ -116,12 +117,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: emailController,
                   ),
 
-                  const SizedBox(height: 40),
+                  SizedBox(height: 40.h),
 
                   CoustemElevetedBoutten(
                     text: "حفظ التغييرات",
-                    height: 55,
-                    backgroundcolor: const Color(0xFF9C2D5A),
+                    height: 55.h,
+                    backgroundcolor: Color(0xFF9C2D5A),
                     onPressed: () {
                       cubit.updateProfile(
                         firstName: firstNameController.text,

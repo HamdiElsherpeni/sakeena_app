@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SnackBarHelper {
   SnackBarHelper._(); // يمنع إنشاء instance
@@ -42,14 +43,14 @@ class SnackBarHelper {
       SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: backgroundColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        margin: EdgeInsets.all(12.w),
         content: Row(
           children: [
             Icon(icon, color: Colors.white),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
-              child: Text(message, style: const TextStyle(color: Colors.white)),
+              child: Text(message, style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

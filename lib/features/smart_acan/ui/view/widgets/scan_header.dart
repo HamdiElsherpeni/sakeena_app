@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
-import 'package:sakeena_app/core/widgets/custom_circle_avatar.dart';
 
 class ScanHeader extends StatelessWidget {
   const ScanHeader({super.key});
@@ -10,7 +10,6 @@ class ScanHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const CustomCircleAvatar(),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,18 +18,18 @@ class ScanHeader extends StatelessWidget {
                 'الفحص الذكي',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 30.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
                   fontFamily: 'Cairo',
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 'ارفع الأشعة لتحليل دقيق باستخدام الذكاء الاصطناعي',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   color: Colors.grey[600],
                   fontFamily: 'Cairo',
                 ),
@@ -38,7 +37,7 @@ class ScanHeader extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 42),
+        SizedBox(width: 42.w),
       ],
     );
   }

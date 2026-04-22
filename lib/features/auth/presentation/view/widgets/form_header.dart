@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FormHeader extends StatelessWidget {
   final String title;
@@ -9,9 +10,9 @@ class FormHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 16,
+        fontSize: 16.sp,
       ),
     );
   }

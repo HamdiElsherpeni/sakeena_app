@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
@@ -10,7 +11,7 @@ import 'package:sakeena_app/features/account/presentation/view/widgets/profile_f
 import 'change_password_header.dart';
 
 class ChangePasswordViewBody extends StatefulWidget {
-  const ChangePasswordViewBody({super.key});
+  ChangePasswordViewBody({super.key});
 
   @override
   State<ChangePasswordViewBody> createState() => _ChangePasswordViewBodyState();
@@ -44,23 +45,23 @@ class _ChangePasswordViewBodyState extends State<ChangePasswordViewBody> {
         }
       },
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const ChangePasswordHeader(),
-            const SizedBox(height: 10),
-            const Text(
+            ChangePasswordHeader(),
+            SizedBox(height: 10.h),
+            Text(
               'يرجى إدخال كلمة المرور الحالية وكلمة المرور الجديدة\nلضمان حماية حسابك.',
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 15, color: Colors.grey),
+              style: TextStyle(fontSize: 15.sp, color: Colors.grey),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
             ChangePasswordForm(onChanged: _onChanged),
-            const SizedBox(height: 40),
+            SizedBox(height: 40.h),
             CoustemElevetedBoutten(
               text: 'تحديث كلمة المرور',
-              height: 55,
+              height: 55.h,
               backgroundcolor: isValid ? AppColors.primary : Colors.grey,
               onPressed: isValid
                   ? () {

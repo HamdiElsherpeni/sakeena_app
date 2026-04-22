@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
 import 'package:sakeena_app/core/widgets/custom_circle_avatar.dart';
@@ -44,14 +45,14 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CustomCircleAvatar(),
-          const SizedBox(height: 10),
-          const CustomWellcomeTextSinUp(),
-          const SizedBox(height: 30),
+          CustomCircleAvatar(),
+          SizedBox(height: 10.h),
+          CustomWellcomeTextSinUp(),
+          SizedBox(height: 30.h),
 
           SinUpForm(
             firstNameController: _firstNameController,
@@ -64,8 +65,8 @@ class _SinUpViewBodyState extends State<SinUpViewBody> {
             isLoading: widget.isLoading,
           ),
 
-          const SizedBox(height: 30),
-          const CustomGoogelButton(),
+          SizedBox(height: 30.h),
+          CustomGoogelButton(),
         ],
       ),
     );

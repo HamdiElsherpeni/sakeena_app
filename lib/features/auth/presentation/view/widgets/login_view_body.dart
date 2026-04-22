@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
@@ -35,8 +36,10 @@ class _LoginViewBodyState extends State<LoginViewBody> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          print("LOGIN TOKEN: ${state.token}");
-          context.go(AppRouter.kSplash); // ✅ روح للهوم بعد اللوجين
+          // ✅ بدل state.token بقت state.user.token
+          // print("LOGIN TOKEN: ${state.user.token}");
+          // print("USER NAME: ${state.user.user.user.fullName}");
+          context.go(AppRouter.kSplash);
         }
         if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -48,18 +51,18 @@ class _LoginViewBodyState extends State<LoginViewBody> {
         final isLoading = state is AuthLoading;
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const CustomCircleAvatar(),
-              const SizedBox(height: 10),
-              const CustomLoginWellcomText(),
-              const SizedBox(height: 30),
+              CustomCircleAvatar(),
+              SizedBox(height: 10.h),
+              CustomLoginWellcomText(),
+              SizedBox(height: 30.h),
 
               LogInForm(onChanged: _onChanged),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               Align(
                 alignment: Alignment.centerRight,
@@ -75,12 +78,12 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
 
               CoustemElevetedBoutten(
                 text: isLoading ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول',
                 backgroundcolor: isValid ? AppColors.primary : Colors.grey,
-                height: 60,
+                height: 60.h,
                 onPressed: (!isValid || isLoading)
                     ? null
                     : () {
@@ -91,9 +94,9 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                       },
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
-              const CustomGoogelButton(),
+              CustomGoogelButton(),
             ],
           ),
         );

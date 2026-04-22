@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/home/presentation/view/widgets/home_services_item.dart';
@@ -11,15 +12,16 @@ class HomeServicesGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'الخدمات الاساسية',
+          textDirection: TextDirection.rtl,
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 17, 17, 17),
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,

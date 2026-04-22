@@ -5,13 +5,13 @@ import 'package:sakeena_app/features/account/logic/cubit/account_cubit.dart';
 import 'widgets/profile_view_body.dart';
 
 class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+  ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<AccountCubit>()..getProfile(),
-      child: const ProfileViewBody(),
+      child: ProfileViewBody(),
     );
   }
 }

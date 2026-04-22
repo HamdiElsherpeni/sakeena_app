@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
@@ -14,8 +15,8 @@ class SinUpView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<AuthCubit>(),
-      child: const Scaffold(
-        backgroundColor: AppColors.KprimaryColor,
+      child: Scaffold(
+        backgroundColor: AppColors.kprimaryColor,
         body: SafeArea(child: _SinUpViewContent()),
       ),
     );
@@ -51,7 +52,7 @@ class _SinUpViewContent extends StatelessWidget {
               SizedBox.expand(
                 child: ColoredBox(
                   color: Colors.black.withValues(alpha: 0.4),
-                  child: const Center(
+                  child: Center(
                     child: CircularProgressIndicator(color: Colors.white),
                   ),
                 ),
@@ -67,18 +68,20 @@ class _SinUpViewContent extends StatelessWidget {
       barrierDismissible: false,
       context: context,
       builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               Icon(Icons.check_circle, color: Colors.green, size: 70),
-              SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Text(
                 "تم إنشاء الحساب بنجاح 🎉",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
             ],
           ),

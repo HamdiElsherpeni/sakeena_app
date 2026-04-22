@@ -9,7 +9,7 @@ class WellComeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container( decoration: const BoxDecoration(
+        body: Container( decoration: BoxDecoration(
         gradient: LinearGradient(
     colors: [
       Color(0xffFFFFFF),
@@ -22,7 +22,7 @@ class WellComeView extends StatelessWidget {
   ),
       ),
       child: SafeArea(child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: kPaading),
+          padding: EdgeInsets.symmetric(horizontal: kPaading),
           child: WellComeViewBody(),
         )),
       ));

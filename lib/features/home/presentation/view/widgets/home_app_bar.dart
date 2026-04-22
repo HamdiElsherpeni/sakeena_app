@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/core/resources/app_assets.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
@@ -10,11 +11,11 @@ class HomeAppBar extends StatelessWidget {
 
   Widget _skeleton() {
     return Container(
-      width: 120,
-      height: 18,
+      width: 120.w,
+      height: 18.h,
       decoration: BoxDecoration(
         color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(6.r),
       ),
     );
   }
@@ -33,13 +34,13 @@ class HomeAppBar extends StatelessWidget {
           children: [
             // Settings icon
             Container(
-              width: 38,
-              height: 38,
+              width: 38.w,
+              height: 38.h,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
-              child: const Icon(Icons.tune, color: AppColors.primary, size: 20),
+              child: Icon(Icons.tune, color: AppColors.primary, size: 20),
             ),
 
             // Name or Skeleton
@@ -49,32 +50,32 @@ class HomeAppBar extends StatelessWidget {
                     ? _skeleton()
                     : Text(
                         'أهلا, ${user.firstName} ${user.lastName}',
-                        style: const TextStyle(
-                          fontSize: 20,
+                        style: TextStyle(
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2D2D2D),
                         ),
                       ),
-                const SizedBox(width: 8),
-                Image.asset(AppAssets.logo, width: 35, height: 35),
+                SizedBox(width: 8.w),
+                Image.asset(AppAssets.logo, width: 35.w, height: 35.h),
               ],
             ),
 
             // Bell icon
             Stack(
               children: [
-                const Icon(
+                Icon(
                   Icons.notifications_none,
                   size: 28,
                   color: Color(0xFF2D2D2D),
                 ),
                 Positioned(
-                  top: 0,
-                  right: 0,
+                  top: 0.h,
+                  right: 0.w,
                   child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
+                    width: 8.w,
+                    height: 8.h,
+                    decoration: BoxDecoration(
                       color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),

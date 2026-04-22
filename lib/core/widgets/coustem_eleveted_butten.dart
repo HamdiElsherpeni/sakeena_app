@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CoustemElevetedBoutten extends StatelessWidget {
-  const CoustemElevetedBoutten({
+  CoustemElevetedBoutten({
     super.key,
     this.onPressed,
     required this.text,
@@ -29,22 +29,18 @@ class CoustemElevetedBoutten extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              backgroundcolor ?? const Color.fromARGB(255, 74, 57, 226),
+          backgroundColor: backgroundcolor ?? Color.fromARGB(255, 74, 57, 226),
           disabledBackgroundColor: Colors.grey.shade400,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.r),
-            side: const BorderSide(
-              color: Colors.grey,
-              width: 1.5,
-            ),
+            side: BorderSide(color: Colors.grey, width: 1.5.w),
           ),
         ),
         child: isLoading
             ? SizedBox(
-                height: 22.h,
-                width: 22.h,
-                child: const CircularProgressIndicator(
+                height: 22..h,
+                width: 22..w,
+                child: CircularProgressIndicator(
                   strokeWidth: 2,
                   color: Colors.white,
                 ),

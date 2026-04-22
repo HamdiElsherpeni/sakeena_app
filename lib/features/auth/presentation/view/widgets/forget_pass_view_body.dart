@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
@@ -68,7 +69,7 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
         // ✅ بعد resetPassword نروح لـ Login
         if (state is ResetPasswordSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text('تم تغيير الباسورد بنجاح ✅'),
               backgroundColor: Colors.green,
             ),
@@ -85,13 +86,13 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
           children: [
             Column(
               children: [
-                const SizedBox(height: 50),
-                const CustomAppBar(titel: 'نسيت الباسوورد'),
-                const SizedBox(height: 30),
+                SizedBox(height: 50.h),
+                CustomAppBar(titel: 'نسيت الباسوورد'),
+                SizedBox(height: 30.h),
                 _buildPages(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
                 _buildButton(context, isLoading),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
               ],
             ),
 
@@ -99,7 +100,7 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
             if (isLoading)
               ColoredBox(
                 color: Colors.black.withValues(alpha: 0.4),
-                child: const Center(
+                child: Center(
                   child: CircularProgressIndicator(color: Colors.white),
                 ),
               ),
@@ -114,7 +115,7 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
       child: PageView(
         controller: _pageController,
         physics:
-            const NeverScrollableScrollPhysics(), // ✅ المستخدم ميقدرش يسوايب
+            NeverScrollableScrollPhysics(), // ✅ المستخدم ميقدرش يسوايب
         onPageChanged: (index) => setState(() => _currentIndex = index),
         children: [
           EmailStep(emailController: _emailController),
@@ -132,9 +133,9 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
     return CoustemElevetedBoutten(
       text: _getButtonText(),
       onPressed: isLoading ? null : () => _handleNext(context),
-      height: 60,
-      backgroundcolor: const Color(0xffA53860),
-      fontSize: 18,
+      height: 60.h,
+      backgroundcolor: Color(0xffA53860),
+      fontSize: 18.sp,
     );
   }
 

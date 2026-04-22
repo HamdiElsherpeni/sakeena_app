@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/constsnt.dart';
 import 'package:sakeena_app/core/resources/app_assets.dart';
@@ -24,16 +25,16 @@ class _SplashViewState extends State<SplashView> {
 
     final seenOnboarding = await TokenService.hasSeenOnboarding();
     final isLoggedIn = await TokenService.hasToken();
-    print('ssssssss${isLoggedIn}');
+    debugPrint('isLoggedIn: $isLoggedIn');
     if (!mounted) return;
 
+    final router = GoRouter.of(context);
     if (isLoggedIn) {
-      context.go(AppRouter.khomeView);
+      router.go(AppRouter.khomeView);
     } else if (!seenOnboarding) {
-      context.go(AppRouter.konBording);
-      return;
+      router.go(AppRouter.konBording);
     } else {
-      context.go(AppRouter.kwellComView); // 👈 مهم جدًا
+      router.go(AppRouter.kwellComView);
     }
   }
 
@@ -42,7 +43,7 @@ class _SplashViewState extends State<SplashView> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: SizedBox(height: 200, child: Image.asset(AppAssets.logo)),
+          child: SizedBox(height: 200.h, child: Image.asset(AppAssets.logo)),
         ),
       ),
     );

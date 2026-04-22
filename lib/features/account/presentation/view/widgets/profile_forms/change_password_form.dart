@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/core/widgets/coustem_text_form_filed.dart';
 
 class ChangePasswordForm extends StatefulWidget {
@@ -10,7 +11,7 @@ class ChangePasswordForm extends StatefulWidget {
   )
   onChanged;
 
-  const ChangePasswordForm({super.key, required this.onChanged});
+  ChangePasswordForm({super.key, required this.onChanged});
 
   @override
   State<ChangePasswordForm> createState() => _ChangePasswordFormState();
@@ -58,11 +59,11 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // كلمة المرور الحالية
-        const Text(
+        Text(
           'كلمة المرور الحالية',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         CoustemTextFormFailed(
           hent: '...........',
           controller: currentController,
@@ -82,14 +83,14 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           },
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         // كلمة المرور الجديدة
-        const Text(
+        Text(
           'كلمة المرور الجديدة',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         CoustemTextFormFailed(
           hent: '...........',
           controller: newController,
@@ -106,14 +107,14 @@ class _ChangePasswordFormState extends State<ChangePasswordForm> {
           },
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         // تأكيد كلمة المرور الجديدة
-        const Text(
+        Text(
           'تأكيد كلمة المرور الجديدة',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         CoustemTextFormFailed(
           hent: '...........',
           controller: confirmController,

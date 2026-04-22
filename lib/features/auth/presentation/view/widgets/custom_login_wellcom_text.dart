@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomLoginWellcomText extends StatelessWidget {
   const CustomLoginWellcomText({super.key});
@@ -11,20 +12,20 @@ class CustomLoginWellcomText extends StatelessWidget {
            // عنوان ترحيبي
           Text(
             'أهلاً بك في سكينة!',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.sp),
             textAlign: TextAlign.right,
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Row(
             children: [
               Text(
                 'رحلتك نحو الوقاية والعناية بنفسك .',
-                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15),
+                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 15.sp),
                 textAlign: TextAlign.right,
               ),
               Text(
                 'تبدأ من هنا',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
                 textAlign: TextAlign.right,
               ),
             ],

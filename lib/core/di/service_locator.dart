@@ -11,18 +11,18 @@ import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  // ── Auth DataSources ───────────────────────────────────────────────────────
+  // ── Auth ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<AuthRemoteDatasource>(
     () => AuthRemoteDatasource(),
   );
-
-  // ── Auth Repositories ──────────────────────────────────────────────────────
   getIt.registerLazySingleton<AuthRepo>(
     () => AuthRepoImpl(getIt<AuthRemoteDatasource>()),
   );
 
-  // ── Auth Cubits ────────────────────────────────────────────────────────────
-  getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<AuthRepo>()));
+  // ✅ Singleton مش Factory عشان الـ user يفضل محفوظ
+  getIt.registerLazySingleton<AuthCubit>(() => AuthCubit(getIt<AuthRepo>()));
+
+  // ── Account ────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<AccountRemoteDatasource>(
     () => AccountRemoteDatasource(),
   );

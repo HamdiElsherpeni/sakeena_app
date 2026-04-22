@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/resources/app_assets.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
@@ -15,34 +16,34 @@ class WellComeViewBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          height: 150,
+          height: 150.h,
           child: Center(child: Image.asset(AppAssets.logo, fit: BoxFit.cover)),
         ),
         Text(
           'اهلا بك في سكينة',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
           ),
         ),
         Text(
           'ابدئي رحلتك بالوعي واهتمي بنفسك',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 40),
+        SizedBox(height: 40.h),
         CoustemElevetedBoutten(
-          height: 60,
+          height: 60.h,
           onPressed: () {
             GoRouter.of(context).push(AppRouter.kLogin);
           },
           text: 'سجلي  الدخول',
           backgroundcolor: AppColors.primary,
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         CoustemElevetedBoutten(
-          height: 60,
+          height: 60.h,
           onPressed: () {
             GoRouter.of(context).push(AppRouter.ksinupView);
           },

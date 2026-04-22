@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MedicalDisclaimerCard extends StatelessWidget {
   const MedicalDisclaimerCard({super.key});
@@ -6,21 +7,21 @@ class MedicalDisclaimerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF3CD),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFE082), width: 1),
+        color: Color(0xFFFFF3CD),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFFFFE082), width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
+          Icon(
             Icons.info_outline_rounded,
             color: Color(0xFFF59E0B),
-            size: 20,
+            size: 20.sp,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Expanded(
             child: RichText(
               textDirection: TextDirection.rtl,
@@ -30,7 +31,7 @@ class MedicalDisclaimerCard extends StatelessWidget {
                     text: 'تنويه طبي مهم\n',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 15.sp,
                       color: Colors.black87,
                       fontFamily: 'Cairo',
                     ),
@@ -39,7 +40,7 @@ class MedicalDisclaimerCard extends StatelessWidget {
                     text:
                         'هذا التطبيق أداة مساعدة فقط، والنتائج إرشادية ولا تغني عن استشارة طبيب مختص',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: Colors.grey,
                       height: 1.5,
                       fontFamily: 'Cairo',

@@ -12,7 +12,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-/// Wrapper مهم لـ ScreenUtil
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return const SakeenaApp();
+        return SakeenaApp();
       },
     );
   }

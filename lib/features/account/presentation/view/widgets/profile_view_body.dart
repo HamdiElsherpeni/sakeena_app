@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,18 +13,18 @@ import 'package:sakeena_app/features/account/presentation/view/widgets/profile_h
 import 'package:sakeena_app/features/account/presentation/view/widgets/setting_section_widget.dart';
 
 class ProfileViewBody extends StatelessWidget {
-  const ProfileViewBody({super.key});
+  ProfileViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5F2),
+      backgroundColor: Color(0xFFF9F5F2),
       body: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
+                padding: EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 24,
                 ),
@@ -32,7 +33,7 @@ class ProfileViewBody extends StatelessWidget {
                     BlocBuilder<AccountCubit, AccountState>(
                       builder: (context, state) {
                         if (state is AccountLoading) {
-                          return const Center(
+                          return Center(
                             child: CircularProgressIndicator(),
                           );
                         } else if (state is ProfileLoaded ||
@@ -53,16 +54,16 @@ class ProfileViewBody extends StatelessWidget {
                           return Text(state.message);
                         }
 
-                        return const SizedBox();
+                        return SizedBox();
                       },
                     ),
-                    const SizedBox(height: 24),
-                    const NotificationsToggleWidget(),
-                    const SizedBox(height: 24),
-                    const SettingsSectionWidget(),
-                    const SizedBox(height: 24),
-                    const LogoutButtonWidget(),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 24.h),
+                    NotificationsToggleWidget(),
+                    SizedBox(height: 24.h),
+                    SettingsSectionWidget(),
+                    SizedBox(height: 24.h),
+                    LogoutButtonWidget(),
+                    SizedBox(height: 16.h),
                   ],
                 ),
               ),

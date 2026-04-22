@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/widgets/coustem_text_form_filed.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/form_header.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/password_rules.dart';
 
 class SinUpForm extends StatefulWidget {
-  const SinUpForm({
+  SinUpForm({
     super.key,
     required this.firstNameController,
     required this.lastNameController,
@@ -96,8 +97,8 @@ class _SinUpFormState extends State<SinUpForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ── الاسم ────────────────────────────────────────────────────────────
-        const FormHeader(title: "الاسم"),
-        const SizedBox(height: 5),
+        FormHeader(title: "الاسم"),
+        SizedBox(height: 5.h),
         Row(
           children: [
             Expanded(
@@ -106,7 +107,7 @@ class _SinUpFormState extends State<SinUpForm> {
                 controller: widget.firstNameController,
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: CoustemTextFormFailed(
                 hent: 'الاسم الثاني',
@@ -116,22 +117,22 @@ class _SinUpFormState extends State<SinUpForm> {
           ],
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         // ── الايميل ──────────────────────────────────────────────────────────
-        const FormHeader(title: "الايميل"),
-        const SizedBox(height: 5),
+        FormHeader(title: "الايميل"),
+        SizedBox(height: 5.h),
         CoustemTextFormFailed(
           hent: 'SakeenaTeam@gmail.com',
           controller: widget.emailController,
           keyboardType: TextInputType.emailAddress, // ✅
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
 
         // ── كلمة المرور ──────────────────────────────────────────────────────
-        const FormHeader(title: "كلمة المرور"),
-        const SizedBox(height: 5),
+        FormHeader(title: "كلمة المرور"),
+        SizedBox(height: 5.h),
         CoustemTextFormFailed(
           hent: 'ادخل كلمة المرور',
           obscure: widget.isObscure,
@@ -145,7 +146,7 @@ class _SinUpFormState extends State<SinUpForm> {
           ),
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
 
         // ── Password Rules ───────────────────────────────────────────────────
         PasswordRules(
@@ -155,12 +156,12 @@ class _SinUpFormState extends State<SinUpForm> {
           hasSpecial: hasSpecial,
         ),
 
-        const SizedBox(height: 25),
+        SizedBox(height: 25.h),
 
         // ── زرار التسجيل ─────────────────────────────────────────────────────
         SizedBox(
           width: double.infinity,
-          height: 55,
+          height: 55.h,
           child: ElevatedButton(
             onPressed: widget.isLoading || !_isFormValid
                 ? null
@@ -169,16 +170,16 @@ class _SinUpFormState extends State<SinUpForm> {
               backgroundColor: AppColors.primary,
               disabledBackgroundColor: Colors.grey.shade400,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
             ),
             child: widget.isLoading
-                ? const CircularProgressIndicator(color: Colors.white)
-                : const Text(
+                ? CircularProgressIndicator(color: Colors.white)
+                : Text(
                     'إنشاء حساب',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
