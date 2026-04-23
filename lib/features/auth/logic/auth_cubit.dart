@@ -137,8 +137,6 @@ class AuthCubit extends Cubit<AuthState> {
       await TokenService.clearTokens();
       user = null;
       emit(LoggedOut());
-    } finally {
-      Future.microtask(() => getIt.resetLazySingleton<AuthCubit>());
     }
   }
 }

@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sakeena_app/core/services/camera_service.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sakeena_app/core/services/permission_service.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
+import 'package:sakeena_app/features/smart_acan/logic/cubit/scan_cubit.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/analyze_button.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/capture_button.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/medical_disclaimer_card.dart';
@@ -19,12 +23,12 @@ class SmartScanViewBody extends StatefulWidget {
 
 class _SmartScanViewBodyState extends State<SmartScanViewBody> {
   final _permissionService = PermissionService();
+  final _imagePicker = ImagePicker();
   File? _capturedImage;
+  bool _isPickingFromGallery = false;
 
   Future<void> _onCaptureTapped() async {
-    // 1. اطلب الصلاحية لما يدوس الزرار بس
     final granted = await _permissionService.request(AppPermission.camera);
-
     if (!mounted) return;
 
     if (!granted) {
@@ -53,57 +57,161 @@ class _SmartScanViewBodyState extends State<SmartScanViewBody> {
       return;
     }
 
-    // 2. افتح شاشة الكاميرا كاملة
     final File? result = await Navigator.push<File>(
       context,
       MaterialPageRoute(builder: (_) => const CameraPreviewScreen()),
     );
 
-    // 3. لو رجع بصورة اعرضها
     if (result != null && mounted) {
       setState(() => _capturedImage = result);
     }
   }
 
   Future<void> _pickFromGallery() async {
-    // TODO: image_picker
+    if (_isPickingFromGallery) return;
+    setState(() => _isPickingFromGallery = true);
+
+    try {
+      final XFile? picked = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
+      );
+      if (picked != null && mounted) {
+        setState(() => _capturedImage = File(picked.path));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('فشل رفع الصورة: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isPickingFromGallery = false);
+    }
   }
 
+  // ✅ بنبعت الصورة للـ cubit
   void _analyzeImage() {
-    // TODO: Analyze logic
+    if (_capturedImage == null) return;
+    context.read<ScanCubit>().predict(_capturedImage!);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const ScanHeader(),
-        SizedBox(height: 24.h),
+    return BlocConsumer<ScanCubit, ScanState>(
+      listener: (context, state) {
+        if (state is ScanError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          );
+        }
 
-        // عرض الصورة لو موجودة
-        if (_capturedImage != null) ...[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16.r),
-            child: Image.file(
-              _capturedImage!,
-              height: 250.h,
-              fit: BoxFit.cover,
+        // ✅ لما ينجح بنبعت الـ result مع الـ navigation
+        if (state is ScanSuccess) {
+          context.push(
+            AppRouter.kscanResultScreen,
+            extra: state.result, // ✅ بنبعت الـ result هنا
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is ScanLoading;
+
+        return Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const ScanHeader(),
+                SizedBox(height: 24.h),
+
+                if (_capturedImage != null) ...[
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16.r),
+                        child: Image.file(
+                          _capturedImage!,
+                          height: 250.h,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 8.h,
+                        left: 8.w,
+                        child: GestureDetector(
+                          onTap: isLoading
+                              ? null
+                              : () => setState(() => _capturedImage = null),
+                          child: Container(
+                            padding: EdgeInsets.all(6.w),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 20.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.h),
+                ] else ...[
+                  UploadCard(
+                    onTap: _isPickingFromGallery ? null : _pickFromGallery,
+                    isLoading: _isPickingFromGallery,
+                  ),
+                  SizedBox(height: 12.h),
+                ],
+
+                CaptureButton(onPressed: isLoading ? null : _onCaptureTapped),
+                SizedBox(height: 16.h),
+
+                if (_capturedImage != null)
+                  AnalyzeButton(
+                    onPressed: isLoading ? null : _analyzeImage, // ✅
+                  ),
+
+                SizedBox(height: 16.h),
+                const MedicalDisclaimerCard(),
+              ],
             ),
-          ),
-          SizedBox(height: 16.h),
-        ] else ...[
-          UploadCard(onTap: _pickFromGallery),
-          SizedBox(height: 12.h),
-        ],
 
-        CaptureButton(onPressed: _onCaptureTapped),
-        SizedBox(height: 16.h),
-
-        if (_capturedImage != null) AnalyzeButton(onPressed: _analyzeImage),
-
-        SizedBox(height: 16.h),
-        const MedicalDisclaimerCard(),
-      ],
+            // ✅ Loading overlay
+            if (isLoading)
+              SizedBox.expand(
+                child: ColoredBox(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(color: Colors.white),
+                        SizedBox(height: 16),
+                        Text(
+                          'جاري تحليل الصورة...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Cairo',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

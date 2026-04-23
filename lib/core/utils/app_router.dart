@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/features/auth/presentation/view/forget_pass_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/login_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
@@ -11,6 +12,10 @@ import 'package:sakeena_app/features/onboarding/presentation/view/wellcome_view.
 import 'package:sakeena_app/features/account/presentation/view/change_password.dart';
 import 'package:sakeena_app/features/account/presentation/view/profile_view.dart';
 import 'package:sakeena_app/features/account/presentation/view/widgets/etide_profile_view.dart';
+import 'package:sakeena_app/features/smart_acan/data/models/scan_result_model.dart';
+import 'package:sakeena_app/features/smart_acan/data/repo/scan_repo.dart';
+import 'package:sakeena_app/features/smart_acan/logic/cubit/scan_cubit.dart';
+import 'package:sakeena_app/features/smart_acan/ui/view/scan_result_screen.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/smart_scan_screen.dart';
 import 'package:sakeena_app/features/splash/presentation/view/splash_view.dart';
 
@@ -26,20 +31,33 @@ abstract class AppRouter {
   static String kSplash = '/';
   static String kchangePasswordview = '/changePasswordview';
   static String kSmartAcanView = '/SmartAcanView';
+  static String kscanResultScreen = '/scanResultScreen';
 
   static GoRouter router() => GoRouter(
     initialLocation: kSplash,
-
-    // 🔥 NO LOGIC HERE AT ALL
     routes: [
-      GoRoute(path: kSplash, builder: (context, state) => SplashView()),
+      GoRoute(path: kSplash, builder: (context, state) => const SplashView()),
       GoRoute(
-        path: konBording,
-        builder: (context, state) => OnBoardingView(),
+        path: kscanResultScreen,
+        builder: (context, state) {
+          // ✅ بياخد ScanResultModel من الـ extra
+          final result = state.extra as ScanResultModel;
+          return ScanResultScreen(result: result);
+        },
       ),
       GoRoute(
+        path: konBording,
+        builder: (context, state) => const OnBoardingView(),
+      ),
+      // ✅ كده الصح
+      GoRoute(
         path: kSmartAcanView,
-        builder: (context, state) => SmartScanScreen(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => ScanCubit(
+            getIt<ScanRepo>(),
+          ), // أو أي dependency injection بتستخدمه
+          child: const SmartScanScreen(),
+        ),
       ),
       GoRoute(
         path: kchangePasswordview,
@@ -47,13 +65,13 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kwellComView,
-        builder: (context, state) => WellComeView(),
+        builder: (context, state) => const WellComeView(),
       ),
-      GoRoute(path: kLogin, builder: (context, state) => LoginView()),
-      GoRoute(path: ksinupView, builder: (context, state) => SinUpView()),
+      GoRoute(path: kLogin, builder: (context, state) => const LoginView()),
+      GoRoute(path: ksinupView, builder: (context, state) => const SinUpView()),
       GoRoute(
         path: kforgetView,
-        builder: (context, state) => ForgetPassView(),
+        builder: (context, state) => const ForgetPassView(),
       ),
       GoRoute(
         path: kprofileditview,
@@ -61,13 +79,11 @@ abstract class AppRouter {
       ),
 
       ShellRoute(
-        builder: (context, state, child) {
-          return MainLayout(child: child);
-        },
+        builder: (context, state, child) => MainLayout(child: child),
         routes: [
           GoRoute(
             path: khomeView,
-            builder: (context, state) => HomeView(),
+            builder: (context, state) => const HomeView(),
           ),
           GoRoute(
             path: kprofileview,
@@ -82,7 +98,7 @@ abstract class AppRouter {
 class MainLayout extends StatelessWidget {
   final Widget child;
 
-  MainLayout({super.key, required this.child});
+  const MainLayout({super.key, required this.child});
 
   int _getIndex(String location) {
     if (location == AppRouter.kprofileview) return 0;
@@ -93,7 +109,6 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).uri.toString();
-
     return Scaffold(
       body: child,
       bottomNavigationBar: CustomNavBar(currentIndex: _getIndex(location)),
