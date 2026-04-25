@@ -1,129 +1,128 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 
 class CustomNavBar extends StatelessWidget {
   final int currentIndex;
 
-  CustomNavBar({super.key, required this.currentIndex});
+  const CustomNavBar({super.key, required this.currentIndex});
+
+  void _onTap(BuildContext context, int index) {
+    if (index == currentIndex) return;
+    switch (index) {
+      case 0:
+        context.go(AppRouter.kprofileview);
+      case 1:
+        break; // تعليم — مفيش route لسه
+      case 2:
+        context.go(AppRouter.kSmartAcanView);
+      case 3:
+        context.go(AppRouter.khomeView);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80.h,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            height: 70.h,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                NavItem(
-                  icon: Icons.person,
-                  label: "حسابي",
-                  isSelected: currentIndex == 0,
-                  onTap: () {
-                    if (currentIndex != 0) {
-                      context.go(AppRouter.kprofileview);
-                    }
-                  },
-                ),
-                NavItem(
-                  icon: Icons.menu_book,
-                  label: "تعليم",
-                  isSelected: currentIndex == 1,
-                  onTap: () {},
-                ),
-                SizedBox(width: 50.w),
-                NavItem(
-                  icon: Icons.crop_free,
-                  label: "فحص",
-                  isSelected: currentIndex == 2,
-                  onTap: () {
-                    if (currentIndex != 2) {
-                      context.go(AppRouter.kSmartAcanView);
-                    }
-                  },
-                ),
-                NavItem(
-                  icon: Icons.home,
-                  label: "الرئيسية",
-                  isSelected: currentIndex == 3,
-                  onTap: () {
-                    if (currentIndex != 3) {
-                      context.go(AppRouter.khomeView);
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
+    final items = [
+      _NavItem(icon: Icons.person_outline, label: 'حسابي'),
+      _NavItem(icon: Icons.menu_book_outlined, label: 'تعليم'),
+      _NavItem(icon: Icons.crop_free, label: 'فحص'),
+      _NavItem(icon: Icons.home_outlined, label: 'الرئيسية'),
+    ];
 
-          Positioned(
-            top: -25,
-            left: 0.w,
-            right: 0.w,
-            child: Center(
-              child: Container(
-                height: 60.h,
-                width: 60.w,
-                decoration: BoxDecoration(
-                  color: currentIndex == 4
-                      ? Colors.pink
-                      : Colors.pink.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.edit, color: Colors.white),
+    return Container(
+      width: double.infinity,
+      height: 90.h,
+      padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 15.h),
+      decoration: BoxDecoration(
+        color: AppColors.primary, // ✅ الوردي الداكن #A23A5E
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r),
+          topRight: Radius.circular(20.r),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: List.generate(items.length, (index) {
+          final isSelected = currentIndex == index;
+          return GestureDetector(
+            onTap: () => _onTap(context, index),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              padding: EdgeInsets.symmetric(
+                horizontal: isSelected ? 20.w : 14.w,
+                vertical: isSelected ? 12.h : 10.h,
+              ),
+              decoration: BoxDecoration(
+                // ✅ وردي أفتح للـ selected pill
+                color: isSelected
+                    ? const Color(0xffC4547A)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // ── Label ────────────────────────────────────────────────
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: isSelected
+                        ? Padding(
+                            padding: EdgeInsetsDirectional.only(start: 6.w),
+                            child: Text(
+                              items[index].label,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  SizedBox(width: isSelected ? 8.w : 0),
+
+                  // ── Icon ─────────────────────────────────────────────────
+                  AnimatedScale(
+                    duration: Duration(
+                      milliseconds: index == 2 ? 700 : (index == 3 ? 500 : 600),
+                    ),
+                    scale: isSelected
+                        ? (index == 2 ? 1.25 : (index == 3 ? 1.2 : 1.15))
+                        : 1.0,
+                    curve: index == 3
+                        ? Curves.easeInOutCubic
+                        : Curves.elasticOut,
+                    child: AnimatedPadding(
+                      duration: const Duration(milliseconds: 400),
+                      padding: EdgeInsets.only(
+                        bottom: isSelected ? (index == 3 ? 4.h : 2.h) : 0,
+                      ),
+                      child: Icon(
+                        items[index].icon,
+                        color: Colors.white,
+                        size: 24.r,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          );
+        }),
       ),
     );
   }
 }
 
-class NavItem extends StatelessWidget {
+class _NavItem {
   final IconData icon;
   final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  NavItem({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: isSelected ? Colors.pink : Colors.black38),
-          SizedBox(height: 5.h),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: isSelected ? Colors.pink : Colors.black38,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  const _NavItem({required this.icon, required this.label});
 }

@@ -17,7 +17,7 @@ class SmartScanScreen extends StatelessWidget {
       create: (context) => ScanCubit(getIt<ScanRepo>()),
       child: Scaffold(
         backgroundColor: AppColors.kprimaryColor,
-        bottomNavigationBar: CustomNavBar(currentIndex: 2),
+
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),

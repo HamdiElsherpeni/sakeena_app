@@ -11,8 +11,9 @@ class ForgetPassView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<AuthCubit>(),
+    return BlocProvider.value(
+      // ✅ بدل BlocProvider
+      value: getIt<AuthCubit>(), // ✅ نفس الـ singleton مش instance جديدة
       child: Scaffold(
         backgroundColor: AppColors.kprimaryColor,
         body: SafeArea(

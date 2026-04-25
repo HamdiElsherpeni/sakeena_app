@@ -6,12 +6,26 @@ import 'package:sakeena_app/core/services/token_service.dart';
 class NetworkInterceptor extends Interceptor {
   final Dio dio;
 
-  NetworkInterceptor(this.dio);
+  /// Called when refresh fails and the user must log in again.
+  /// Wire this up in DioFactory / your DI setup.
+  final void Function()? onLogout;
 
-  bool _isRefreshing = false;
+  NetworkInterceptor(this.dio, {this.onLogout});
 
-  // Queue of completers for requests waiting for token refresh
-  final List<Completer<String?>> _pendingRequests = [];
+  // Static so they survive across interceptor re-creations
+  static bool _isRefreshing = false;
+  static final List<Completer<String?>> _pendingRequests = [];
+
+  // ── Auth endpoints that must never carry / trigger a refresh ────────────
+  static List<String> _authPaths = [
+    ApiEndpoints.login,
+    ApiEndpoints.register,
+    ApiEndpoints.forgetPassword,
+    ApiEndpoints.verifyCode,
+    ApiEndpoints.resetPassword,
+    ApiEndpoints.refresh,
+    ApiEndpoints.revoke,
+  ];
 
   @override
   void onRequest(
@@ -20,15 +34,7 @@ class NetworkInterceptor extends Interceptor {
   ) async {
     final token = await TokenService.getToken();
 
-    final isAuthEndpoint = [
-      ApiEndpoints.login,
-      ApiEndpoints.register,
-      ApiEndpoints.forgetPassword,
-      ApiEndpoints.verifyCode,
-      ApiEndpoints.resetPassword,
-      ApiEndpoints.refresh,
-      ApiEndpoints.revoke,
-    ].any((e) => options.path.contains(e));
+    final isAuthEndpoint = _authPaths.any((e) => options.path.contains(e));
 
     if (!isAuthEndpoint && token != null && token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
@@ -41,20 +47,16 @@ class NetworkInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final statusCode = err.response?.statusCode;
 
-    // Don't retry if the failing request itself is a refresh or revoke call
-    final isSkippedEndpoint = [
-      ApiEndpoints.refresh,
-      ApiEndpoints.revoke,
-    ].any((e) => err.requestOptions.path.contains(e));
+    final isSkippedEndpoint =
+        _authPaths.any((e) => err.requestOptions.path.contains(e));
 
     if (statusCode == 401 && !isSkippedEndpoint) {
-      // ── Another refresh is already in flight: queue this request ──────────
+      // ── Another refresh is already in flight: queue this request ──────
       if (_isRefreshing) {
         final completer = Completer<String?>();
         _pendingRequests.add(completer);
 
         try {
-          // Wait until the ongoing refresh resolves
           final newToken = await completer.future;
           if (newToken == null) return handler.next(err);
 
@@ -65,7 +67,7 @@ class NetworkInterceptor extends Interceptor {
         }
       }
 
-      // ── First 401: start refresh ────────────────────────────────────────
+      // ── First 401: start refresh ────────────────────────────────────
       _isRefreshing = true;
 
       try {
@@ -73,21 +75,21 @@ class NetworkInterceptor extends Interceptor {
         final newToken = success ? await TokenService.getToken() : null;
 
         if (!success || newToken == null) {
-          await TokenService.clearTokens();
-          _resolveQueue(null); // unblock pending requests with null → fail them
+          _resolveQueue(null);
           _isRefreshing = false;
+          await _handleLogout();
           return handler.next(err);
         }
 
-        _resolveQueue(newToken); // unblock pending requests with the new token
+        _resolveQueue(newToken);
         _isRefreshing = false;
 
         final response = await _retry(err.requestOptions, newToken);
         return handler.resolve(response);
-      } catch (e) {
+      } catch (_) {
         _resolveQueue(null);
         _isRefreshing = false;
-        await TokenService.clearTokens();
+        await _handleLogout();
         return handler.next(err);
       }
     }
@@ -95,7 +97,13 @@ class NetworkInterceptor extends Interceptor {
     handler.next(err);
   }
 
-  // ── Resolve all queued requests with a token (or null on failure) ─────────
+  // ── Logout: clear tokens then notify the app ──────────────────────────
+  Future<void> _handleLogout() async {
+    await TokenService.clearTokens();
+    onLogout?.call();
+  }
+
+  // ── Resolve all queued requests ───────────────────────────────────────
   void _resolveQueue(String? token) {
     for (final c in _pendingRequests) {
       if (!c.isCompleted) c.complete(token);
@@ -103,7 +111,7 @@ class NetworkInterceptor extends Interceptor {
     _pendingRequests.clear();
   }
 
-  // ── Call the refresh endpoint and persist new tokens ──────────────────────
+  // ── Call the refresh endpoint ─────────────────────────────────────────
   Future<bool> _refreshToken() async {
     try {
       final token = await TokenService.getToken();
@@ -111,7 +119,7 @@ class NetworkInterceptor extends Interceptor {
 
       if (token == null || refreshToken == null) return false;
 
-      // Use a plain Dio to avoid re-triggering this interceptor
+      // Plain Dio to avoid re-triggering this interceptor
       final plainDio = Dio(dio.options);
 
       final response = await plainDio.post(
@@ -127,7 +135,6 @@ class NetworkInterceptor extends Interceptor {
 
       if (newToken == null || newToken.isEmpty) return false;
 
-      // Save tokens — update refresh token only when the server returns one
       await TokenService.saveTokens(
         token: newToken,
         refreshToken: newRefresh ?? refreshToken,
@@ -139,18 +146,19 @@ class NetworkInterceptor extends Interceptor {
     }
   }
 
-  // ── Clone and replay the original request with the new token ──────────────
+  // ── Replay original request with new token ────────────────────────────
   Future<Response> _retry(RequestOptions requestOptions, String token) {
-    final options = Options(
-      method: requestOptions.method,
-      headers: {...requestOptions.headers, 'Authorization': 'Bearer $token'},
-    );
-
     return dio.request(
       requestOptions.path,
       data: requestOptions.data,
       queryParameters: requestOptions.queryParameters,
-      options: options,
+      options: Options(
+        method: requestOptions.method,
+        headers: {
+          ...requestOptions.headers,
+          'Authorization': 'Bearer $token',
+        },
+      ),
     );
   }
 }

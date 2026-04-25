@@ -14,56 +14,61 @@ class ScanCubit extends Cubit<ScanState> {
 
   ScanResultModel? lastResult;
 
+  // ✅ helper عشان نتجنب emit بعد close
+  void _emit(ScanState state) {
+    if (!isClosed) emit(state);
+  }
+
   // ─── Predict ──────────────────────────────────────────────────────────────
   Future<void> predict(File imageFile) async {
-    emit(ScanLoading());
+    _emit(ScanLoading());
     try {
       final result = await _repo.predict(imageFile);
       lastResult = result;
-      emit(ScanSuccess(result));
+      _emit(ScanSuccess(result));
     } on Failer catch (e) {
-      emit(ScanError(e.errorMessage)); // ✅ رسالة من ServerFailer
+      _emit(ScanError(e.errorMessage));
     } catch (e) {
-      emit(ScanError('Something went wrong'));
+      _emit(ScanError('Something went wrong'));
     }
   }
 
   // ─── Get History ──────────────────────────────────────────────────────────
   Future<void> getHistory() async {
-    emit(ScanLoading());
+    _emit(ScanLoading());
     try {
       final history = await _repo.getHistory();
-      emit(HistoryLoaded(history));
+      _emit(HistoryLoaded(history));
     } on Failer catch (e) {
-      emit(ScanError(e.errorMessage));
+      _emit(ScanError(e.errorMessage));
     } catch (e) {
-      emit(ScanError('Something went wrong'));
+      _emit(ScanError('Something went wrong'));
     }
   }
 
   // ─── Get History With Status ──────────────────────────────────────────────
   Future<void> getHistoryWithStatus(String status) async {
-    emit(ScanLoading());
+    _emit(ScanLoading());
     try {
       final history = await _repo.getHistoryWithStatus(status);
-      emit(HistoryLoaded(history));
+      _emit(HistoryLoaded(history));
     } on Failer catch (e) {
-      emit(ScanError(e.errorMessage));
+      _emit(ScanError(e.errorMessage));
     } catch (e) {
-      emit(ScanError('Something went wrong'));
+      _emit(ScanError('Something went wrong'));
     }
   }
 
   // ─── Get Statistics ───────────────────────────────────────────────────────
   Future<void> getStatistics() async {
-    emit(ScanLoading());
+    _emit(ScanLoading());
     try {
       final statistics = await _repo.getStatistics();
-      emit(StatisticsLoaded(statistics));
+      _emit(StatisticsLoaded(statistics));
     } on Failer catch (e) {
-      emit(ScanError(e.errorMessage));
+      _emit(ScanError(e.errorMessage));
     } catch (e) {
-      emit(ScanError('Something went wrong'));
+      _emit(ScanError('Something went wrong'));
     }
   }
 }

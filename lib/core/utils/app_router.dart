@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
+import 'package:sakeena_app/core/network/dio_factory.dart';
 import 'package:sakeena_app/features/auth/presentation/view/forget_pass_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/login_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
@@ -33,14 +34,24 @@ abstract class AppRouter {
   static String kSmartAcanView = '/SmartAcanView';
   static String kscanResultScreen = '/scanResultScreen';
 
-  static GoRouter router() => GoRouter(
+  // ✅ Singleton router instance عشان نوصله من DioFactory
+  static final GoRouter _router = _buildRouter();
+
+  static GoRouter router() {
+    // ✅ ربط الـ logout callback مرة واحدة هنا
+    DioFactory.onLogout = () {
+      _router.go(kLogin);
+    };
+    return _router;
+  }
+
+  static GoRouter _buildRouter() => GoRouter(
     initialLocation: kSplash,
     routes: [
       GoRoute(path: kSplash, builder: (context, state) => const SplashView()),
       GoRoute(
         path: kscanResultScreen,
         builder: (context, state) {
-          // ✅ بياخد ScanResultModel من الـ extra
           final result = state.extra as ScanResultModel;
           return ScanResultScreen(result: result);
         },
@@ -49,16 +60,7 @@ abstract class AppRouter {
         path: konBording,
         builder: (context, state) => const OnBoardingView(),
       ),
-      // ✅ كده الصح
-      GoRoute(
-        path: kSmartAcanView,
-        builder: (context, state) => BlocProvider(
-          create: (context) => ScanCubit(
-            getIt<ScanRepo>(),
-          ), // أو أي dependency injection بتستخدمه
-          child: const SmartScanScreen(),
-        ),
-      ),
+
       GoRoute(
         path: kchangePasswordview,
         builder: (context, state) => ChangePasswordView(),
@@ -77,7 +79,6 @@ abstract class AppRouter {
         path: kprofileditview,
         builder: (context, state) => EditProfileView(),
       ),
-
       ShellRoute(
         builder: (context, state, child) => MainLayout(child: child),
         routes: [
@@ -88,6 +89,13 @@ abstract class AppRouter {
           GoRoute(
             path: kprofileview,
             builder: (context, state) => ProfileView(),
+          ),
+          GoRoute(
+            path: kSmartAcanView,
+            builder: (context, state) => BlocProvider(
+              create: (context) => ScanCubit(getIt<ScanRepo>()),
+              child: const SmartScanScreen(),
+            ),
           ),
         ],
       ),
@@ -103,6 +111,7 @@ class MainLayout extends StatelessWidget {
   int _getIndex(String location) {
     if (location == AppRouter.kprofileview) return 0;
     if (location == AppRouter.khomeView) return 3;
+    if (location == AppRouter.kSmartAcanView) return 2;
     return 3;
   }
 

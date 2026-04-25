@@ -68,7 +68,7 @@ class OnBoardingBody extends StatelessWidget {
                     await _finishOnBoarding();
 
                     if (context.mounted) {
-                      context.go(AppRouter.kSplash); // 👈 نرجع للسplash
+                      context.go(AppRouter.kwellComView); // 👈 نرجع للسplash
                     }
                   },
                   style: TextButton.styleFrom(

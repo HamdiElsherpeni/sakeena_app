@@ -6,10 +6,15 @@ import 'package:sakeena_app/core/network/interceptors/network_interceptor.dart';
 class DioFactory {
   DioFactory._();
 
-  static Dio createDio() {
-    final Duration defaultTimeout = const Duration(seconds: 30);
+  /// Optional logout callback — pass it once from your app entry point.
+  /// Example (with go_router):
+  ///   DioFactory.onLogout = () => router.go('/login');
+  static void Function()? onLogout;
 
-    final Dio dio = Dio(
+  static Dio createDio() {
+    final defaultTimeout = const Duration(seconds: 30);
+
+    final dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
         connectTimeout: defaultTimeout,
@@ -23,14 +28,13 @@ class DioFactory {
     );
 
     dio.interceptors.addAll([
-      NetworkInterceptor(dio), // ✅ بيتعامل مع الـ 401 و refresh token
+      NetworkInterceptor(dio, onLogout: onLogout),
       PrettyDioLogger(
-        // ✅ logging
         request: true,
         requestHeader: true,
         requestBody: true,
         responseBody: true,
-        responseHeader: false, // مش محتاجينه عادةً
+        responseHeader: false,
         error: true,
       ),
     ]);

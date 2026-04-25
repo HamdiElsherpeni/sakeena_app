@@ -21,7 +21,6 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
-  // ── controllers نبعتها للـ steps ─────────────────────────────────────────
   final TextEditingController _emailController = TextEditingController();
   final List<TextEditingController> _otpControllers = List.generate(
     5,
@@ -43,7 +42,6 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
     super.dispose();
   }
 
-  // ── الـ OTP كـ string واحدة ───────────────────────────────────────────────
   String get _otpCode => _otpControllers.map((c) => c.text).join();
 
   @override
@@ -55,21 +53,11 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
-
-        // ✅ بعد forgetPassword ننتقل لـ OTP
-        if (state is ForgetPasswordSuccess) {
-          _nextPage();
-        }
-
-        // ✅ بعد verifyCode ننتقل لـ ResetPassword
-        if (state is VerifyCodeSuccess) {
-          _nextPage();
-        }
-
-        // ✅ بعد resetPassword نروح لـ Login
+        if (state is ForgetPasswordSuccess) _nextPage();
+        if (state is VerifyCodeSuccess) _nextPage();
         if (state is ResetPasswordSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('تم تغيير الباسورد بنجاح ✅'),
               backgroundColor: Colors.green,
             ),
@@ -84,23 +72,25 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
 
         return Stack(
           children: [
-            Column(
-              children: [
-                SizedBox(height: 50.h),
-                CustomAppBar(titel: 'نسيت الباسوورد'),
-                SizedBox(height: 30.h),
-                _buildPages(),
-                SizedBox(height: 20.h),
-                _buildButton(context, isLoading),
-                SizedBox(height: 20.h),
-              ],
+            // ✅ SingleChildScrollView بدون Expanded جوّاها
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 50.h),
+                  CustomAppBar(titel: 'نسيت الباسوورد'),
+                  SizedBox(height: 30.h),
+                  _buildPages(context), // ✅ مش Expanded هنا
+                  SizedBox(height: 20.h),
+                  _buildButton(context, isLoading),
+                  SizedBox(height: 20.h),
+                ],
+              ),
             ),
 
-            // ✅ loading overlay
             if (isLoading)
               ColoredBox(
                 color: Colors.black.withValues(alpha: 0.4),
-                child: Center(
+                child: const Center(
                   child: CircularProgressIndicator(color: Colors.white),
                 ),
               ),
@@ -110,12 +100,13 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
     );
   }
 
-  Widget _buildPages() {
-    return Expanded(
+  Widget _buildPages(BuildContext context) {
+    // ✅ SizedBox بارتفاع محدد بدل Expanded
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.55,
       child: PageView(
         controller: _pageController,
-        physics:
-            NeverScrollableScrollPhysics(), // ✅ المستخدم ميقدرش يسوايب
+        physics: const NeverScrollableScrollPhysics(),
         onPageChanged: (index) => setState(() => _currentIndex = index),
         children: [
           EmailStep(emailController: _emailController),
@@ -130,12 +121,15 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
   }
 
   Widget _buildButton(BuildContext context, bool isLoading) {
-    return CoustemElevetedBoutten(
-      text: _getButtonText(),
-      onPressed: isLoading ? null : () => _handleNext(context),
-      height: 60.h,
-      backgroundcolor: Color(0xffA53860),
-      fontSize: 18.sp,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.w),
+      child: CoustemElevetedBoutten(
+        text: _getButtonText(),
+        onPressed: isLoading ? null : () => _handleNext(context),
+        height: 60.h,
+        backgroundcolor: const Color(0xffA53860),
+        fontSize: 18.sp,
+      ),
     );
   }
 
@@ -143,7 +137,7 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
     final cubit = context.read<AuthCubit>();
 
     switch (_currentIndex) {
-      case 0: // ── Email Step ────────────────────────────────────────────────
+      case 0:
         final email = _emailController.text.trim();
         if (email.isEmpty) {
           _showError(context, 'من فضلك ادخلي الايميل');
@@ -151,17 +145,16 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
         }
         cubit.forgetPassword(email: email);
 
-      case 1: // ── OTP Step ──────────────────────────────────────────────────
+      case 1:
         if (_otpCode.length < 5) {
           _showError(context, 'من فضلك ادخلي كود التحقق كامل');
           return;
         }
         cubit.verifyCode(email: _emailController.text.trim(), code: _otpCode);
 
-      case 2: // ── Reset Password Step ───────────────────────────────────────
+      case 2:
         final newPass = _newPasswordController.text;
         final confirmPass = _confirmPasswordController.text;
-
         if (newPass.isEmpty || confirmPass.isEmpty) {
           _showError(context, 'من فضلك ادخلي الباسورد');
           return;
@@ -170,7 +163,6 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
           _showError(context, 'الباسورد مش متطابق');
           return;
         }
-
         cubit.resetPassword(
           email: _emailController.text.trim(),
           code: _otpCode,

@@ -14,25 +14,27 @@ class ResetPassStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset('assets/images/forgetpass2.png', height: 200.h),
-        SizedBox(height: 20.h),
-        CoustemTextFormFailed(
-          hent: 'ادخلي الباسورد الجديد',
-          leble: 'الباسورد الجديد',
-          obscure: true,
-          controller: newPasswordController,
-        ),
-        SizedBox(height: 15.h),
-        CoustemTextFormFailed(
-          hent: 'أعيدي كتابة الباسورد',
-          leble: 'تأكيد الباسورد',
-          obscure: true,
-          controller: confirmPasswordController,
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/images/forgetpass2.png', height: 200.h),
+          SizedBox(height: 20.h),
+          CoustemTextFormFailed(
+            hent: 'ادخلي الباسورد الجديد',
+            leble: 'الباسورد الجديد',
+            obscure: true,
+            controller: newPasswordController,
+          ),
+          SizedBox(height: 15.h),
+          CoustemTextFormFailed(
+            hent: 'أعيدي كتابة الباسورد',
+            leble: 'تأكيد الباسورد',
+            obscure: true,
+            controller: confirmPasswordController,
+          ),
+        ],
+      ),
     );
   }
 }

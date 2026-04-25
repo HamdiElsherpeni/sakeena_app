@@ -4,7 +4,6 @@ import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
 import 'package:sakeena_app/features/smart_acan/data/models/scan_result_model.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/app_bar_widget.dart';
-import 'package:sakeena_app/features/smart_acan/ui/view/widgets/medical_tip_widget.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/result_card_widget.dart';
 
 class ScanResultScreen extends StatelessWidget {
@@ -27,17 +26,12 @@ class ScanResultScreen extends StatelessWidget {
           child: Column(
             children: [
               ResultCardWidget(
-                resultTitle: result.isMalignant
-                    ? 'النتيجة التحليلية: ورم خبيث ⚠️'
-                    : result.isBenign
-                    ? 'النتيجة التحليلية: ورم حميد 🟠'
-                    : 'النتيجة التحليلية: طبيعي ✅',
+                resultTitle: result.diagnosis,
                 resultSubtitle: result.message,
                 percentage: result.confidence * 100,
                 percentageLabel: 'درجة الاحتمال',
-                status: result.status, // ✅ بدل isMalignant
+                status: result.status,
               ),
-
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: CoustemElevetedBoutten(
@@ -46,15 +40,6 @@ class ScanResultScreen extends StatelessWidget {
                   backgroundcolor: AppColors.primary,
                   textcolor: Colors.white,
                 ),
-              ),
-
-              MedicalTipWidget(
-                header: 'توصية طبية',
-                body: result.isMalignant
-                    ? 'النتيجة تشير إلى ورم خبيث.\nيُرجى مراجعة طبيب متخصص فوراً للتأكيد والعلاج.'
-                    : result.isBenign
-                    ? 'النتيجة تشير إلى ورم حميد.\nيُنصح بمتابعة دورية مع الطبيب للاطمئنان.'
-                    : 'النتيجة طبيعية.\nهذه النتيجة تقديرية، يُنصح بمراجعة الطبيب للتأكيد.',
               ),
             ],
           ),

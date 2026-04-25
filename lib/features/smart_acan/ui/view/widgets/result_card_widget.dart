@@ -7,31 +7,29 @@ class ResultCardWidget extends StatelessWidget {
   final String resultSubtitle;
   final double percentage;
   final String percentageLabel;
-  final String status; // ✅ بدل isMalignant
+  final String status;
 
   const ResultCardWidget({
     super.key,
-    this.resultTitle = 'النتيجة التحليلية',
+    this.resultTitle = '',
     this.resultSubtitle = '',
     this.percentage = 0,
     this.percentageLabel = 'درجة الاحتمال',
     this.status = 'normal',
   });
 
-  // ✅ اللون حسب التلت حالات
   Color get _color {
     switch (status.toLowerCase()) {
       case 'malignant':
-        return const Color(0xFFEF4444); // أحمر
+        return const Color(0xFFEF4444);
       case 'benign':
-        return const Color(0xFFF97316); // برتقالي
+        return const Color(0xFFF97316);
       case 'normal':
       default:
-        return const Color(0xFF22C55E); // أخضر
+        return const Color(0xFF22C55E);
     }
   }
 
-  // ✅ الأيقونة حسب التلت حالات
   IconData get _icon {
     switch (status.toLowerCase()) {
       case 'malignant':

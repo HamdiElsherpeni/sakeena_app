@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:sakeena_app/core/app/sakeena_app.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   setupServiceLocator();
+
+  AppRouter.router();
 
   runApp(const MyApp());
 }
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return SakeenaApp();
+        return const SakeenaApp();
       },
     );
   }

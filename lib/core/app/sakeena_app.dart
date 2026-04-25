@@ -15,11 +15,11 @@ class SakeenaApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerConfig: AppRouter.router(),
+      routerConfig: AppRouter.router(), // ✅ بيرجع نفس الـ singleton
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Rubik',
-        useMaterial3: true, // 👈 تحسين
+        useMaterial3: true,
       ),
     );
   }
