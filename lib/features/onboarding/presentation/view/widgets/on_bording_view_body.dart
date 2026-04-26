@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sakeena_app/core/database/my_cache_helper.dart';
-import 'package:sakeena_app/core/database/prefs_constants.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
+import 'package:sakeena_app/core/services/token_service.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view_model/on_bording_model.dart';
 
@@ -21,9 +20,9 @@ class OnBoardingBody extends StatelessWidget {
     required this.data,
   });
 
-  /// ✅ فقط حفظ حالة الـ onboarding (بدون navigation هنا)
+  /// ✅ الحل: استخدام TokenService بدل SharedPrefHelper
   Future<void> _finishOnBoarding() async {
-    await SharedPrefHelper.setData(PrefsConstants.onBoarding, true);
+    await TokenService.setOnboardingSeen();
   }
 
   @override
@@ -65,10 +64,10 @@ class OnBoardingBody extends StatelessWidget {
                 ),
                 child: TextButton(
                   onPressed: () async {
-                    await _finishOnBoarding();
+                    await _finishOnBoarding(); // ✅ بيحفظ بـ key صح دلوقتي
 
                     if (context.mounted) {
-                      context.go(AppRouter.kwellComView); // 👈 نرجع للسplash
+                      context.go(AppRouter.kwellComView);
                     }
                   },
                   style: TextButton.styleFrom(
@@ -148,10 +147,10 @@ class OnBoardingBody extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  await _finishOnBoarding();
+                  await _finishOnBoarding(); // ✅ بيحفظ بـ key صح دلوقتي
 
                   if (context.mounted) {
-                    context.go(AppRouter.kSplash); // 👈 أهم نقطة
+                    context.go(AppRouter.kwellComView);
                   }
                 },
                 style: ElevatedButton.styleFrom(

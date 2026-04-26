@@ -48,15 +48,6 @@ class _SinUpViewContent extends StatelessWidget {
             SinUpViewBody(isLoading: isLoading),
 
             // ✅ SizedBox.expand عشان يغطي الشاشة كلها
-            if (isLoading)
-              SizedBox.expand(
-                child: ColoredBox(
-                  color: Colors.black.withValues(alpha: 0.4),
-                  child: Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  ),
-                ),
-              ),
           ],
         );
       },

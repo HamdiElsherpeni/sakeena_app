@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 
 class HomeAiCard extends StatelessWidget {
   const HomeAiCard({super.key});
@@ -36,7 +38,9 @@ class HomeAiCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.r),
             ),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                context.go(AppRouter.kChatView);
+              },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

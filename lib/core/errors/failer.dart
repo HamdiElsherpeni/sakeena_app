@@ -9,65 +9,87 @@ abstract class Failer {
 class ServerFailer extends Failer {
   ServerFailer(super.errorMessage);
 
-  /// يحوّل DioException إلى رسالة مفهومة
   factory ServerFailer.fromDioError(DioException e) {
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
-        return ServerFailer('Connection timed out. Please try again.');
+        return ServerFailer('انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى.');
       case DioExceptionType.sendTimeout:
-        return ServerFailer('Request send timed out. Please try again.');
+        return ServerFailer('انتهت مهلة إرسال الطلب. يرجى المحاولة مرة أخرى.');
       case DioExceptionType.receiveTimeout:
-        return ServerFailer('Response timed out. Please try again.');
+        return ServerFailer('انتهت مهلة استقبال الرد. يرجى المحاولة مرة أخرى.');
       case DioExceptionType.badCertificate:
-        return ServerFailer('Bad SSL certificate.');
+        return ServerFailer('شهادة الأمان غير صالحة.');
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode ?? 0;
         final responseData = e.response?.data;
         return ServerFailer.fromResponse(statusCode, responseData);
       case DioExceptionType.cancel:
-        return ServerFailer('Request was cancelled.');
+        return ServerFailer('تم إلغاء الطلب.');
       case DioExceptionType.connectionError:
-        return ServerFailer('Connection error. Please check your internet.');
+        return ServerFailer('خطأ في الاتصال. يرجى التحقق من اتصالك بالإنترنت.');
       case DioExceptionType.unknown:
-        return ServerFailer('Oops, there was an unexpected error.');
+        return ServerFailer('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
       default:
-        return ServerFailer('An unexpected error occurred.');
+        return ServerFailer('حدث خطأ غير متوقع.');
     }
   }
 
-  /// يحوّل statusCode إلى رسالة مناسبة
   factory ServerFailer.fromResponse(int statusCode, dynamic response) {
-  switch (statusCode) {
-    case 400:
-      return ServerFailer(
-          'Oops! Your request seems incorrect. Please check your input and try again.');
-    case 401:
-      return ServerFailer(
-          'You are not authorized. Please log in again to continue.');
-    case 403:
-      return ServerFailer(
-          'Access denied. You do not have permission to perform this action.');
-    case 404:
-      return ServerFailer(
-          'The resource you are looking for could not be found.');
-    case 500:
-      return ServerFailer(
-          'Something went wrong on the server. Please try again later.');
-    case 502:
-      return ServerFailer(
-          'Bad gateway. The server is currently unreachable. Please try again.');
-    case 503:
-      return ServerFailer(
-          'Service unavailable. The server is temporarily down. Please try again later.');
-    case 504:
-      return ServerFailer(
-          'Gateway timeout. The server is taking too long to respond.');
-    default:
-      // لو response فيه رسالة واضحة من السيرفر نعرضها، وإلا نعرض رسالة عامة
-      final message = response is Map && response['message'] != null
-          ? response['message'].toString()
-          : 'Unexpected error occurred (status code: $statusCode). Please try again.';
-      return ServerFailer(message);
+    switch (statusCode) {
+      case 400:
+        return ServerFailer(
+          'البيانات المدخلة غير صحيحة. يرجى مراجعة المعلومات والمحاولة مرة أخرى.',
+        );
+      case 401:
+        return ServerFailer(
+          'غير مصرح لك. يرجى تسجيل الدخول مرة أخرى للمتابعة.',
+        );
+      case 403:
+        return ServerFailer(
+          'الوصول مرفوض. ليس لديك صلاحية للقيام بهذا الإجراء.',
+        );
+      case 404:
+        return ServerFailer('المورد المطلوب غير موجود.');
+      case 409:
+        return ServerFailer(
+          'هذا الإيميل مسجل بالفعل. يرجى تسجيل الدخول أو استخدام إيميل آخر.',
+        );
+      case 422:
+        return ServerFailer('البيانات المدخلة غير مكتملة أو غير صحيحة.');
+      case 429:
+        return ServerFailer(
+          'لقد تجاوزت الحد المسموح به من المحاولات. يرجى الانتظار قليلاً.',
+        );
+      case 500:
+        return ServerFailer(
+          'حدث خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.',
+        );
+      case 502:
+        return ServerFailer(
+          'البوابة غير متاحة حالياً. يرجى المحاولة مرة أخرى.',
+        );
+      case 503:
+        return ServerFailer(
+          'الخدمة غير متاحة مؤقتاً. يرجى المحاولة مرة أخرى لاحقاً.',
+        );
+      case 504:
+        return ServerFailer(
+          'انتهت مهلة الاستجابة من الخادم. يرجى المحاولة مرة أخرى.',
+        );
+      default:
+        String? serverMessage;
+        if (response is Map) {
+          serverMessage =
+              response['message']?.toString() ??
+              response['Message']?.toString() ??
+              response['error']?.toString() ??
+              response['Error']?.toString();
+        } else if (response is String && response.isNotEmpty) {
+          serverMessage = response;
+        }
+        return ServerFailer(
+          serverMessage ?? 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
+        );
+    }
   }
-}
 }

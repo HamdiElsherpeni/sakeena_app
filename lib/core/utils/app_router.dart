@@ -6,6 +6,7 @@ import 'package:sakeena_app/core/network/dio_factory.dart';
 import 'package:sakeena_app/features/auth/presentation/view/forget_pass_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/login_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
+import 'package:sakeena_app/features/chat/presentation/view/chat_view.dart';
 import 'package:sakeena_app/features/home/presentation/view/home_view.dart';
 import 'package:sakeena_app/core/widgets/custom_nav_bar.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/on_bording_view.dart';
@@ -33,6 +34,7 @@ abstract class AppRouter {
   static String kchangePasswordview = '/changePasswordview';
   static String kSmartAcanView = '/SmartAcanView';
   static String kscanResultScreen = '/scanResultScreen';
+  static String kChatView = '/chatview';
 
   // ✅ Singleton router instance عشان نوصله من DioFactory
   static final GoRouter _router = _buildRouter();
@@ -55,6 +57,10 @@ abstract class AppRouter {
           final result = state.extra as ScanResultModel;
           return ScanResultScreen(result: result);
         },
+      ),
+      GoRoute(
+        path: kChatView,
+        builder: (context, state) => const ChatView(), // ← كده بس
       ),
       GoRoute(
         path: konBording,

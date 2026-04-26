@@ -1,20 +1,24 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenService {
-  static String _tokenKey = 'token';
-  static String _refreshTokenKey = 'refreshToken';
-  static String _onboardingKey = 'onboarding_seen';
+  static const String _tokenKey = 'token';
+  static const String _refreshTokenKey = 'refreshToken';
+  static const String _refreshTokenExpirationKey = 'refreshTokenExpiration';
+  static const String _onboardingKey = 'onboarding_seen';
 
   // ================= TOKENS =================
 
   static Future<void> saveTokens({
     required String token,
     required String refreshToken,
+    String? refreshTokenExpiration,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_refreshTokenKey, refreshToken);
+    if (refreshTokenExpiration != null) {
+      await prefs.setString(_refreshTokenExpirationKey, refreshTokenExpiration);
+    }
   }
 
   static Future<String?> getToken() async {
@@ -27,6 +31,23 @@ class TokenService {
     return prefs.getString(_refreshTokenKey);
   }
 
+  static Future<String?> getRefreshTokenExpiration() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_refreshTokenExpirationKey);
+  }
+
+  /// بيرجع true لو الـ refresh token منتهي أو مش موجود
+  static Future<bool> isRefreshTokenExpired() async {
+    final expirationStr = await getRefreshTokenExpiration();
+    if (expirationStr == null || expirationStr.isEmpty) return true;
+    try {
+      final expiration = DateTime.parse(expirationStr).toUtc();
+      return DateTime.now().toUtc().isAfter(expiration);
+    } catch (_) {
+      return true;
+    }
+  }
+
   static Future<bool> hasToken() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(_tokenKey);
@@ -35,9 +56,9 @@ class TokenService {
 
   static Future<void> clearTokens() async {
     final prefs = await SharedPreferences.getInstance();
-
     await prefs.remove(_tokenKey);
     await prefs.remove(_refreshTokenKey);
+    await prefs.remove(_refreshTokenExpirationKey);
   }
 
   // ================= ONBOARDING =================

@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/core/errors/failer.dart';
 import 'package:sakeena_app/core/services/token_service.dart';
 import 'package:sakeena_app/features/auth/data/models/auth_response.dart';
@@ -20,23 +19,29 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthResponse? user;
 
+  void _safeEmit(AuthState state) {
+    if (!isClosed) emit(state);
+  }
+
   // ─── Login ────────────────────────────────────────────────────────────────
   Future<void> login({required String email, required String password}) async {
-    emit(AuthLoading());
+    _safeEmit(AuthLoading());
     try {
       final response = await _repo.login(
         LoginRequestModel(email: email, password: password),
       );
+      // ✅ احفظ refreshTokenExpiration من الريسبونس
       await TokenService.saveTokens(
         token: response.token,
         refreshToken: response.refreshToken,
+        refreshTokenExpiration: response.refreshTokenExpiration,
       );
       user = response;
-      emit(LoginSuccess(user: response));
+      _safeEmit(LoginSuccess(user: response));
     } on Failer catch (e) {
-      emit(AuthError(e.errorMessage));
+      _safeEmit(AuthError(e.errorMessage));
     } catch (e) {
-      emit(AuthError('Something went wrong'));
+      _safeEmit(AuthError('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'));
     }
   }
 
@@ -47,7 +52,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String email,
     required String password,
   }) async {
-    emit(AuthLoading());
+    _safeEmit(AuthLoading());
     try {
       await _repo.register(
         RegisterRequestModel(
@@ -57,37 +62,37 @@ class AuthCubit extends Cubit<AuthState> {
           password: password,
         ),
       );
-      emit(RegisterSuccess());
+      _safeEmit(RegisterSuccess());
     } on Failer catch (e) {
-      emit(AuthError(e.errorMessage));
+      _safeEmit(AuthError(e.errorMessage));
     } catch (e) {
-      emit(AuthError('Something went wrong'));
+      _safeEmit(AuthError('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'));
     }
   }
 
   // ─── Forget Password ──────────────────────────────────────────────────────
   Future<void> forgetPassword({required String email}) async {
-    emit(AuthLoading());
+    _safeEmit(AuthLoading());
     try {
       await _repo.forgetPassword(ForgetPasswordRequestModel(email: email));
-      emit(ForgetPasswordSuccess());
+      _safeEmit(ForgetPasswordSuccess());
     } on Failer catch (e) {
-      emit(AuthError(e.errorMessage));
+      _safeEmit(AuthError(e.errorMessage));
     } catch (e) {
-      emit(AuthError('Something went wrong'));
+      _safeEmit(AuthError('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'));
     }
   }
 
   // ─── Verify Code ──────────────────────────────────────────────────────────
   Future<void> verifyCode({required String email, required String code}) async {
-    emit(AuthLoading());
+    _safeEmit(AuthLoading());
     try {
       await _repo.verifyCode(VerifyCodeRequestModel(email: email, code: code));
-      emit(VerifyCodeSuccess());
+      _safeEmit(VerifyCodeSuccess());
     } on Failer catch (e) {
-      emit(AuthError(e.errorMessage));
+      _safeEmit(AuthError(e.errorMessage));
     } catch (e) {
-      emit(AuthError('Something went wrong'));
+      _safeEmit(AuthError('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'));
     }
   }
 
@@ -98,7 +103,7 @@ class AuthCubit extends Cubit<AuthState> {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    emit(AuthLoading());
+    _safeEmit(AuthLoading());
     try {
       await _repo.resetPassword(
         ResetPasswordRequestModel(
@@ -108,18 +113,17 @@ class AuthCubit extends Cubit<AuthState> {
           confirmPassword: confirmPassword,
         ),
       );
-      emit(ResetPasswordSuccess());
+      _safeEmit(ResetPasswordSuccess());
     } on Failer catch (e) {
-      emit(AuthError(e.errorMessage));
+      _safeEmit(AuthError(e.errorMessage));
     } catch (e) {
-      emit(AuthError('Something went wrong'));
+      _safeEmit(AuthError('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.'));
     }
   }
 
   // ─── Logout ───────────────────────────────────────────────────────────────
-  // ─── Logout ───────────────────────────────────────────────────────────────
   Future<void> logout() async {
-    emit(AuthLoading());
+    _safeEmit(AuthLoading());
     try {
       final token = await TokenService.getToken();
       final refreshToken = await TokenService.getRefreshToken();
@@ -130,13 +134,12 @@ class AuthCubit extends Cubit<AuthState> {
           refreshToken: refreshToken ?? '',
         ),
       );
+    } catch (_) {
+      // حتى لو الـ revoke فشل، امسح التوكنز وسجل خروج
+    } finally {
       await TokenService.clearTokens();
       user = null;
-      emit(LoggedOut());
-    } catch (e) {
-      await TokenService.clearTokens();
-      user = null;
-      emit(LoggedOut());
+      _safeEmit(LoggedOut());
     }
   }
 }
