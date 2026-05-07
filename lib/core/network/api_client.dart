@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:sakeena_app/core/errors/failer.dart';
-import 'dio_factory.dart';
+import 'package:sakeena_app/core/network/dio_factory.dart';
 
 class ApiClient {
   ApiClient._();
 
-  static final Dio _dio = DioFactory.createDio();
+  // ✅ بيستخدم نفس الـ singleton دايماً
+  static Dio get _dio => DioFactory.dio;
 
   // ─── GET ──────────────────────────────────────────────────────────────────
   static Future<Map<String, dynamic>> get(

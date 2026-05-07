@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SnackBarHelper {
-  SnackBarHelper._(); // يمنع إنشاء instance
+  SnackBarHelper._();
+
+  // ─── بـ context (للاستخدام العادي) ──────────────────────────────────────
 
   static void showSuccess(BuildContext context, {required String message}) {
-    _show(
-      context,
+    _showWithMessenger(
+      ScaffoldMessenger.of(context),
       message: message,
       backgroundColor: Colors.green,
       icon: Icons.check_circle,
@@ -14,8 +16,8 @@ class SnackBarHelper {
   }
 
   static void showError(BuildContext context, {required String message}) {
-    _show(
-      context,
+    _showWithMessenger(
+      ScaffoldMessenger.of(context),
       message: message,
       backgroundColor: Colors.red,
       icon: Icons.error,
@@ -23,34 +25,73 @@ class SnackBarHelper {
   }
 
   static void showInfo(BuildContext context, {required String message}) {
-    _show(
-      context,
+    _showWithMessenger(
+      ScaffoldMessenger.of(context),
       message: message,
       backgroundColor: Colors.blue,
       icon: Icons.info,
     );
   }
 
-  static void _show(
-    BuildContext context, {
+  // ─── بـ ScaffoldMessengerState (بعد async gaps) ───────────────────────
+  // استخدامه:
+  //   final messenger = ScaffoldMessenger.of(context); // قبل الـ await
+  //   await someAsyncCall();
+  //   SnackBarHelper.showErrorWithMessenger(messenger, message: '...');
+
+  static void showSuccessWithMessenger(
+    ScaffoldMessengerState messenger, {
+    required String message,
+  }) => _showWithMessenger(
+    messenger,
+    message: message,
+    backgroundColor: Colors.green,
+    icon: Icons.check_circle,
+  );
+
+  static void showErrorWithMessenger(
+    ScaffoldMessengerState messenger, {
+    required String message,
+  }) => _showWithMessenger(
+    messenger,
+    message: message,
+    backgroundColor: Colors.red,
+    icon: Icons.error,
+  );
+
+  static void showInfoWithMessenger(
+    ScaffoldMessengerState messenger, {
+    required String message,
+  }) => _showWithMessenger(
+    messenger,
+    message: message,
+    backgroundColor: Colors.blue,
+    icon: Icons.info,
+  );
+
+  // ─── Private ─────────────────────────────────────────────────────────────
+
+  static void _showWithMessenger(
+    ScaffoldMessengerState messenger, {
     required String message,
     required Color backgroundColor,
     required IconData icon,
   }) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    ScaffoldMessenger.of(context).showSnackBar(
+    messenger.clearSnackBars();
+    messenger.showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: backgroundColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
         margin: EdgeInsets.all(12.w),
         content: Row(
           children: [
             Icon(icon, color: Colors.white),
             SizedBox(width: 10.w),
             Expanded(
-              child: Text(message, style: TextStyle(color: Colors.white)),
+              child: Text(message, style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),

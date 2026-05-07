@@ -36,15 +36,20 @@ class TokenService {
     return prefs.getString(_refreshTokenExpirationKey);
   }
 
-  /// بيرجع true لو الـ refresh token منتهي أو مش موجود
+  /// بيرجع true لو الـ refresh token منتهي فعلاً
+  /// لو مش موجود أو في error → جرب الـ refresh ومتعملش logout
   static Future<bool> isRefreshTokenExpired() async {
     final expirationStr = await getRefreshTokenExpiration();
-    if (expirationStr == null || expirationStr.isEmpty) return true;
+
+    // ✅ لو مش موجودة → اعتبرها مش منتهية وجرب الـ refresh
+    if (expirationStr == null || expirationStr.isEmpty) return false;
+
     try {
       final expiration = DateTime.parse(expirationStr).toUtc();
       return DateTime.now().toUtc().isAfter(expiration);
     } catch (_) {
-      return true;
+      // ✅ لو في error في الـ parse → جرب الـ refresh
+      return false;
     }
   }
 

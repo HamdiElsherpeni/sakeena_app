@@ -30,7 +30,7 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await _repo.login(
         LoginRequestModel(email: email, password: password),
       );
-      // ✅ احفظ refreshTokenExpiration من الريسبونس
+      print('🟢 refreshTokenExpiration: ${response.refreshTokenExpiration}');
       await TokenService.saveTokens(
         token: response.token,
         refreshToken: response.refreshToken,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/home/presentation/view/widgets/home_services_item.dart';
 
@@ -34,7 +35,7 @@ class HomeServicesGrid extends StatelessWidget {
               title: 'الفحص الذكي',
               subtitle: 'تحليل الأشعة لتحديد نوع الورم',
               icon: Icons.crop_free,
-              backgroundColor: Color(0xFFEDE7F6),
+              backgroundColor: AppColors.noticeBorder,
               iconColor: Color(0xFF7E57C2),
               onTap: () {
                 context.push(AppRouter.kSmartAcanView);
@@ -46,6 +47,9 @@ class HomeServicesGrid extends StatelessWidget {
               icon: Icons.assignment_outlined,
               backgroundColor: Color(0xFFF3E5F5),
               iconColor: Color(0xFFAB47BC),
+              onTap: () {
+                context.push(AppRouter.kAssessmentView);
+              },
             ),
             HomeServiceItem(
               title: 'دليلك الصحي',
@@ -53,12 +57,15 @@ class HomeServicesGrid extends StatelessWidget {
               icon: Icons.open_in_new,
               backgroundColor: Color(0xFFE3F2FD),
               iconColor: Color(0xFF42A5F5),
+              onTap: () {
+                context.push(AppRouter.kSelfExamGuideScreen);
+              },
             ),
             HomeServiceItem(
               title: 'فحص ذاتي',
               subtitle: 'تعلمي كيفية الفحص الذاتي بسهولة',
-              icon: Icons.favorite_border,
-              backgroundColor: Color(0xFFFCE4EC),
+              icon: Icons.favorite_outline,
+              backgroundColor: AppColors.noticeBorder,
               iconColor: Color(0xFFEC407A),
             ),
           ],

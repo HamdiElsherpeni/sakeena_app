@@ -46,18 +46,18 @@ class HomeAppBar extends StatelessWidget {
             // Name or Skeleton
             Row(
               children: [
+                Image.asset(AppAssets.logo, width: 35.w, height: 35.h),
                 isLoading
                     ? _skeleton()
                     : Text(
-                        'أهلا, ${user.firstName} ${user.lastName}',
+                        'أهلا ${user.firstName} ${user.lastName}',
                         style: TextStyle(
-                          fontSize: 20.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2D2D2D),
                         ),
                       ),
                 SizedBox(width: 8.w),
-                Image.asset(AppAssets.logo, width: 35.w, height: 35.h),
               ],
             ),
 

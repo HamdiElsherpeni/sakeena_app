@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sakeena_app/core/resources/app_colors.dart';
 
 class MedicalTipWidget extends StatelessWidget {
   final String header;
@@ -58,7 +59,7 @@ class MedicalTipWidget extends StatelessWidget {
                   body,
                   style: TextStyle(
                     fontSize: 11.sp,
-                    color: Colors.grey,
+                    color: AppColors.primary,
                     height: 1.6,
                   ),
                 ),

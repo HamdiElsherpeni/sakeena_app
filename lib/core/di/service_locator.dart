@@ -23,6 +23,7 @@ import 'package:sakeena_app/features/smart_acan/logic/cubit/scan_cubit.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
+  // ── Chat ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<GeminiService>(() => GeminiService());
   getIt.registerLazySingleton<SpeechToTextService>(() => SpeechToTextService());
   getIt.registerLazySingleton<BaseChatDataSource>(
@@ -40,6 +41,7 @@ void setupServiceLocator() {
       getIt<SpeechToTextService>(),
     ),
   );
+
   // ── Auth ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<AuthRemoteDatasource>(
     () => AuthRemoteDatasource(),
@@ -47,9 +49,8 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<AuthRepo>(
     () => AuthRepoImpl(getIt<AuthRemoteDatasource>()),
   );
-
-  // ✅ Singleton مش Factory عشان الـ user يفضل محفوظ
-  getIt.registerLazySingleton<AuthCubit>(() => AuthCubit(getIt<AuthRepo>()));
+  // ✅ Factory عشان يعمل instance جديد كل مرة ومفيش مشكلة isClosed
+  getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<AuthRepo>()));
 
   // ── Account ────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<AccountRemoteDatasource>(
@@ -59,6 +60,8 @@ void setupServiceLocator() {
     () => AccountRepoImpl(getIt<AccountRemoteDatasource>()),
   );
   getIt.registerFactory<AccountCubit>(() => AccountCubit(getIt<AccountRepo>()));
+
+  // ── Scan ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<ScanRemoteDatasource>(
     () => ScanRemoteDatasource(),
   );

@@ -8,9 +8,10 @@ import 'package:sakeena_app/core/services/permission_service.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/smart_acan/logic/cubit/scan_cubit.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/analyze_button.dart';
-import 'package:sakeena_app/features/smart_acan/ui/view/widgets/capture_button.dart';
+import 'package:sakeena_app/features/smart_acan/ui/view/widgets/capture_image_button.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/medical_disclaimer_card.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/scan_header.dart';
+import 'package:sakeena_app/features/smart_acan/ui/view/widgets/scan_history_button.dart';
 import 'package:sakeena_app/features/smart_acan/ui/view/widgets/upload_card.dart';
 import 'camera_preview_screen.dart';
 
@@ -93,10 +94,13 @@ class _SmartScanViewBodyState extends State<SmartScanViewBody> {
     }
   }
 
-  // ✅ بنبعت الصورة للـ cubit
   void _analyzeImage() {
     if (_capturedImage == null) return;
     context.read<ScanCubit>().predict(_capturedImage!);
+  }
+
+  void _onScanHistoryTapped() {
+    context.push(AppRouter.kExamHistoryScreen);
   }
 
   @override
@@ -108,13 +112,8 @@ class _SmartScanViewBodyState extends State<SmartScanViewBody> {
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
-
-        // ✅ لما ينجح بنبعت الـ result مع الـ navigation
         if (state is ScanSuccess) {
-          context.push(
-            AppRouter.kscanResultScreen,
-            extra: state.result, // ✅ بنبعت الـ result هنا
-          );
+          context.push(AppRouter.kscanResultScreen, extra: state.result);
         }
       },
       builder: (context, state) {
@@ -172,20 +171,25 @@ class _SmartScanViewBodyState extends State<SmartScanViewBody> {
                   SizedBox(height: 12.h),
                 ],
 
-                CaptureButton(onPressed: isLoading ? null : _onCaptureTapped),
+                CaptureImageButton(
+                  onPressed: isLoading ? null : _onCaptureTapped,
+                ),
+                SizedBox(height: 12.h),
+
+                // ── سجل الفحوصات ──────────────────────────────────────
+                ScanHistoryButton(
+                  onPressed: isLoading ? null : _onScanHistoryTapped,
+                ),
                 SizedBox(height: 16.h),
 
                 if (_capturedImage != null)
-                  AnalyzeButton(
-                    onPressed: isLoading ? null : _analyzeImage, // ✅
-                  ),
+                  AnalyzeButton(onPressed: isLoading ? null : _analyzeImage),
 
                 SizedBox(height: 16.h),
                 const MedicalDisclaimerCard(),
               ],
             ),
 
-            // ✅ Loading overlay
             if (isLoading)
               SizedBox.expand(
                 child: ColoredBox(

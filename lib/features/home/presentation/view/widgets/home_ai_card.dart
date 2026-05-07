@@ -17,10 +17,10 @@ class HomeAiCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end, // ✅ عشان عربي
+        crossAxisAlignment: CrossAxisAlignment.start, // ✅ عشان عربي
         children: [
           Text(
-            'انا سكينة،\nمساعدتك الشخصية بالAI',
+            'انا سكينة،\nمساعدك الشخصي بالAI',
             textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
             style: TextStyle(
@@ -42,7 +42,7 @@ class HomeAiCard extends StatelessWidget {
                 context.go(AppRouter.kChatView);
               },
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   Icon(Icons.arrow_back, color: AppColors.primary, size: 18),
                   SizedBox(width: 8.w),
