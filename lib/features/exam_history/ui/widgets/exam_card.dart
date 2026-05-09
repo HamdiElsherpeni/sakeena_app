@@ -11,17 +11,15 @@ class ExamCard extends StatelessWidget {
     required this.date,
     required this.status,
     required this.riskLabel,
-    this.onDownload,
+    this.onView,
     this.onTap,
-    this.isDownloadLoading = false,
   });
 
   final String date;
   final ExamStatus status;
   final String riskLabel;
-  final VoidCallback? onDownload;
+  final VoidCallback? onView;
   final VoidCallback? onTap;
-  final bool isDownloadLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +35,11 @@ class ExamCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _DownloadButton(
-              onTap: isDownloadLoading ? null : onDownload,
-              isLoading: isDownloadLoading,
-            ),
+            ExamStatusIcon(status: status),
             SizedBox(width: 12.w),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'تقرير الفحص',
@@ -66,7 +61,7 @@ class ExamCard extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ExamStatusBadge(status: status),
                       SizedBox(width: 10.w),
@@ -77,7 +72,7 @@ class ExamCard extends StatelessWidget {
               ),
             ),
             SizedBox(width: 12.w),
-            ExamStatusIcon(status: status),
+            _ViewButton(onTap: onView),
           ],
         ),
       ),
@@ -96,11 +91,10 @@ class ExamCard extends StatelessWidget {
   }
 }
 
-class _DownloadButton extends StatelessWidget {
-  const _DownloadButton({this.onTap, this.isLoading = false});
+class _ViewButton extends StatelessWidget {
+  const _ViewButton({this.onTap});
 
   final VoidCallback? onTap;
-  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -114,19 +108,11 @@ class _DownloadButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(color: AppColors.border, width: 1.w),
         ),
-        child: isLoading
-            ? Padding(
-                padding: EdgeInsets.all(9.w),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: AppColors.primary,
-                ),
-              )
-            : Icon(
-                Icons.download_rounded,
-                size: 18.sp,
-                color: AppColors.primary,
-              ),
+        child: Icon(
+          Icons.remove_red_eye_outlined,
+          size: 18.sp,
+          color: AppColors.primary,
+        ),
       ),
     );
   }

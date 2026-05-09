@@ -9,7 +9,7 @@ class AppColors {
 
   static const Color skipText = Color(0xff8B5E3C);
 
-  static const Color kprimaryColor = Color(0xffFCF7F4);
+  static const Color kprimaryColor = Color.fromARGB(255, 243, 237, 229);
 
   static const Color white = Color(0xffFFFFFF);
 

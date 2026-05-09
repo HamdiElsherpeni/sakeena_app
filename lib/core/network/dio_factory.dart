@@ -10,11 +10,20 @@ class DioFactory {
 
   static const _defaultTimeout = Duration(seconds: 30);
   static Dio? _dioInstance;
-
   static void Function()? onLogout;
 
   static bool _isRefreshing = false;
   static final List<Completer<String?>> _refreshQueue = [];
+
+  static const List<String> _authPaths = [
+    '/Auth',
+    '/Auth/register',
+    '/Auth/refresh',
+    '/Auth/revoke-refresh-token',
+    '/Auth/forget-password',
+    '/Auth/verify-code',
+    '/Auth/reset-password',
+  ];
 
   static Dio get dio {
     _dioInstance ??= _createDio();
@@ -56,117 +65,109 @@ class DioFactory {
   static InterceptorsWrapper _buildAuthInterceptor(Dio dio) {
     return InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final isAuthEndpoint = _isAuthPath(options.path);
-
-        if (!isAuthEndpoint) {
+        final isAuth = _isAuthPath(options.path);
+        if (!isAuth) {
           final token = await TokenService.getToken();
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
         }
-
         handler.next(options);
       },
 
       onError: (DioException error, handler) async {
         final statusCode = error.response?.statusCode;
-        final isAuthEndpoint = _isAuthPath(error.requestOptions.path);
+        final isAuth = _isAuthPath(error.requestOptions.path);
 
-        print('🔴 Error path: ${error.requestOptions.path}');
-        print('🔴 isAuthEndpoint: $isAuthEndpoint');
-        print('🔴 statusCode: $statusCode');
+        if (statusCode != 401 || isAuth) {
+          return handler.next(error);
+        }
 
-        if (statusCode == 401 && !isAuthEndpoint) {
-          final refreshExpired = await TokenService.isRefreshTokenExpired();
-          print('🔄 refreshExpired: $refreshExpired');
-          print(
-            '🔄 expiration: ${await TokenService.getRefreshTokenExpiration()}',
-          );
+        // ── تحقق من انتهاء الـ refresh token ──────────────────────────
+        final refreshExpired = await TokenService.isRefreshTokenExpired();
+        if (refreshExpired) {
+          debugPrint('🔴 Refresh token expired → logout');
+          _resolveQueue(null);
+          _isRefreshing = false;
+          await _handleLogout();
+          return handler.next(error);
+        }
 
-          if (refreshExpired) {
-            debugPrint('🔴 Refresh token expired → logging out');
-            _resolveQueue(null);
-            _isRefreshing = false;
-            await _handleLogout();
-            return handler.next(error);
-          }
-
-          if (_isRefreshing) {
-            debugPrint('⏳ Refresh in progress → queuing request');
-            final completer = Completer<String?>();
-            _refreshQueue.add(completer);
-            try {
-              final newToken = await completer.future;
-              if (newToken == null) return handler.next(error);
-              final retryResponse = await _retryRequest(
-                error.requestOptions,
-                dio,
-                newToken,
-              );
-              return handler.resolve(retryResponse);
-            } catch (_) {
-              return handler.next(error);
-            }
-          }
-
-          _isRefreshing = true;
-          debugPrint('🔄 Starting token refresh...');
-
+        // ── لو في refresh جاري، أضف الطلب للقائمة ─────────────────────
+        if (_isRefreshing) {
+          debugPrint('⏳ Queuing request while refreshing...');
+          final completer = Completer<String?>();
+          _refreshQueue.add(completer);
           try {
-            final newToken = await _tryRefreshToken();
-
-            if (newToken != null) {
-              debugPrint('✅ Token refreshed successfully');
-              _resolveQueue(newToken);
-              _isRefreshing = false;
-
-              final retryResponse = await _retryRequest(
-                error.requestOptions,
-                dio,
-                newToken,
-              );
-              return handler.resolve(retryResponse);
-            } else {
-              debugPrint('🔴 Token refresh failed → logging out');
-              _resolveQueue(null);
-              _isRefreshing = false;
-              await _handleLogout();
-              return handler.next(error);
-            }
-          } catch (e) {
-            debugPrint('🔴 Token refresh exception: $e → logging out');
-            _resolveQueue(null);
-            _isRefreshing = false;
-            await _handleLogout();
+            final newToken = await completer.future;
+            if (newToken == null) return handler.next(error);
+            final retryResponse = await _retryRequest(
+              error.requestOptions,
+              dio,
+              newToken,
+            );
+            return handler.resolve(retryResponse);
+          } catch (_) {
             return handler.next(error);
           }
         }
 
-        handler.next(error);
+        // ── ابدأ الـ refresh ───────────────────────────────────────────
+        _isRefreshing = true;
+        debugPrint('🔄 Refreshing token...');
+
+        try {
+          final newToken = await _tryRefreshToken();
+
+          if (newToken != null) {
+            debugPrint('✅ Token refreshed');
+            _resolveQueue(newToken);
+            _isRefreshing = false;
+            final retryResponse = await _retryRequest(
+              error.requestOptions,
+              dio,
+              newToken,
+            );
+            return handler.resolve(retryResponse);
+          } else {
+            debugPrint('🔴 Refresh failed → logout');
+            _resolveQueue(null);
+            _isRefreshing = false;
+            await _handleLogout();
+            return handler.next(error);
+          }
+        } catch (e) {
+          debugPrint('🔴 Refresh exception: $e → logout');
+          _resolveQueue(null);
+          _isRefreshing = false;
+          await _handleLogout();
+          return handler.next(error);
+        }
       },
     );
   }
 
-  // ✅ الحل: استخدام full URL بدون baseUrl
   static Future<String?> _tryRefreshToken() async {
     try {
       final token = await TokenService.getToken();
       final refreshToken = await TokenService.getRefreshToken();
-      if (token == null || refreshToken == null) {
-        debugPrint('🔴 No token or refreshToken found in storage');
-        return null;
-      }
 
-      final plainDio = Dio();
-
-      print(
-        '🔄 Calling refresh: ${ApiEndpoints.baseUrl}${ApiEndpoints.refresh}',
+      debugPrint('🔑 token: $token');
+      debugPrint('🔑 refreshToken: $refreshToken');
+      debugPrint(
+        '🌐 refresh URL: ${ApiEndpoints.baseUrl}${ApiEndpoints.refresh}',
       );
 
-      final response = await plainDio.post(
-        '${ApiEndpoints.baseUrl}${ApiEndpoints.refresh}',
-        data: {'token': token, 'refreshToken': refreshToken},
-        options: Options(
+      if (token == null || refreshToken == null) {
+        debugPrint('🔴 null tokens');
+        return null;
+      }
+      // ... باقي الكود
+      final plainDio = Dio(
+        BaseOptions(
+          baseUrl: ApiEndpoints.baseUrl,
+          connectTimeout: _defaultTimeout,
+          receiveTimeout: _defaultTimeout,
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -174,20 +175,19 @@ class DioFactory {
         ),
       );
 
+      final response = await plainDio.post(
+        ApiEndpoints.refresh,
+        data: {'token': token, 'refreshToken': refreshToken},
+      );
+
       final data = response.data;
-      if (data is! Map) {
-        debugPrint('🔴 Refresh response is not a Map: $data');
-        return null;
-      }
+      if (data is! Map) return null;
 
       final newToken = data['token'] as String?;
       final newRefresh = data['refreshToken'] as String?;
       final newExpiration = data['refreshTokenExpiration'] as String?;
 
-      if (newToken == null || newToken.isEmpty) {
-        debugPrint('🔴 New token is null or empty in refresh response');
-        return null;
-      }
+      if (newToken == null || newToken.isEmpty) return null;
 
       await TokenService.saveTokens(
         token: newToken,
@@ -195,12 +195,47 @@ class DioFactory {
         refreshTokenExpiration: newExpiration,
       );
 
-      debugPrint('✅ Tokens saved successfully after refresh');
       return newToken;
     } catch (e) {
-      debugPrint('🔴 _tryRefreshToken exception: $e');
+      debugPrint('🔴 _tryRefreshToken error: $e');
       return null;
     }
+  }
+
+  static Future<void> _revokeRefreshToken() async {
+    try {
+      final token = await TokenService.getToken();
+      final refreshToken = await TokenService.getRefreshToken();
+      if (token == null || refreshToken == null) return;
+
+      final plainDio = Dio(
+        BaseOptions(
+          baseUrl: ApiEndpoints.baseUrl,
+          connectTimeout: _defaultTimeout,
+          receiveTimeout: _defaultTimeout,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      await plainDio.post(
+        ApiEndpoints.revoke,
+        data: {'refreshToken': refreshToken},
+      );
+
+      debugPrint('✅ Refresh token revoked');
+    } catch (e) {
+      debugPrint('⚠️ Revoke failed (ignored): $e');
+    }
+  }
+
+  /// استدعي الدالة دي لما المستخدم يضغط تسجيل الخروج
+  static Future<void> logout() async {
+    await _revokeRefreshToken();
+    await _handleLogout();
   }
 
   static Future<Response> _retryRequest(
@@ -236,20 +271,7 @@ class DioFactory {
 
   static bool _isAuthPath(String path) {
     return _authPaths.any(
-      (authPath) =>
-          path == authPath ||
-          path.endsWith(authPath) ||
-          path == '/Auth' && !path.contains('/Auth/'),
+      (authPath) => path == authPath || path.endsWith(authPath),
     );
   }
-
-  static const List<String> _authPaths = [
-    '/Auth',
-    '/Auth/register',
-    '/Auth/refresh',
-    '/Auth/revoke-refresh-token',
-    '/Auth/forget-password',
-    '/Auth/verify-code',
-    '/Auth/reset-password',
-  ];
 }

@@ -21,7 +21,7 @@ class SortFilterBar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           GestureDetector(
             onTap: () => _showFilterSheet(context),

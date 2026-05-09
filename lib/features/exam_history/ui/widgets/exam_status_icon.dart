@@ -10,14 +10,14 @@ class ExamStatusIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 44.w,
-      height: 44.w,
+      width: 66.w,
+      height: 66.h,
       decoration: BoxDecoration(
         color: _backgroundColor,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: _borderColor, width: 1.2.w),
       ),
-      child: Icon(_icon, size: 22.sp, color: _iconColor),
+      child: Icon(_icon, size: 33.sp, color: _iconColor),
     );
   }
 

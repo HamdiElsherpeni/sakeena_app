@@ -12,7 +12,7 @@ class NetworkInterceptor extends Interceptor {
   static bool _isRefreshing = false;
   static final List<Completer<String?>> _pendingRequests = [];
 
-  static List<String> _authPaths = [
+  static final List<String> _authPaths = [
     ApiEndpoints.login,
     ApiEndpoints.register,
     ApiEndpoints.forgetPassword,

@@ -30,7 +30,7 @@ class RiskFactorRow extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 13.sp,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               color: const Color(0xff2D1A1A),
             ),
           ),

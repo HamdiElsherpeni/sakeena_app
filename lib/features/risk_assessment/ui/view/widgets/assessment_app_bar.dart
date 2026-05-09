@@ -48,7 +48,17 @@ class AssessmentAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(onTap: onBack, child: CustomCircleAvatar()),
+            GestureDetector(
+              onTap: onBack,
+              child: CircleAvatar(
+                radius: 21.r,
+                child: CircleAvatar(
+                  radius: 20.r,
+                  backgroundColor: AppColors.kprimaryColor,
+                  child: Icon(Icons.arrow_back),
+                ),
+              ),
+            ),
 
             Text(
               'نتيجة التقييم',

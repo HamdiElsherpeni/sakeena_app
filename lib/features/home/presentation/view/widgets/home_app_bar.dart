@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/resources/app_assets.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
+import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/account/logic/cubit/account_cubit.dart';
 import 'package:sakeena_app/features/account/logic/cubit/account_state.dart';
 
@@ -62,26 +64,31 @@ class HomeAppBar extends StatelessWidget {
             ),
 
             // Bell icon
-            Stack(
-              children: [
-                Icon(
-                  Icons.notifications_none,
-                  size: 28,
-                  color: Color(0xFF2D2D2D),
-                ),
-                Positioned(
-                  top: 0.h,
-                  right: 0.w,
-                  child: Container(
-                    width: 8.w,
-                    height: 8.h,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
+            GestureDetector(
+              onTap: () {
+                context.push(AppRouter.kNotificationView);
+              },
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.notifications_none,
+                    size: 28,
+                    color: Color(0xFF2D2D2D),
+                  ),
+                  Positioned(
+                    top: 0.h,
+                    right: 0.w,
+                    child: Container(
+                      width: 8.w,
+                      height: 8.h,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         );

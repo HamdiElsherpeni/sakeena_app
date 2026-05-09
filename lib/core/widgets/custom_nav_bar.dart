@@ -15,7 +15,7 @@ class CustomNavBar extends StatelessWidget {
       case 0:
         context.go(AppRouter.kprofileview);
       case 1:
-        break;
+        context.go(AppRouter.kEducationView);
       case 2:
         context.go(AppRouter.kSmartAcanView);
       case 3:
@@ -24,7 +24,7 @@ class CustomNavBar extends StatelessWidget {
   }
 
   void _onChatTap(BuildContext context) {
-    // context.go(AppRouter.kChatView);
+    context.go(AppRouter.kChatView);
   }
 
   Widget _buildNavItem(BuildContext context, int index, List<_NavItem> items) {
@@ -39,7 +39,9 @@ class CustomNavBar extends StatelessWidget {
           vertical: isSelected ? 12.h : 10.h,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.skipBg : Colors.transparent,
+          color: isSelected
+              ? const Color.fromARGB(255, 229, 228, 226)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(30.r),
         ),
         child: Row(

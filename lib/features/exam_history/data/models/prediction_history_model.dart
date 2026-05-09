@@ -1,32 +1,42 @@
-// GET /api/PredictionHistory
-// Response: List<PredictionHistoryModel>
-//
-// GET /api/PredictionHistory/with-status?status=Benign
-// Response: List<PredictionHistoryModel>
-
 class PredictionHistoryModel {
   final int id;
   final String predictionDate; // ISO string من السيرفر
   final String status; // "Benign" | "Malignant" | "Unknown"
   final String imageUrl;
+  final double confidence;
 
   const PredictionHistoryModel({
     required this.id,
     required this.predictionDate,
     required this.status,
     required this.imageUrl,
+    this.confidence = 0.0,
   });
 
   factory PredictionHistoryModel.fromJson(Map<String, dynamic> json) {
     return PredictionHistoryModel(
-      id: json['id'] as int,
-      predictionDate: json['predictionDate'] as String? ?? '',
-      status: json['status'] as String? ?? 'Unknown',
+      // السيرفر ممكن يبعت "id" أو مفيش id خالص → نحط 0 fallback
+      id: json['id'] as int? ?? 0,
+
+      // السيرفر بيبعت "createdAt" مش "predictionDate"
+      predictionDate:
+          json['predictionDate'] as String? ??
+          json['createdAt'] as String? ??
+          '',
+
+      // السيرفر بيبعت "diagnosis" مش "status"
+      status:
+          json['status'] as String? ??
+          json['diagnosis'] as String? ??
+          'Unknown',
+
       imageUrl: json['imageUrl'] as String? ?? '',
+
+      confidence: (json['confidence'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
-  /// تحويل الـ status من السيرفر لـ ExamStatus
+  /// تحويل الـ status من السيرفر لـ PredictionStatus
   /// Benign    → safe
   /// Malignant → danger
   /// Unknown   → moderate

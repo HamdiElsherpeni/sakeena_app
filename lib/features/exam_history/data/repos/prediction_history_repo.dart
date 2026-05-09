@@ -2,8 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:sakeena_app/core/errors/failer.dart';
 import 'package:sakeena_app/core/network/api_endpoints.dart';
 import 'package:sakeena_app/core/network/api_services.dart';
-import 'package:sakeena_app/features/smart_acan/data/models/prediction_history_model.dart';
-import '../models/prediction_history_model.dart' hide PredictionHistoryModel;
+import '../models/prediction_history_model.dart';
 
 abstract class PredictionHistoryRepo {
   Future<Either<Failer, List<PredictionHistoryModel>>> getHistory();
@@ -67,7 +66,6 @@ class PredictionHistoryRepoImpl implements PredictionHistoryRepo {
     }
   }
 
-  // GET /api/PredictionHistory/report  (بيرجع PDF أو URL)
   @override
   Future<Either<Failer, String>> downloadReport(int predictionId) async {
     try {

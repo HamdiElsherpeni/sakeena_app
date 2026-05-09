@@ -8,9 +8,15 @@ import 'package:sakeena_app/features/auth/presentation/view/forget_pass_view.dar
 import 'package:sakeena_app/features/auth/presentation/view/login_view.dart';
 import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
 import 'package:sakeena_app/features/chat/presentation/view/chat_view.dart';
+import 'package:sakeena_app/features/education/data/models/article_model.dart';
+import 'package:sakeena_app/features/education/ui/view/education_screen.dart';
+import 'package:sakeena_app/features/education/ui/view/widgets/article_screen.dart';
+import 'package:sakeena_app/features/exam_history/data/models/prediction_history_model.dart';
 import 'package:sakeena_app/features/exam_history/ui/exam_history_screen.dart';
+import 'package:sakeena_app/features/exam_history/ui/widgets/exam_report_screen.dart';
 import 'package:sakeena_app/features/home/presentation/view/home_view.dart';
 import 'package:sakeena_app/core/widgets/custom_nav_bar.dart';
+import 'package:sakeena_app/features/notifications/ui/view/notifications_screen.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/on_bording_view.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view/wellcome_view.dart';
 import 'package:sakeena_app/features/account/presentation/view/change_password.dart';
@@ -42,8 +48,11 @@ abstract class AppRouter {
   static String kAssessmentView = '/AssessmentView';
   static String kSelfExamGuideScreen = '/SelfExamGuideScreen';
   static String kExamHistoryScreen = '/ExamHistoryScreen';
+  static String kExamReportScreen = '/ExamReportScreen';
+  static String kNotificationView = '/NotificationView';
+  static String kEducationView = '/EducationView';
+  static String kArticleView = '/ArticleView';
 
-  // ── الـ routes اللي مش محتاجة توكن ──────────────────────────────────────
   static const _publicRoutes = [
     '/',
     '/login',
@@ -64,27 +73,41 @@ abstract class AppRouter {
 
   static GoRouter _buildRouter() => GoRouter(
     initialLocation: kSplash,
-
-    // ── redirect: تحقق من التوكن قبل أي navigation ─────────────────
     redirect: (context, state) async {
       final location = state.matchedLocation;
       final isPublic = _publicRoutes.contains(location);
-
-      // الـ public routes تعدي بدون تحقق
       if (isPublic) return null;
-
       final hasToken = await TokenService.hasToken();
-
-      // مش عنده توكن وبيحاول يدخل route محمي → روح للـ login
       if (!hasToken) return kLogin;
-
       return null;
     },
-
     routes: [
+      GoRoute(
+        path: kArticleView,
+        builder: (context, state) {
+          final article = state.extra as ArticleModel;
+          return ArticleScreen(article: article);
+        },
+      ),
+      // ── بدون NavBar ────────────────────────────────────────────────
+      GoRoute(
+        path: kChatView, // ← شيلناه من الـ Shell
+        builder: (context, state) => const ChatView(),
+      ),
+      GoRoute(
+        path: kNotificationView,
+        builder: (context, state) => const NotificationsScreen(),
+      ),
       GoRoute(
         path: kExamHistoryScreen,
         builder: (context, state) => const ExamHistoryScreen(),
+      ),
+      GoRoute(
+        path: kExamReportScreen,
+        builder: (context, state) {
+          final exam = state.extra as PredictionHistoryModel;
+          return ExamReportScreen(exam: exam);
+        },
       ),
       GoRoute(
         path: kSelfExamGuideScreen,
@@ -102,7 +125,6 @@ abstract class AppRouter {
           return ScanResultScreen(result: result);
         },
       ),
-      GoRoute(path: kChatView, builder: (context, state) => const ChatView()),
       GoRoute(
         path: konBording,
         builder: (context, state) => const OnBoardingView(),
@@ -131,6 +153,10 @@ abstract class AppRouter {
         builder: (context, state, child) => MainLayout(child: child),
         routes: [
           GoRoute(
+            path: kEducationView,
+            builder: (context, state) => const EducationScreen(),
+          ),
+          GoRoute(
             path: khomeView,
             builder: (context, state) => const HomeView(),
           ),
@@ -158,8 +184,9 @@ class MainLayout extends StatelessWidget {
 
   int _getIndex(String location) {
     if (location == AppRouter.kprofileview) return 0;
-    if (location == AppRouter.khomeView) return 3;
+    if (location == AppRouter.kEducationView) return 1;
     if (location == AppRouter.kSmartAcanView) return 2;
+    if (location == AppRouter.khomeView) return 3;
     return 3;
   }
 

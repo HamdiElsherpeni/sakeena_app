@@ -5,7 +5,7 @@ import 'package:sakeena_app/features/chat/data/models/send_message_request_model
 
 class GeminiService {
   static const String _baseUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
   static const String _apiKey = 'AIzaSyBDF_uBRlDUpOMir3HUGELOFlKDn6UwiDw';
   final Dio _dio = Dio();
 

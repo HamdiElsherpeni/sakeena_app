@@ -120,36 +120,6 @@ class AssessmentResultCard extends StatelessWidget {
         RiskFactorRow(label: 'العوامل الوراثية', riskLevel: geneticFactors),
 
         SizedBox(height: 16.h),
-
-        // ── Recommendations box ────────────────────────────────────
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16.r),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFFBEA),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: const Color(0xffE8C97A), width: 1.w),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  recommendation,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: const Color(0xff7A6060),
-                    height: 1.6,
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Text('♡', style: TextStyle(fontSize: 16.sp)),
-            ],
-          ),
-        ),
-        SizedBox(height: 20.h),
         CoustemElevetedBoutten(
           text: 'اعادة التقييم الصحي  ',
           onPressed: () {
@@ -158,6 +128,51 @@ class AssessmentResultCard extends StatelessWidget {
           backgroundcolor: AppColors.primary,
           textcolor: Colors.white,
         ),
+        SizedBox(height: 16.h),
+        // ── Recommendations box ────────────────────────────────────
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16.r),
+          decoration: BoxDecoration(
+            color: const Color(0xffFFF5CE),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: const Color(0xffE8C97A), width: 1.w),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('♡', style: TextStyle(fontSize: 20.sp)),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'نصيحة اليوم',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xff7A6060),
+                      ),
+                    ),
+                    Text(
+                      recommendation,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: const Color(0xff7A6060),
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8.w),
+            ],
+          ),
+        ),
+        SizedBox(height: 20.h),
       ],
     );
   }

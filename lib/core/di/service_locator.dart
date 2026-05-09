@@ -15,6 +15,8 @@ import 'package:sakeena_app/features/chat/data/services/stt_service.dart';
 import 'package:sakeena_app/features/chat/domain/repositories/chat_repository.dart';
 import 'package:sakeena_app/features/chat/domain/usecases/send_message_usecase.dart';
 import 'package:sakeena_app/features/chat/presentation/view_model/send_message_cubit.dart';
+import 'package:sakeena_app/features/notifications/data/repos/notification_repo.dart';
+import 'package:sakeena_app/features/notifications/logic/cubit/notification_cubit.dart';
 import 'package:sakeena_app/features/smart_acan/data/data_source/scan_remote_datasource.dart';
 import 'package:sakeena_app/features/smart_acan/data/repo/scan_repo.dart';
 import 'package:sakeena_app/features/smart_acan/data/repo/scan_repo_impl.dart';
@@ -49,7 +51,6 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<AuthRepo>(
     () => AuthRepoImpl(getIt<AuthRemoteDatasource>()),
   );
-  // ✅ Factory عشان يعمل instance جديد كل مرة ومفيش مشكلة isClosed
   getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt<AuthRepo>()));
 
   // ── Account ────────────────────────────────────────────────────────────────
@@ -69,4 +70,12 @@ void setupServiceLocator() {
     () => ScanRepoImpl(getIt<ScanRemoteDatasource>()),
   );
   getIt.registerFactory<ScanCubit>(() => ScanCubit(getIt<ScanRepo>()));
+
+  // ── Notifications ──────────────────────────────────────────────────────────
+  getIt.registerLazySingleton<NotificationRepo>(
+    () => const NotificationRepoImpl(),
+  );
+  getIt.registerFactory<NotificationCubit>(
+    () => NotificationCubit(getIt<NotificationRepo>()),
+  );
 }
