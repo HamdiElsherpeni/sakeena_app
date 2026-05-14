@@ -20,6 +20,7 @@ class SakeenaApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Rubik',
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
       ),
     );
   }

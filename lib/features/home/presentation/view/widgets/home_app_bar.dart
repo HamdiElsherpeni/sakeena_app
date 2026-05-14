@@ -7,6 +7,7 @@ import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/account/logic/cubit/account_cubit.dart';
 import 'package:sakeena_app/features/account/logic/cubit/account_state.dart';
+import 'package:sakeena_app/features/notifications/logic/cubit/notification_cubit.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({super.key});
@@ -24,31 +25,32 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AccountCubit, AccountState>(
-      builder: (context, state) {
-        final cubit = context.read<AccountCubit>();
-        final user = cubit.user;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Settings
+        Container(
+          width: 38.w,
+          height: 38.h,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Icon(Icons.tune, color: AppColors.primary, size: 20),
+        ),
 
-        final isLoading = state is AccountLoading || user == null;
+        // Name
+        BlocBuilder<AccountCubit, AccountState>(
+          builder: (context, state) {
+            final cubit = context.read<AccountCubit>();
+            final user = cubit.user;
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Settings icon
-            Container(
-              width: 38.w,
-              height: 38.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Icon(Icons.tune, color: AppColors.primary, size: 20),
-            ),
+            final isLoading = state is AccountLoading || user == null;
 
-            // Name or Skeleton
-            Row(
+            return Row(
               children: [
                 Image.asset(AppAssets.logo, width: 35.w, height: 35.h),
+                SizedBox(width: 6.w),
                 isLoading
                     ? _skeleton()
                     : Text(
@@ -56,43 +58,56 @@ class HomeAppBar extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D2D2D),
+                          color: const Color(0xFF2D2D2D),
                         ),
                       ),
-                SizedBox(width: 8.w),
               ],
-            ),
+            );
+          },
+        ),
 
-            // Bell icon
-            GestureDetector(
+        // Notifications
+        BlocBuilder<NotificationCubit, NotificationState>(
+          builder: (context, state) {
+            int unreadCount = 0;
+
+            if (state is NotificationSuccess) {
+              unreadCount = state.notifications.where((e) => !e.isRead).length;
+            }
+
+            return GestureDetector(
               onTap: () {
                 context.push(AppRouter.kNotificationView);
               },
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   Icon(
                     Icons.notifications_none,
                     size: 28,
-                    color: Color(0xFF2D2D2D),
+                    color: const Color(0xFF2D2D2D),
                   ),
-                  Positioned(
-                    top: 0.h,
-                    right: 0.w,
-                    child: Container(
-                      width: 8.w,
-                      height: 8.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
+
+                  if (unreadCount > 0)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        width: 10.w,
+                        height: 10.w,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1),
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 }

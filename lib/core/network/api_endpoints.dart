@@ -24,6 +24,6 @@ class ApiEndpoints {
   static String predictionHistory = '/api/PredictionHistory';
   static String predictionHistoryWithStatus =
       '/api/PredictionHistory/with-status';
-  static String predictionStatistics =
-      '/api/PredictionHistory/statistics';
+  static String predictionStatistics = '/api/PredictionHistory/statistics';
+  static const String riskAssessment = '/api/RiskAssessment/assess';
 }

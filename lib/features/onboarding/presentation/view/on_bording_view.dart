@@ -40,7 +40,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
         router.go(AppRouter.khomeView);
       } else {
         // 👉 لو مش عامل login يروح login
-        router.go(AppRouter.kLogin);
+        router.go(AppRouter.kwellComView);
       }
     }
   }

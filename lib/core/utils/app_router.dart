@@ -183,10 +183,10 @@ class MainLayout extends StatelessWidget {
   const MainLayout({super.key, required this.child});
 
   int _getIndex(String location) {
-    if (location == AppRouter.kprofileview) return 0;
-    if (location == AppRouter.kEducationView) return 1;
-    if (location == AppRouter.kSmartAcanView) return 2;
-    if (location == AppRouter.khomeView) return 3;
+    if (location == AppRouter.kprofileview) return 3;
+    if (location == AppRouter.kEducationView) return 2;
+    if (location == AppRouter.kSmartAcanView) return 1;
+    if (location == AppRouter.khomeView) return 0;
     return 3;
   }
 

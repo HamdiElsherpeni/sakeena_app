@@ -25,14 +25,23 @@ class NotificationCard extends StatelessWidget {
           border: Border.all(
             color: notification.isRead
                 ? AppColors.border
-                : AppColors.primary.withOpacity(0.25),
-            width: 1.2.w,
+                : AppColors.primary.withOpacity(0.35),
+            width: notification.isRead ? 1.w : 1.4.w,
           ),
+          boxShadow: notification.isRead
+              ? null
+              : [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.07),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // المحتوى
+            // ── المحتوى ───────────────────────────────────────────────
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -40,19 +49,13 @@ class NotificationCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // وقت + نقطة غير مقروء
+                      // وقت + نقطة "جديد"
                       Row(
                         children: [
-                          if (!notification.isRead)
-                            Container(
-                              width: 7.w,
-                              height: 7.w,
-                              margin: EdgeInsets.only(left: 6.w),
-                              decoration: const BoxDecoration(
-                                color: AppColors.primary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
+                          if (!notification.isRead) ...[
+                            _PulseDot(),
+                            SizedBox(width: 5.w),
+                          ],
                           Text(
                             notification.formattedTime,
                             style: TextStyle(
@@ -64,14 +67,17 @@ class NotificationCard extends StatelessWidget {
                         ],
                       ),
                       // العنوان
-                      Text(
-                        notification.title,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textDark,
-                          fontFamily: 'Rubik',
+                      Flexible(
+                        child: Text(
+                          notification.title,
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textDark,
+                            fontFamily: 'Rubik',
+                          ),
                         ),
                       ),
                     ],
@@ -87,11 +93,28 @@ class NotificationCard extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
+                  // ── شريط "اضغط للتحديد كمقروء" ───────────────────────
+                  if (!notification.isRead) ...[
+                    SizedBox(height: 8.h),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'اضغط لتحديدها كمقروءة',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          color: AppColors.primary.withOpacity(0.7),
+                          fontFamily: 'Rubik',
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
+
             SizedBox(width: 12.w),
-            // الأيقونة
+
+            // ── الأيقونة ──────────────────────────────────────────────
             _NotificationIcon(type: notification.type),
           ],
         ),
@@ -100,6 +123,53 @@ class NotificationCard extends StatelessWidget {
   }
 }
 
+// ── نقطة نابضة للإشعار الجديد ─────────────────────────────────────────────────
+class _PulseDot extends StatefulWidget {
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+
+class _PulseDotState extends State<_PulseDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat(reverse: true);
+    _anim = Tween<double>(
+      begin: 0.5,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _anim,
+      child: Container(
+        width: 8.r,
+        height: 8.r,
+        decoration: const BoxDecoration(
+          color: AppColors.primary,
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+}
+
+// ── أيقونة الإشعار ────────────────────────────────────────────────────────────
 class _NotificationIcon extends StatelessWidget {
   const _NotificationIcon({required this.type});
 

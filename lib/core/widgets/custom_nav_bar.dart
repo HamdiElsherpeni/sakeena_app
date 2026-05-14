@@ -13,13 +13,13 @@ class CustomNavBar extends StatelessWidget {
     if (index == currentIndex) return;
     switch (index) {
       case 0:
-        context.go(AppRouter.kprofileview);
-      case 1:
-        context.go(AppRouter.kEducationView);
-      case 2:
-        context.go(AppRouter.kSmartAcanView);
-      case 3:
         context.go(AppRouter.khomeView);
+      case 1:
+        context.go(AppRouter.kSmartAcanView);
+      case 2:
+        context.go(AppRouter.kEducationView);
+      case 3:
+        context.go(AppRouter.kprofileview);
     }
   }
 
@@ -95,10 +95,11 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      _NavItem(icon: Icons.person_outline, label: 'حسابي'),
-      _NavItem(icon: Icons.menu_book_outlined, label: 'تعليم'),
-      _NavItem(icon: Icons.crop_free, label: 'فحص'),
       _NavItem(icon: Icons.home_outlined, label: 'الرئيسية'),
+      _NavItem(icon: Icons.crop_free, label: 'فحص'),
+      _NavItem(icon: Icons.menu_book_outlined, label: 'تعليم'),
+
+      _NavItem(icon: Icons.person_outline, label: 'حسابي'),
     ];
 
     return Stack(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
-import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
+import 'package:sakeena_app/features/risk_assessment/logic/cubit/risk_assessment_cubit.dart';
 import 'package:sakeena_app/features/risk_assessment/ui/view/widgets/assessment_risk_gauge.dart';
 import 'package:sakeena_app/features/risk_assessment/ui/view/widgets/risk_factor_row.dart';
 
@@ -120,15 +120,16 @@ class AssessmentResultCard extends StatelessWidget {
         RiskFactorRow(label: 'العوامل الوراثية', riskLevel: geneticFactors),
 
         SizedBox(height: 16.h),
+
         CoustemElevetedBoutten(
           text: 'اعادة التقييم الصحي  ',
-          onPressed: () {
-            context.go(AppRouter.kAssessmentView);
-          },
+          onPressed: () => context.read<RiskAssessmentCubit>().reset(),
           backgroundcolor: AppColors.primary,
           textcolor: Colors.white,
         ),
+
         SizedBox(height: 16.h),
+
         // ── Recommendations box ────────────────────────────────────
         Container(
           width: double.infinity,

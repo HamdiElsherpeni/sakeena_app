@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenService {
@@ -8,7 +7,6 @@ class TokenService {
   static const String _onboardingKey = 'onboarding_seen';
 
   // ================= TOKENS =================
-
   static Future<void> saveTokens({
     required String token,
     required String refreshToken,
@@ -20,8 +18,6 @@ class TokenService {
     if (refreshTokenExpiration != null) {
       await prefs.setString(_refreshTokenExpirationKey, refreshTokenExpiration);
     }
-    debugPrint('💾 token saved: $token');
-    debugPrint('💾 refreshToken saved: $refreshToken');
   }
 
   static Future<String?> getToken() async {

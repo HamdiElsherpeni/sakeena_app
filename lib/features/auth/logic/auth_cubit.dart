@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/core/errors/failer.dart';
 import 'package:sakeena_app/core/services/token_service.dart';
@@ -36,6 +37,8 @@ class AuthCubit extends Cubit<AuthState> {
         refreshToken: response.refreshToken,
         refreshTokenExpiration: response.refreshTokenExpiration,
       );
+      final saved = await TokenService.getRefreshTokenExpiration();
+      debugPrint('💾 Saved expiration after login: $saved');
       user = response;
       _safeEmit(LoginSuccess(user: response));
     } on Failer catch (e) {

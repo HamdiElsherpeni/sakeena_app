@@ -11,16 +11,34 @@ class NotificationEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.notifications_off_outlined,
-            size: 56.sp,
-            color: AppColors.textSecondary,
+          Container(
+            width: 90.r,
+            height: 90.r,
+            decoration: BoxDecoration(
+              color: AppColors.selectedBg,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.notifications_none_rounded,
+              size: 44.sp,
+              color: AppColors.primary,
+            ),
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 16.h),
           Text(
             'لا توجد إشعارات',
             style: TextStyle(
-              fontSize: 15.sp,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textDark,
+              fontFamily: 'Rubik',
+            ),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'ستظهر هنا إشعاراتك عند وصولها',
+            style: TextStyle(
+              fontSize: 13.sp,
               color: AppColors.textSecondary,
               fontFamily: 'Rubik',
             ),

@@ -17,6 +17,10 @@ import 'package:sakeena_app/features/chat/domain/usecases/send_message_usecase.d
 import 'package:sakeena_app/features/chat/presentation/view_model/send_message_cubit.dart';
 import 'package:sakeena_app/features/notifications/data/repos/notification_repo.dart';
 import 'package:sakeena_app/features/notifications/logic/cubit/notification_cubit.dart';
+import 'package:sakeena_app/features/risk_assessment/data/datasources/risk_assessment_remote_datasource.dart';
+import 'package:sakeena_app/features/risk_assessment/data/repositories/risk_assessment_repository.dart';
+import 'package:sakeena_app/features/risk_assessment/data/repositories/risk_assessment_repo_implement.dart';
+import 'package:sakeena_app/features/risk_assessment/logic/cubit/risk_assessment_cubit.dart';
 import 'package:sakeena_app/features/smart_acan/data/data_source/scan_remote_datasource.dart';
 import 'package:sakeena_app/features/smart_acan/data/repo/scan_repo.dart';
 import 'package:sakeena_app/features/smart_acan/data/repo/scan_repo_impl.dart';
@@ -25,6 +29,15 @@ import 'package:sakeena_app/features/smart_acan/logic/cubit/scan_cubit.dart';
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
+  getIt.registerLazySingleton<RiskAssessmentRemoteDatasource>(
+    () => RiskAssessmentRemoteDatasource(),
+  );
+  getIt.registerLazySingleton<RiskAssessmentRepository>(
+    () => RiskAssessmentRepoImplement(getIt<RiskAssessmentRemoteDatasource>()),
+  );
+  getIt.registerFactory<RiskAssessmentCubit>(
+    () => RiskAssessmentCubit(getIt<RiskAssessmentRepository>()),
+  );
   // ── Chat ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<GeminiService>(() => GeminiService());
   getIt.registerLazySingleton<SpeechToTextService>(() => SpeechToTextService());

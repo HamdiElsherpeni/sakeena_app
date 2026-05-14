@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/features/account/logic/cubit/account_cubit.dart';
+import 'package:sakeena_app/features/notifications/logic/cubit/notification_cubit.dart';
+
 import 'widgets/home_view_body.dart';
 
 class HomeView extends StatefulWidget {
@@ -13,22 +15,33 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  late final AccountCubit cubit;
+  late final AccountCubit accountCubit;
+  late final NotificationCubit notificationCubit;
 
   @override
   void initState() {
     super.initState();
-    cubit = getIt<AccountCubit>();
-    cubit.getProfile(); // ✅ مرة واحدة بس
+
+    accountCubit = getIt<AccountCubit>();
+    notificationCubit = getIt<NotificationCubit>();
+
+    // 🔥 Load profile
+    accountCubit.getProfile();
+
+    // 🔥 Load notifications (important for badge)
+    notificationCubit.loadNotifications();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: cubit,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: accountCubit),
+        BlocProvider.value(value: notificationCubit),
+      ],
       child: Scaffold(
         backgroundColor: AppColors.kprimaryColor,
-        body: SafeArea(child: HomeViewBody()),
+        body: const SafeArea(child: HomeViewBody()),
       ),
     );
   }

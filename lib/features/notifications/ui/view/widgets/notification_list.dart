@@ -13,50 +13,86 @@ class NotificationList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationCubit, NotificationState>(
       builder: (context, state) {
+        // ── Loading ───────────────────────────────────────────────────────
         if (state is NotificationLoading) {
           return const Center(
             child: CircularProgressIndicator(color: AppColors.primary),
           );
         }
 
+        // ── Error ─────────────────────────────────────────────────────────
         if (state is NotificationFailure) {
           return Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.error_outline_rounded,
-                  size: 48.sp,
-                  color: AppColors.primary,
-                ),
-                SizedBox(height: 12.h),
-                Text(
-                  state.message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: AppColors.textDark,
-                    fontFamily: 'Rubik',
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 72.r,
+                    height: 72.r,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFEBEE),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.wifi_off_rounded,
+                      size: 34.sp,
+                      color: const Color(0xFFC62828),
+                    ),
                   ),
-                ),
-                SizedBox(height: 16.h),
-                TextButton(
-                  onPressed: () =>
-                      context.read<NotificationCubit>().loadNotifications(),
-                  child: Text(
-                    'إعادة المحاولة',
+                  SizedBox(height: 16.h),
+                  Text(
+                    'تعذّر تحميل الإشعارات',
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      color: AppColors.primary,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textDark,
                       fontFamily: 'Rubik',
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 6.h),
+                  Text(
+                    'تحقق من اتصالك بالإنترنت وحاول مرة أخرى',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Rubik',
+                      height: 1.5,
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  GestureDetector(
+                    onTap: () =>
+                        context.read<NotificationCubit>().loadNotifications(),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 12.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(14.r),
+                      ),
+                      child: Text(
+                        'إعادة المحاولة',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontFamily: 'Rubik',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
+        // ── Success ───────────────────────────────────────────────────────
         if (state is NotificationSuccess) {
           if (state.notifications.isEmpty) {
             return const NotificationEmptyState();
@@ -68,59 +104,81 @@ class NotificationList extends StatelessWidget {
                 context.read<NotificationCubit>().loadNotifications(),
             child: Column(
               children: [
-                // زرار قراءة الكل
+                // زرار "قراءة الكل" — يظهر بس لو في غير مقروء
                 if (state.notifications.any((n) => !n.isRead))
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 16.w,
                       vertical: 8.h,
                     ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () =>
-                            context.read<NotificationCubit>().markAllAsRead(),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 6.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.selectedBg,
-                            borderRadius: BorderRadius.circular(20.r),
-                            border: Border.all(
-                              color: AppColors.border,
-                              width: 1.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () =>
+                              context.read<NotificationCubit>().markAllAsRead(),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 7.h,
                             ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.done_all_rounded,
-                                size: 14.sp,
-                                color: AppColors.primary,
+                            decoration: BoxDecoration(
+                              color: AppColors.selectedBg,
+                              borderRadius: BorderRadius.circular(20.r),
+                              border: Border.all(
+                                color: AppColors.primary.withOpacity(0.3),
+                                width: 1.w,
                               ),
-                              SizedBox(width: 4.w),
-                              Text(
-                                'قراءة الكل',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontFamily: 'Rubik',
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.done_all_rounded,
+                                  size: 14.sp,
                                   color: AppColors.primary,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 4.w),
+                                Text(
+                                  'قراءة الكل',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontFamily: 'Rubik',
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                        // عداد الغير مقروء
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Text(
+                            '${state.notifications.where((n) => !n.isRead).length} جديد',
+                            style: TextStyle(
+                              fontSize: 11.sp,
+                              color: Colors.white,
+                              fontFamily: 'Rubik',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
 
-                // القائمة
                 Expanded(
                   child: ListView.builder(
-                    padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
+                    padding: EdgeInsets.only(top: 4.h, bottom: 20.h),
                     itemCount: state.notifications.length,
                     itemBuilder: (context, index) {
                       final n = state.notifications[index];

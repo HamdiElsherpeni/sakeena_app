@@ -121,8 +121,7 @@ class _SmartScanViewBodyState extends State<SmartScanViewBody> {
 
         return Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            ListView(
               children: [
                 const ScanHeader(),
                 SizedBox(height: 24.h),

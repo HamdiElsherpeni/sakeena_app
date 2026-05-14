@@ -29,11 +29,14 @@ class _SplashViewState extends State<SplashView> {
     if (!mounted) return;
 
     final router = GoRouter.of(context);
-    if (isLoggedIn) {
-      router.go(AppRouter.khomeView);
-    } else if (!seenOnboarding) {
+    if (!seenOnboarding) {
+      // أول مرة يفتح التطبيق → الـ Onboarding
       router.go(AppRouter.konBording);
+    } else if (isLoggedIn) {
+      // شاف الـ Onboarding وعنده token → الـ Home
+      router.go(AppRouter.khomeView);
     } else {
+      // شاف الـ Onboarding بس مش logged in → Welcome
       router.go(AppRouter.kwellComView);
     }
   }
