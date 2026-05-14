@@ -5,7 +5,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.2
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   camera: ^0.12.0+1
@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_launcher_icons: ^0.14.4
-  flutter_local_notifications: 20.0.0
+  flutter_local_notifications: 17.2.4
   flutter_localization: ^0.4.0
   flutter_localizations:
     sdk: flutter
@@ -33,6 +33,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   shared_preferences: ^2.5.5
   speech_to_text: ^7.3.0
+  timezone: ^0.9.4
   url_launcher: ^6.3.2
 
 dev_dependencies:

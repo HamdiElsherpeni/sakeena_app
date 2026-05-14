@@ -5,11 +5,16 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sakeena_app/core/app/sakeena_app.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
+import 'package:sakeena_app/core/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   setupServiceLocator();
+
+  // ✅ لازم تشغيل الإشعارات هنا
+  await NotificationService.init();
 
   // ✅ مسح الداتا القديمة عند تحديث نسخة التطبيق
   await _clearDataOnVersionChange();
@@ -18,22 +23,23 @@ void main() async {
   runApp(const MyApp());
 }
 
-/// بيتحقق من نسخة التطبيق — لو اتغيرت، يمسح كل الـ SharedPreferences
-/// عشان كل نسخة جديدة تبدأ نظيفة (onboarding + tokens)
+/// يتحقق من نسخة التطبيق — لو اتغيرت يمسح SharedPreferences
 Future<void> _clearDataOnVersionChange() async {
-  const String _versionKey = 'app_version';
+  const String versionKey = 'app_version';
   final prefs = await SharedPreferences.getInstance();
 
-  // امسح بس لو النسخة اتغيرت (debug و release سواء)
   try {
     final info = await PackageInfo.fromPlatform();
     final currentVersion = '${info.version}+${info.buildNumber}';
-    final savedVersion = prefs.getString(_versionKey);
+    final savedVersion = prefs.getString(versionKey);
 
     if (savedVersion != currentVersion) {
       await prefs.clear();
-      await prefs.setString(_versionKey, currentVersion);
-      debugPrint('🔄 Version changed ($savedVersion → $currentVersion): SharedPreferences cleared');
+      await prefs.setString(versionKey, currentVersion);
+
+      debugPrint(
+        '🔄 Version changed ($savedVersion → $currentVersion): SharedPreferences cleared',
+      );
     } else {
       debugPrint('✅ Same version ($currentVersion): SharedPreferences kept');
     }

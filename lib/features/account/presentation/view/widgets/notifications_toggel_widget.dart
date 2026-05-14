@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sakeena_app/core/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sakeena_app/core/services/notification_service.dart';
 
 class NotificationsToggleWidget extends StatefulWidget {
   const NotificationsToggleWidget({super.key});
@@ -24,6 +24,7 @@ class _NotificationsToggleWidgetState extends State<NotificationsToggleWidget> {
 
   Future<void> _loadPref() async {
     final prefs = await SharedPreferences.getInstance();
+
     setState(() {
       _notificationsOn = prefs.getBool(_prefKey) ?? true;
     });
@@ -36,10 +37,8 @@ class _NotificationsToggleWidgetState extends State<NotificationsToggleWidget> {
     await prefs.setBool(_prefKey, val);
 
     if (val) {
-      // تشغيل الإشعارات
       await NotificationService.scheduleMonthlyReminder();
     } else {
-      // إلغاء كل الإشعارات
       await NotificationService.cancelReminder();
     }
   }
@@ -55,7 +54,6 @@ class _NotificationsToggleWidgetState extends State<NotificationsToggleWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Bell icon
           Container(
             width: 36.w,
             height: 36.h,
@@ -71,8 +69,6 @@ class _NotificationsToggleWidgetState extends State<NotificationsToggleWidget> {
               size: 20,
             ),
           ),
-
-          // Label
           Text(
             'الإشعارات',
             style: TextStyle(
@@ -81,8 +77,6 @@ class _NotificationsToggleWidgetState extends State<NotificationsToggleWidget> {
               color: const Color(0xFF2D2D2D),
             ),
           ),
-
-          // Toggle
           Switch(
             value: _notificationsOn,
             onChanged: _toggle,
