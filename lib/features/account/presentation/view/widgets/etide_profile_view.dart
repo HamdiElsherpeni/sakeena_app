@@ -93,19 +93,21 @@ class _EditProfileViewState extends State<EditProfileView> {
                   // الاسم
                   Row(
                     children: [
+                         Expanded(
+                        child: CoustemTextFormFailed(
+                          hent: "الاسم الاول",
+                          controller: firstNameController,
+                        ),
+                      ),
+                       SizedBox(width: 12.w),
                       Expanded(
                         child: CoustemTextFormFailed(
                           hent: "الاسم الاخير",
                           controller: lastNameController,
                         ),
                       ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: CoustemTextFormFailed(
-                          hent: "الاسم الاول",
-                          controller: firstNameController,
-                        ),
-                      ),
+                     
+                   
                     ],
                   ),
 
