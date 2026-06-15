@@ -10,10 +10,12 @@ import 'package:sakeena_app/features/auth/presentation/view/sin_up_view.dart';
 import 'package:sakeena_app/features/chat/presentation/view/chat_view.dart';
 import 'package:sakeena_app/features/education/data/models/article_model.dart';
 import 'package:sakeena_app/features/education/ui/view/education_screen.dart';
+import 'package:sakeena_app/features/education/ui/view/warning_signs_screen.dart';
 import 'package:sakeena_app/features/education/ui/view/widgets/article_screen.dart';
 import 'package:sakeena_app/features/exam_history/data/models/prediction_history_model.dart';
 import 'package:sakeena_app/features/exam_history/ui/exam_history_screen.dart';
 import 'package:sakeena_app/features/exam_history/ui/widgets/exam_report_screen.dart';
+import 'package:sakeena_app/features/health_guide/ui/health_guide_screen.dart';
 import 'package:sakeena_app/features/home/presentation/view/home_view.dart';
 import 'package:sakeena_app/core/widgets/custom_nav_bar.dart';
 import 'package:sakeena_app/features/notifications/ui/view/notifications_screen.dart';
@@ -52,6 +54,8 @@ abstract class AppRouter {
   static String kNotificationView = '/NotificationView';
   static String kEducationView = '/EducationView';
   static String kArticleView = '/ArticleView';
+  static String khealthguid = '/Healthguid';
+static const kWarningSignsScreen = '/warningSignsScreen';
 
   static const _publicRoutes = [
     '/',
@@ -83,6 +87,10 @@ abstract class AppRouter {
     },
     routes: [
       GoRoute(
+  path: kWarningSignsScreen,
+  builder: (context, state) => const WarningSignsScreen(),
+),
+      GoRoute(
         path: kArticleView,
         builder: (context, state) {
           final article = state.extra as ArticleModel;
@@ -90,6 +98,12 @@ abstract class AppRouter {
         },
       ),
       // ── بدون NavBar ────────────────────────────────────────────────
+      GoRoute(
+        path: khealthguid, // ← شيلناه من الـ Shell
+        builder: (context, state) => const HealthGuideScreen(),
+      ),
+     
+     
       GoRoute(
         path: kChatView, // ← شيلناه من الـ Shell
         builder: (context, state) => const ChatView(),

@@ -7,35 +7,39 @@ import 'package:sakeena_app/core/utils/app_router.dart';
 class EducationTopicsSection extends StatelessWidget {
   const EducationTopicsSection({super.key});
 
-  static final topics = [
-    _TopicData(
-      route: AppRouter.kAssessmentView,
-      title: 'دليل الفحص الذاتي',
-      subtitle: 'تعلمي كيفية إجراء الفحص الذاتي للثدي بشكل صحيح',
-      icon: Icons.back_hand_outlined,
-      color: Color(0xFFE8F5E9),
-      borderColor: Color(0xFF4CAF50),
-      iconColor: Color(0xFF4CAF50),
-    ),
-    _TopicData(
-      route: null,
-      title: 'علامات التحذير',
-      subtitle: 'تعرفي على العلامات التي يجب الانتباه إليها',
-      icon: Icons.remove_red_eye_outlined,
-      color: Color(0xFFFFF8E1),
-      borderColor: Color(0xFFFFB300),
-      iconColor: Color(0xFFFFB300),
-    ),
-    _TopicData(
-      route: AppRouter.kSelfExamGuideScreen,
-      title: 'الوقاية والتوعية',
-      subtitle: 'نصائح للحفاظ على صحة الثدي وتقليل المخاطر',
-      icon: Icons.menu_book_outlined,
-      color: Color(0xFFFCF4F7),
-      borderColor: Color(0xFFC72063),
-      iconColor: Color(0xFFC72063),
-    ),
-  ];
+  
+   static final topics = [
+  _TopicData(
+    route: AppRouter.kAssessmentView,
+    title: 'دليل الفحص الذاتي',
+    subtitle: 'تعلمي كيفية إجراء الفحص الذاتي للثدي بشكل صحيح',
+    icon: Icons.back_hand_outlined,
+    color: Color(0xFFE8F5E9),
+    borderColor: Color(0xFF4CAF50),
+    iconColor: Color(0xFF4CAF50),
+  ),
+
+  _TopicData(
+    route: AppRouter.kWarningSignsScreen,
+    title: 'علامات التحذير',
+    subtitle: 'تعرفي على العلامات التي يجب الانتباه إليها',
+    icon: Icons.remove_red_eye_outlined,
+    color: Color(0xFFFFF8E1),
+    borderColor: Color(0xFFFFB300),
+    iconColor: Color(0xFFFFB300),
+  ),
+
+  _TopicData(
+    route: AppRouter.kSelfExamGuideScreen,
+    title: 'الوقاية والتوعية',
+    subtitle: 'نصائح للحفاظ على صحة الثدي وتقليل المخاطر',
+    icon: Icons.menu_book_outlined,
+    color: Color(0xFFFCF4F7),
+    borderColor: Color(0xFFC72063),
+    iconColor: Color(0xFFC72063),
+  ),
+];
+  
 
   @override
   Widget build(BuildContext context) {

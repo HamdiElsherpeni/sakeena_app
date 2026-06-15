@@ -57,6 +57,9 @@ class HomeServicesGrid extends StatelessWidget {
               icon: Icons.open_in_new,
               backgroundColor: Color(0xFFE3F2FD),
               iconColor: Color(0xFF42A5F5),
+               onTap: () {
+                context.push(AppRouter.khealthguid);
+              },
             ),
             HomeServiceItem(
               title: 'فحص ذاتي',
