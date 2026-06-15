@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/core/widgets/coustem_eleveted_butten.dart';
+import 'package:sakeena_app/core/widgets/loading_overlay.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/email_step.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/forget_pass_app_bar.dart';
@@ -70,31 +71,21 @@ class _ForgetPassViewBodyState extends State<ForgetPassViewBody> {
       builder: (context, state) {
         final isLoading = state is AuthLoading;
 
-        return Stack(
-          children: [
-            // ✅ SingleChildScrollView بدون Expanded جوّاها
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 50.h),
-                  CustomAppBar(titel: 'نسيت الباسوورد'),
-                  SizedBox(height: 30.h),
-                  _buildPages(context), // ✅ مش Expanded هنا
-                  SizedBox(height: 20.h),
-                  _buildButton(context, isLoading),
-                  SizedBox(height: 20.h),
-                ],
-              ),
+        return LoadingOverlay(
+          isLoading: isLoading,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 50.h),
+                CustomAppBar(titel: 'نسيت الباسوورد'),
+                SizedBox(height: 30.h),
+                _buildPages(context),
+                SizedBox(height: 20.h),
+                _buildButton(context, isLoading),
+                SizedBox(height: 20.h),
+              ],
             ),
-
-            if (isLoading)
-              ColoredBox(
-                color: Colors.black.withValues(alpha: 0.4),
-                child: const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-              ),
-          ],
+          ),
         );
       },
     );

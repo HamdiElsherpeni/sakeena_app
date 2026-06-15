@@ -1,6 +1,6 @@
 import 'dart:io';
-import '../models/scan_result_model.dart';
-import '../models/prediction_history_model.dart';
+import 'package:sakeena_app/features/exam_history/data/models/prediction_history_model.dart';
+import 'package:sakeena_app/features/smart_acan/data/models/scan_result_model.dart';
 
 abstract class ScanRepo {
   Future<ScanResultModel> predict(File imageFile);

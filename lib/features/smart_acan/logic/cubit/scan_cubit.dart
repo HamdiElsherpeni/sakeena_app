@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakeena_app/core/errors/failer.dart';
+import 'package:sakeena_app/features/exam_history/data/models/prediction_history_model.dart';
 import 'package:sakeena_app/features/smart_acan/data/models/scan_result_model.dart';
-import 'package:sakeena_app/features/smart_acan/data/models/prediction_history_model.dart';
 import 'package:sakeena_app/features/smart_acan/data/repo/scan_repo.dart';
 
 part 'scan_state.dart';
@@ -14,12 +14,10 @@ class ScanCubit extends Cubit<ScanState> {
 
   ScanResultModel? lastResult;
 
-  // ✅ helper عشان نتجنب emit بعد close
   void _emit(ScanState state) {
     if (!isClosed) emit(state);
   }
 
-  // ─── Predict ──────────────────────────────────────────────────────────────
   Future<void> predict(File imageFile) async {
     _emit(ScanLoading());
     try {
@@ -33,7 +31,6 @@ class ScanCubit extends Cubit<ScanState> {
     }
   }
 
-  // ─── Get History ──────────────────────────────────────────────────────────
   Future<void> getHistory() async {
     _emit(ScanLoading());
     try {
@@ -46,7 +43,6 @@ class ScanCubit extends Cubit<ScanState> {
     }
   }
 
-  // ─── Get History With Status ──────────────────────────────────────────────
   Future<void> getHistoryWithStatus(String status) async {
     _emit(ScanLoading());
     try {
@@ -59,7 +55,6 @@ class ScanCubit extends Cubit<ScanState> {
     }
   }
 
-  // ─── Get Statistics ───────────────────────────────────────────────────────
   Future<void> getStatistics() async {
     _emit(ScanLoading());
     try {

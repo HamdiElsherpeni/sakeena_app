@@ -109,7 +109,7 @@ class CustomNavBar extends StatelessWidget {
         // ── الـ NavBar الأساسي ─────────────────────────────────────────
         Container(
           width: double.infinity,
-          height: 90.h,
+          height: 85.h,
           padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 15.h),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -139,8 +139,8 @@ class CustomNavBar extends StatelessWidget {
               context.go(AppRouter.kChatView);
             },
             child: Container(
-              width: 58.r,
-              height: 58.r,
+              width: 48.r,
+              height: 48.r,
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,

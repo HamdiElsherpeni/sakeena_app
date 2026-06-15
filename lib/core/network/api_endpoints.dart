@@ -26,4 +26,13 @@ class ApiEndpoints {
       '/api/PredictionHistory/with-status';
   static String predictionStatistics = '/api/PredictionHistory/statistics';
   static const String riskAssessment = '/api/RiskAssessment/assess';
+  // Notifications
+  static String notifications = '/api/notifications';
+  static String markNotificationRead =
+      '/api/notifications'; // + /{id}/mark-read
+  static String markAllNotificationsRead = '/api/notifications/mark-all-read';
+
+// Prediction History
+  static String predictionReport =
+      '/api/PredictionHistory/report'; // ✅ ده كمان ناقص
 }

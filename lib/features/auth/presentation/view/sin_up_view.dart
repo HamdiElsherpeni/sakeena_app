@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/di/service_locator.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
 import 'package:sakeena_app/core/utils/app_router.dart';
+import 'package:sakeena_app/core/widgets/loading_overlay.dart';
 import 'package:sakeena_app/features/auth/logic/auth_cubit.dart';
 import 'package:sakeena_app/features/auth/presentation/view/widgets/sin_up_view_body.dart';
 
@@ -43,12 +44,9 @@ class _SinUpViewContent extends StatelessWidget {
       builder: (context, state) {
         final isLoading = state is AuthLoading;
 
-        return Stack(
-          children: [
-            SinUpViewBody(isLoading: isLoading),
-
-            // ✅ SizedBox.expand عشان يغطي الشاشة كلها
-          ],
+        return LoadingOverlay(
+          isLoading: isLoading,
+          child: SinUpViewBody(isLoading: isLoading),
         );
       },
     );

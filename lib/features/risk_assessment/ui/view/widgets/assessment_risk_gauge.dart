@@ -11,11 +11,11 @@ class AssessmentRiskGauge extends StatelessWidget {
   double get _indicatorPosition {
     switch (riskLevel) {
       case RiskLevel.low:
-        return 0.12;
+        return 0.88;
       case RiskLevel.medium:
         return 0.5;
       case RiskLevel.high:
-        return 0.88;
+        return 0.12;
     }
   }
 
@@ -32,7 +32,6 @@ class AssessmentRiskGauge extends StatelessWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  // gradient bar
                   Positioned(
                     top: 14.h,
                     left: 0,
@@ -43,15 +42,14 @@ class AssessmentRiskGauge extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.r),
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFF4CAF50),
-                            Color(0xFFFFC107),
                             Color(0xFFF44336),
+                            Color(0xFFFFC107),
+                            Color(0xFF4CAF50),
                           ],
                         ),
                       ),
                     ),
                   ),
-                  // indicator circle
                   Positioned(
                     top: 6.h,
                     left: indicatorX - 11.r,

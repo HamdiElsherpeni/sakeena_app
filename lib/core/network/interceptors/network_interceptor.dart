@@ -28,9 +28,15 @@ class NetworkInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final token = await TokenService.getToken();
-    final isAuthEndpoint = _authPaths.any((e) => options.path.contains(e));
 
-    if (!isAuthEndpoint && token != null && token.isNotEmpty) {
+    final isAuthEndpoint = _authPaths.any(
+      (e) => options.path.contains(e),
+    );
+
+    // ✅ ابعت التوكن فقط للـ protected endpoints
+    if (!isAuthEndpoint &&
+        token != null &&
+        token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
     }
 
@@ -38,37 +44,34 @@ class NetworkInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  void onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final statusCode = err.response?.statusCode;
+
     final isSkippedEndpoint = _authPaths.any(
       (e) => err.requestOptions.path.contains(e),
     );
 
+    // ✅ لو 401 على endpoint عادي
     if (statusCode == 401 && !isSkippedEndpoint) {
-      if (statusCode == 401 && !isSkippedEndpoint) {
-        // ✅ تحقق إن الـ refresh token ما انتهاش قبل ما تجرب refresh
-        final refreshExpired = await TokenService.isRefreshTokenExpired();
-        print('🔄 refreshExpired: $refreshExpired'); // ← هنا
-        print(
-          '🔄 expiration: ${await TokenService.getRefreshTokenExpiration()}',
-        ); // ← وهنا
-      }
-      // ✅ تحقق إن الـ refresh token ما انتهاش قبل ما تجرب refresh
-      final refreshExpired = await TokenService.isRefreshTokenExpired();
-      if (refreshExpired) {
-        _resolveQueue(null);
-        _isRefreshing = false;
-        await _handleLogout();
-        return handler.next(err);
-      }
 
+      // ✅ لو فيه refresh شغال بالفعل
       if (_isRefreshing) {
         final completer = Completer<String?>();
         _pendingRequests.add(completer);
+
         try {
           final newToken = await completer.future;
-          if (newToken == null) return handler.next(err);
-          final response = await _retry(err.requestOptions, newToken);
+
+          if (newToken == null) {
+            return handler.next(err);
+          }
+
+          final response =
+              await _retry(err.requestOptions, newToken);
+
           return handler.resolve(response);
         } catch (_) {
           return handler.next(err);
@@ -79,24 +82,30 @@ class NetworkInterceptor extends Interceptor {
 
       try {
         final success = await _refreshToken();
-        final newToken = success ? await TokenService.getToken() : null;
 
+        final newToken =
+            success ? await TokenService.getToken() : null;
+
+        // ❌ refresh فشل
         if (!success || newToken == null) {
           _resolveQueue(null);
           _isRefreshing = false;
-          await _handleLogout();
+
           return handler.next(err);
         }
 
+        // ✅ refresh نجح
         _resolveQueue(newToken);
         _isRefreshing = false;
 
-        final response = await _retry(err.requestOptions, newToken);
+        final response =
+            await _retry(err.requestOptions, newToken);
+
         return handler.resolve(response);
       } catch (_) {
         _resolveQueue(null);
         _isRefreshing = false;
-        await _handleLogout();
+
         return handler.next(err);
       }
     }
@@ -104,60 +113,81 @@ class NetworkInterceptor extends Interceptor {
     handler.next(err);
   }
 
-  Future<void> _handleLogout() async {
-    await TokenService.clearTokens();
-    onLogout?.call();
-  }
+  // ─────────────────────────────────────────────────────────────
 
   void _resolveQueue(String? token) {
     for (final c in _pendingRequests) {
-      if (!c.isCompleted) c.complete(token);
+      if (!c.isCompleted) {
+        c.complete(token);
+      }
     }
+
     _pendingRequests.clear();
   }
+
+  // ─────────────────────────────────────────────────────────────
 
   Future<bool> _refreshToken() async {
     try {
       final token = await TokenService.getToken();
-      final refreshToken = await TokenService.getRefreshToken();
-      if (token == null || refreshToken == null) return false;
+      final refreshToken =
+          await TokenService.getRefreshToken();
+
+      if (token == null || refreshToken == null) {
+        return false;
+      }
 
       final plainDio = Dio(dio.options);
+
       final response = await plainDio.post(
         ApiEndpoints.refresh,
-        data: {'token': token, 'refreshToken': refreshToken},
+        data: {
+          'token': token,
+          'refreshToken': refreshToken,
+        },
       );
 
       final data = response.data;
+
       if (data is! Map) return false;
 
       final newToken = data['token'] as String?;
       final newRefresh = data['refreshToken'] as String?;
-      final newExpiration = data['refreshTokenExpiration'] as String?;
 
-      if (newToken == null || newToken.isEmpty) return false;
+      if (newToken == null || newToken.isEmpty) {
+        return false;
+      }
 
-      // ✅ احفظ الـ expiration الجديدة بعد كل refresh
       await TokenService.saveTokens(
         token: newToken,
         refreshToken: newRefresh ?? refreshToken,
-        refreshTokenExpiration: newExpiration,
       );
 
       return true;
+    } on DioException {
+      // ❌ متعمليش logout تلقائي
+      return false;
     } catch (_) {
       return false;
     }
   }
 
-  Future<Response> _retry(RequestOptions requestOptions, String token) {
+  // ─────────────────────────────────────────────────────────────
+
+  Future<Response> _retry(
+    RequestOptions requestOptions,
+    String token,
+  ) {
     return dio.request(
       requestOptions.path,
       data: requestOptions.data,
       queryParameters: requestOptions.queryParameters,
       options: Options(
         method: requestOptions.method,
-        headers: {...requestOptions.headers, 'Authorization': 'Bearer $token'},
+        headers: {
+          ...requestOptions.headers,
+          'Authorization': 'Bearer $token',
+        },
       ),
     );
   }

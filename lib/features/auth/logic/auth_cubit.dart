@@ -125,24 +125,34 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // ─── Logout ───────────────────────────────────────────────────────────────
-  Future<void> logout() async {
-    _safeEmit(AuthLoading());
-    try {
-      final token = await TokenService.getToken();
-      final refreshToken = await TokenService.getRefreshToken();
+ // ─── Logout ───────────────────────────────────────────────────────────────
+Future<void> logout() async {
+  _safeEmit(AuthLoading());
 
+  try {
+    final token = await TokenService.getToken();
+    final refreshToken = await TokenService.getRefreshToken();
+
+    // ✅ لو مفيش token متكلميش API
+    if (token != null &&
+        token.isNotEmpty &&
+        refreshToken != null &&
+        refreshToken.isNotEmpty) {
       await _repo.revokeRefreshToken(
         RefreshTokenRequestModel(
-          token: token ?? '',
-          refreshToken: refreshToken ?? '',
+          token: token,
+          refreshToken: refreshToken,
         ),
       );
-    } catch (_) {
-      // حتى لو الـ revoke فشل، امسح التوكنز وسجل خروج
-    } finally {
-      await TokenService.clearTokens();
-      user = null;
-      _safeEmit(LoggedOut());
     }
+  } catch (_) {
+    // تجاهل أي error
+  } finally {
+    await TokenService.clearTokens();
+
+    user = null;
+
+    _safeEmit(LoggedOut());
   }
+}
 }

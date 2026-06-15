@@ -1,7 +1,7 @@
 class PredictionHistoryModel {
   final int id;
-  final String predictionDate; // ISO string من السيرفر
-  final String status; // "Benign" | "Malignant" | "Unknown"
+  final String predictionDate;
+  final String status;
   final String imageUrl;
   final double confidence;
 
@@ -15,31 +15,20 @@ class PredictionHistoryModel {
 
   factory PredictionHistoryModel.fromJson(Map<String, dynamic> json) {
     return PredictionHistoryModel(
-      // السيرفر ممكن يبعت "id" أو مفيش id خالص → نحط 0 fallback
       id: json['id'] as int? ?? 0,
-
-      // السيرفر بيبعت "createdAt" مش "predictionDate"
       predictionDate:
           json['predictionDate'] as String? ??
           json['createdAt'] as String? ??
           '',
-
-      // السيرفر بيبعت "diagnosis" مش "status"
       status:
           json['status'] as String? ??
           json['diagnosis'] as String? ??
           'Unknown',
-
       imageUrl: json['imageUrl'] as String? ?? '',
-
       confidence: (json['confidence'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
-  /// تحويل الـ status من السيرفر لـ PredictionStatus
-  /// Benign    → safe
-  /// Malignant → danger
-  /// Unknown   → moderate
   PredictionStatus get predictionStatus {
     switch (status.toLowerCase()) {
       case 'benign':
@@ -56,18 +45,8 @@ class PredictionHistoryModel {
       final date = DateTime.parse(predictionDate).toLocal();
       const months = [
         '',
-        'يناير',
-        'فبراير',
-        'مارس',
-        'أبريل',
-        'مايو',
-        'يونيو',
-        'يوليو',
-        'أغسطس',
-        'سبتمبر',
-        'أكتوبر',
-        'نوفمبر',
-        'ديسمبر',
+        'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
       ];
       return '${date.day} ${months[date.month]} ${date.year}';
     } catch (_) {
@@ -99,5 +78,26 @@ extension PredictionStatusX on PredictionStatus {
       case PredictionStatus.unknown:
         return 'متابعة';
     }
+  }
+}
+
+// ✅ انتقلت من smart_acan
+class PredictionStatisticsModel {
+  final int total;
+  final int benign;
+  final int malignant;
+
+  PredictionStatisticsModel({
+    required this.total,
+    required this.benign,
+    required this.malignant,
+  });
+
+  factory PredictionStatisticsModel.fromJson(Map<String, dynamic> json) {
+    return PredictionStatisticsModel(
+      total: json['total'] ?? json['Total'] ?? 0,
+      benign: json['benign'] ?? json['Benign'] ?? 0,
+      malignant: json['malignant'] ?? json['Malignant'] ?? 0,
+    );
   }
 }

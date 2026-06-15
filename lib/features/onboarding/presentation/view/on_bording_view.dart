@@ -18,29 +18,40 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   final PageController controller = PageController();
   int currentIndex = 0;
 
+  Future<void> _finishOnboarding() async {
+    await TokenService.setOnboardingSeen();
+
+    final isLoggedIn = await TokenService.hasToken() ?? false;
+
+    if (!mounted) return;
+
+    if (isLoggedIn) {
+      GoRouter.of(context).go(AppRouter.khomeView);
+    } else {
+      GoRouter.of(context).go(AppRouter.kwellComView);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _checkIfSeen();
   }
 
-  // 🔥 لو المستخدم خلص onboarding قبل كده
   Future<void> _checkIfSeen() async {
-    final seen = await TokenService.hasSeenOnboarding();
+    final seen = await TokenService.hasSeenOnboarding() ?? false;
 
     if (!mounted) return;
-    final router = GoRouter.of(context);
 
     if (seen) {
-      final isLoggedIn = await TokenService.hasToken();
+      final isLoggedIn = await TokenService.hasToken() ?? false;
 
       if (!mounted) return;
-      // 👉 لو عامل login يروح home
+
       if (isLoggedIn) {
-        router.go(AppRouter.khomeView);
+        GoRouter.of(context).go(AppRouter.khomeView);
       } else {
-        // 👉 لو مش عامل login يروح login
-        router.go(AppRouter.kwellComView);
+        GoRouter.of(context).go(AppRouter.kwellComView);
       }
     }
   }
@@ -70,9 +81,9 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     },
                     currentIndex: currentIndex,
                     data: onBoardingList,
+                    onFinish: _finishOnboarding, // ✅ المهم
                   ),
                 ),
-
                 CoustemElevetedBoutten(
                   text: currentIndex == onBoardingList.length - 1
                       ? 'ابدأ'
@@ -81,12 +92,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   backgroundcolor: const Color(0xffA53860),
                   onPressed: () async {
                     if (currentIndex == onBoardingList.length - 1) {
-                      // ✅ سجل إنه خلص onboarding
-                      await TokenService.setOnboardingSeen();
-
-                      if (!mounted) return;
-                      // 🔥 بعد ما يخلص يروح login
-                      GoRouter.of(context).go(AppRouter.kLogin);
+                      await _finishOnboarding();
                     } else {
                       controller.nextPage(
                         duration: const Duration(milliseconds: 300),

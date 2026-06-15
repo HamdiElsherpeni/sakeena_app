@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:sakeena_app/features/exam_history/data/models/prediction_history_model.dart';
 import 'package:sakeena_app/features/smart_acan/data/data_source/scan_remote_datasource.dart';
 import 'package:sakeena_app/features/smart_acan/data/models/scan_result_model.dart';
-import 'package:sakeena_app/features/smart_acan/data/models/prediction_history_model.dart';
 import 'scan_repo.dart';
 
 class ScanRepoImpl implements ScanRepo {
@@ -14,7 +14,8 @@ class ScanRepoImpl implements ScanRepo {
       _datasource.predict(imageFile);
 
   @override
-  Future<List<PredictionHistoryModel>> getHistory() => _datasource.getHistory();
+  Future<List<PredictionHistoryModel>> getHistory() =>
+      _datasource.getHistory();
 
   @override
   Future<List<PredictionHistoryModel>> getHistoryWithStatus(String status) =>

@@ -28,10 +28,7 @@ class DioFactory {
         connectTimeout: _timeout,
         receiveTimeout: _timeout,
         sendTimeout: _timeout,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers: {'Accept': 'application/json'},
       ),
     );
 
@@ -57,11 +54,14 @@ class DioFactory {
     return InterceptorsWrapper(
       onRequest: (options, handler) async {
         final token = await TokenService.getToken();
-
         final isAuthRequest = _isAuthPath(options.path);
 
         if (!isAuthRequest && token != null && token.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $token';
+        }
+
+        if (options.data is! FormData) {
+          options.headers['Content-Type'] = 'application/json';
         }
 
         handler.next(options);
@@ -70,7 +70,6 @@ class DioFactory {
       onError: (DioException error, handler) async {
         final statusCode = error.response?.statusCode;
         final path = error.requestOptions.path;
-
         final isAuthRequest = _isAuthPath(path);
 
         if (kDebugMode) {
@@ -91,11 +90,9 @@ class DioFactory {
           if (_isRefreshing) {
             final c = Completer<String?>();
             _queue.add(c);
-
             try {
               final newToken = await c.future;
               if (newToken == null) return handler.next(error);
-
               final retry = await _retry(error.requestOptions, newToken, dio);
               return handler.resolve(retry);
             } catch (_) {
@@ -140,9 +137,7 @@ class DioFactory {
       final token = await TokenService.getToken();
       final refreshToken = await TokenService.getRefreshToken();
 
-      if (refreshToken == null || refreshToken.isEmpty) {
-        return null;
-      }
+      if (refreshToken == null || refreshToken.isEmpty) return null;
 
       final plainDio = Dio(
         BaseOptions(
@@ -160,7 +155,6 @@ class DioFactory {
       );
 
       final data = response.data;
-
       if (data is! Map) return null;
 
       final newToken = data['token'] as String?;
@@ -188,14 +182,25 @@ class DioFactory {
     RequestOptions request,
     String token,
     Dio dio,
-  ) {
+  ) async {
+    // ✅ لو FormData → عمل نسخة جديدة منها عشان مش ممكن تتبعت تاني
+    dynamic data = request.data;
+    if (data is FormData) {
+      data = FormData()
+        ..fields.addAll(data.fields)
+        ..files.addAll(data.files);
+    }
+
     return dio.request(
       request.path,
-      data: request.data,
+      data: data,
       queryParameters: request.queryParameters,
       options: Options(
         method: request.method,
-        headers: {...request.headers, 'Authorization': 'Bearer $token'},
+        headers: {
+          ...request.headers,
+          'Authorization': 'Bearer $token',
+        },
       ),
     );
   }
@@ -220,7 +225,6 @@ class DioFactory {
 
   static bool _isAuthPath(String path) {
     final clean = path.split('?').first;
-
     return _authPaths.any((e) => clean == e || clean.endsWith(e));
   }
 

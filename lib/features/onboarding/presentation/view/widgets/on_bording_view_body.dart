@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sakeena_app/core/resources/app_colors.dart';
-import 'package:sakeena_app/core/services/token_service.dart';
-import 'package:sakeena_app/core/utils/app_router.dart';
 import 'package:sakeena_app/features/onboarding/presentation/view_model/on_bording_model.dart';
 
 class OnBoardingBody extends StatelessWidget {
@@ -12,18 +9,17 @@ class OnBoardingBody extends StatelessWidget {
   final int currentIndex;
   final List<OnBoardingModel> data;
 
+  /// callback لما يخلص onboarding
+  final VoidCallback onFinish;
+
   const OnBoardingBody({
     super.key,
     required this.controller,
     required this.onPageChanged,
     required this.currentIndex,
     required this.data,
+    required this.onFinish,
   });
-
-  /// ✅ الحل: استخدام TokenService بدل SharedPrefHelper
-  Future<void> _finishOnBoarding() async {
-    await TokenService.setOnboardingSeen();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +32,7 @@ class OnBoardingBody extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            /// 🔸 Indicator
+            /// Indicator
             Row(
               children: List.generate(
                 data.length,
@@ -55,7 +51,7 @@ class OnBoardingBody extends StatelessWidget {
               ),
             ),
 
-            /// 🔸 Skip Button
+            /// Skip
             if (!isLastPage)
               Container(
                 decoration: BoxDecoration(
@@ -63,29 +59,15 @@ class OnBoardingBody extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: TextButton(
-                  onPressed: () async {
-                    await _finishOnBoarding(); // ✅ بيحفظ بـ key صح دلوقتي
-
-                    if (context.mounted) {
-                      context.go(AppRouter.kwellComView);
-                    }
+                  onPressed: () {
+                    controller.jumpToPage(data.length - 1);
                   },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 6,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                  ),
                   child: Text(
                     'تخطي',
                     style: TextStyle(
-                      fontFamily: 'Rubik',
-                      fontSize: 20.sp,
+                      fontSize: 18.sp,
                       color: AppColors.skipText,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -95,7 +77,7 @@ class OnBoardingBody extends StatelessWidget {
 
         SizedBox(height: 30.h),
 
-        /// 🔹 Pages
+        /// Pages
         Expanded(
           child: PageView.builder(
             controller: controller,
@@ -105,73 +87,32 @@ class OnBoardingBody extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  /// 🔸 Image
-                  SizedBox(
+                  Image.asset(
+                    data[index].image,
                     height: 310.h,
-                    child: Image.asset(data[index].image, fit: BoxFit.contain),
+                    fit: BoxFit.contain,
                   ),
-
                   SizedBox(height: 10.h),
-
-                  /// 🔸 Title
                   Text(
                     data[index].title,
                     style: TextStyle(
                       fontSize: 24.sp,
-                      fontFamily: 'Rubik',
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-
                   SizedBox(height: 10.h),
-
-                  /// 🔸 Subtitle
                   Text(
                     data[index].subTitle,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey, fontFamily: 'Rubik'),
+                    style: const TextStyle(color: Colors.grey),
                   ),
-
-                  SizedBox(height: 10.h),
                 ],
               );
             },
           ),
         ),
 
-        /// 🔹 زرار "ابدأ"
-        if (isLastPage)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await _finishOnBoarding(); // ✅ بيحفظ بـ key صح دلوقتي
-
-                  if (context.mounted) {
-                    context.go(AppRouter.kwellComView);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                ),
-                child: Text(
-                  'ابدأ',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontFamily: 'Rubik',
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        /// ✅ زرار ابدأ (مرة واحدة بس)
       ],
     );
   }

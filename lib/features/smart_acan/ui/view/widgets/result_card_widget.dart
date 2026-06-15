@@ -22,10 +22,10 @@ class ResultCardWidget extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'malignant':
         return const Color(0xFFEF4444);
-
       case 'benign':
         return const Color(0xFFF97316);
-
+      case 'uncertain':
+        return const Color(0xFF9E9E9E);
       case 'normal':
       default:
         return const Color(0xFF22C55E);
@@ -36,10 +36,10 @@ class ResultCardWidget extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'malignant':
         return Icons.warning_rounded;
-
       case 'benign':
         return Icons.info_rounded;
-
+      case 'uncertain':
+        return Icons.help_outline_rounded;
       case 'normal':
       default:
         return Icons.check_circle_rounded;
@@ -50,10 +50,10 @@ class ResultCardWidget extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'malignant':
         return 'الورم خبيث';
-
       case 'benign':
         return 'الورم حميد';
-
+      case 'uncertain':
+        return 'غير محدد';
       case 'normal':
       default:
         return 'لا يوجد ورم';
@@ -64,10 +64,10 @@ class ResultCardWidget extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'malignant':
         return 'ننصح بمراجعة الطبيب المختص لإجراء فحوصات إضافية في أقرب وقت.';
-
       case 'benign':
         return 'تم اكتشاف ورم حميد، ويفضل المتابعة الدورية للاطمئنان.';
-
+      case 'uncertain':
+        return 'لم يتمكن النموذج من تحديد نوع الورم بدقة. يُرجى استشارة طبيب مختص لإجراء فحص دقيق.';
       case 'normal':
       default:
         return 'لم يتم اكتشاف أي مؤشرات تدل على وجود ورم.';
