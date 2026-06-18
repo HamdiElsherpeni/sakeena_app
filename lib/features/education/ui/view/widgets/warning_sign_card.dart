@@ -30,9 +30,23 @@ class WarningSignCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Container(
+            width: 48.w,
+            height: 48.w,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8E1),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(
+              icon,
+              color: const Color(0xFFFFB300),
+              size: 24.sp,
+            ),
+          ),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
@@ -56,20 +70,6 @@ class WarningSignCard extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Container(
-            width: 48.w,
-            height: 48.w,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E1),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(
-              icon,
-              color: const Color(0xFFFFB300),
-              size: 24.sp,
             ),
           ),
         ],

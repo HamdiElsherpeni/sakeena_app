@@ -20,7 +20,9 @@ class MessageItem extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(15),
           decoration: ShapeDecoration(
-            color: message.isUserMessage ? Colors.grey[300] : Colors.grey[800],
+            color: message.isUserMessage
+                ? const Color(0xFFF5C6D8)
+                : Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(17),
             ),

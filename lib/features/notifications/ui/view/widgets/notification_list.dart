@@ -94,7 +94,10 @@ class NotificationList extends StatelessWidget {
 
         // ── Success ───────────────────────────────────────────────────────
         if (state is NotificationSuccess) {
-          if (state.notifications.isEmpty) {
+          // فلترة الغير مقروء بس
+          final unread = state.notifications.where((n) => !n.isRead).toList();
+
+          if (unread.isEmpty) {
             return const NotificationEmptyState();
           }
 
@@ -104,91 +107,86 @@ class NotificationList extends StatelessWidget {
                 context.read<NotificationCubit>().loadNotifications(),
             child: Column(
               children: [
-                // زرار "قراءة الكل" — يظهر بس لو في غير مقروء
-                if (state.notifications.any((n) => !n.isRead))
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () =>
-                              context.read<NotificationCubit>().markAllAsRead(),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 7.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.selectedBg,
-                              borderRadius: BorderRadius.circular(20.r),
-                              border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3),
-                                width: 1.w,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.done_all_rounded,
-                                  size: 14.sp,
-                                  color: AppColors.primary,
-                                ),
-                                SizedBox(width: 4.w),
-                                Text(
-                                  'قراءة الكل',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontFamily: 'Rubik',
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // عداد الغير مقروء
-                        Container(
+                // عداد الغير مقروء + زرار قراءة الكل
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 8.h,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () =>
+                            context.read<NotificationCubit>().markAllAsRead(),
+                        child: Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 4.h,
+                            horizontal: 12.w,
+                            vertical: 7.h,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppColors.selectedBg,
                             borderRadius: BorderRadius.circular(20.r),
-                          ),
-                          child: Text(
-                            '${state.notifications.where((n) => !n.isRead).length} جديد',
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.white,
-                              fontFamily: 'Rubik',
-                              fontWeight: FontWeight.w600,
+                            border: Border.all(
+                              color: AppColors.primary.withOpacity(0.3),
+                              width: 1.w,
                             ),
                           ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.done_all_rounded,
+                                size: 14.sp,
+                                color: AppColors.primary,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                'قراءة الكل',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontFamily: 'Rubik',
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 4.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: Text(
+                          '${unread.length} جديد',
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            color: Colors.white,
+                            fontFamily: 'Rubik',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
 
                 Expanded(
                   child: ListView.builder(
                     padding: EdgeInsets.only(top: 4.h, bottom: 20.h),
-                    itemCount: state.notifications.length,
+                    itemCount: unread.length,
                     itemBuilder: (context, index) {
-                      final n = state.notifications[index];
+                      final n = unread[index];
                       return NotificationCard(
                         notification: n,
-                        onTap: n.isRead
-                            ? null
-                            : () => context
-                                  .read<NotificationCubit>()
-                                  .markAsRead(n.id),
+                        onTap: () =>
+                            context.read<NotificationCubit>().markAsRead(n.id),
                       );
                     },
                   ),

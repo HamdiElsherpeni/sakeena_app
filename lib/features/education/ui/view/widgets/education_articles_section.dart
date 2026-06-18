@@ -120,7 +120,7 @@ class _ArticleCard extends StatelessWidget {
           border: Border.all(color: AppColors.border, width: 1.w),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               data.title,

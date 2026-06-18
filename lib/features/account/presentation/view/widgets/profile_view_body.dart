@@ -42,14 +42,7 @@ class ProfileViewBody extends StatelessWidget {
                               ? state.profile
                               : (state as ProfileUpdated).profile;
 
-                          return ProfileHeaderWidget(
-                            onTap: () {
-                              GoRouter.of(
-                                context,
-                              ).push(AppRouter.kprofileditview);
-                            },
-                            user: profile,
-                          );
+                          return ProfileHeaderWidget(user: profile);
                         } else if (state is AccountError) {
                           return Text(state.message);
                         }

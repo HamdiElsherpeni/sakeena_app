@@ -80,9 +80,23 @@ class _TopicCard extends StatelessWidget {
         ),
         child: Row(
           children: [
+                        Container(
+              width: 44.w,
+              height: 44.w,
+              decoration: BoxDecoration(
+                color: data.color,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: data.borderColor.withOpacity(0.3),
+                  width: 1.2.w,
+                ),
+              ),
+              child: Icon(data.icon, size: 22.sp, color: data.iconColor),
+            ),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     data.title,
@@ -107,20 +121,8 @@ class _TopicCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 12.w),
-            Container(
-              width: 44.w,
-              height: 44.w,
-              decoration: BoxDecoration(
-                color: data.color,
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(
-                  color: data.borderColor.withOpacity(0.3),
-                  width: 1.2.w,
-                ),
-              ),
-              child: Icon(data.icon, size: 22.sp, color: data.iconColor),
-            ),
+            
+
           ],
         ),
       ),

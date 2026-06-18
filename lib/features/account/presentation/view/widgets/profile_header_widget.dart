@@ -4,27 +4,22 @@ import 'package:sakeena_app/features/account/data/models/user_profile_model.dart
 import 'package:sakeena_app/features/account/presentation/view/widgets/custom_user_image.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
-  ProfileHeaderWidget({super.key, this.onTap, required this.user});
+  const ProfileHeaderWidget({super.key, required this.user});
 
-  final void Function()? onTap;
   final UserProfileModel user;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomUserImage(onTap: onTap),
-
+        const CustomUserImage(),
         SizedBox(height: 12.h),
-
         Text(
           '${user.firstName} ${user.lastName}',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
         ),
-
         SizedBox(height: 4.h),
-
         Text(
           user.email,
           textAlign: TextAlign.center,
